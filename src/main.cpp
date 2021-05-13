@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void chargerHeightmap(Scene *s){
+void loadHeightmap(Scene *s){
       ifstream fichier("../doc/timac.txt");
       if(fichier) {
             //L'ouverture s'est bien passée, on peut donc lire
@@ -15,8 +15,6 @@ void chargerHeightmap(Scene *s){
             string linkImg;
             fichier >> linkImg; 
             s->linkImg = linkImg;
-            
-            // cout << "lien recup : " << s->linkImg << endl ;
 
             int xsize, ysize, zmin, zmax, znear, zfar ;
             double fov;
@@ -34,12 +32,19 @@ void chargerHeightmap(Scene *s){
             s->zfar = zfar;
             fichier >> fov;
             s->fov = fov;
-            // cout << "\n donnée recup : " << endl ;
+            // cout << "\n donnée recup " << endl ;
 
-            
             remove("timac.txt");
         }else
         {
             cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << endl;
         }
+}
+
+int main (int argc, char** argv)
+{
+  Scene s = createScene();
+  loadHeightmap(&s);
+  cout << "lien recup : " << s.linkImg << endl ;
+  cout << "scene recup : " << s.xsize << " "<< s.ysize << " "<< s.zmin <<" "<< s.zmax <<" " << s.znear <<" " <<s.zfar <<" " <<s.fov << endl ;
 }

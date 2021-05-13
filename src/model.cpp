@@ -5,8 +5,7 @@
 #include <math.h>
 
 // Construit le scene 
-Scene createScene(string linkImg, int xsize, int ysize,
- int zmin, int zmax, int znear, int zfar, double fov){
+Scene createScene(){
     Scene s ;
     s.linkImg=NULL;
     s.xsize=0;
