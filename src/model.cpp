@@ -74,44 +74,44 @@ void loadHeightmap(Scene *s){
 }
 
 // Charge les points
-void loadPointsHeightmap(Scene s){
-   Point heightMap[s.xsize][s.ysize];
-    ifstream fichier("./doc/grenouille2.ppm");
+int loadPointsHeightmap(){
+    ifstream fichier("./doc/image.ppm");
     if(fichier) {
             //L'ouverture s'est bien passée, on peut donc lire
 
             string ligne;
-            getline(monFlux, ligne);    //On lit un mot depuis le fichier
-
-            monFlux.ignore();        //On change de mode
+            getline(fichier, ligne); 
+            cout << "\n ligne1 : " << ligne << endl ;  //On lit un mot depuis le fichier
+            getline(fichier, ligne);
+            cout << "\n ligne2 : " << ligne << endl ;
+            fichier.ignore();        //On change de mode
 
             //On lit une ligne complète
 
-            int xsize, ysize, zmin, zmax, znear, zfar ;
-            double fov;
-            fichier >> xsize;
-            s->xsize = xsize;
-            fichier >> ysize;
-            s->ysize = ysize;
-            fichier >> zmin;
-            s->zmin = zmin;
-            fichier >> zmax;
-            s->zmax = zmax;
-            fichier >> znear;
-            s->zmax = zmax;
-            fichier >> zfar;
-            s->zfar = zfar;
-            fichier >> fov;
-            s->fov = fov;
-            // cout << "\n donnée recup " << endl ;
+            int nbPixelsX, nbPixelsY, Zvalue;
 
-            remove("timac.txt");
+            fichier >> nbPixelsX;
+            cout << "\n nbX : " << nbPixelsX << endl ;
+            fichier >> nbPixelsY;
+            cout << "\n nbY : " << nbPixelsY << endl ;
+
+            Point heightMap[nbPixelsX+100][nbPixelsY];
+
+            for (int i=0; i < nbPixelsY ; i++ ){
+                cout << "\n ligne " << i << endl ;
+                for (int j=0; j< nbPixelsX+100 ; j++){
+                    fichier >> Zvalue;
+                    cout << " Z" << j << ": " << Zvalue << endl ;
+                    heightMap[i][j]=createPoint(i,j,Zvalue);
+                }
+            }
+
+            remove("image.ppm");
+            return 1 ;
         }else
         {
             cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << endl;
+            return 0 ;
         }
-   for (int i = 0; i < s.xsize; i++)
-         heightMap[i][j] = createPoint();
-
+        
 }
-*/
