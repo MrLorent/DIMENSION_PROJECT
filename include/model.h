@@ -3,7 +3,6 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include "../include/model.h"
 #include <math.h>
 
 #include <string>
@@ -30,8 +29,7 @@ typedef struct Quad{
 } Quad;
 
 // Construit le scene 
-Scene createScene(string linkImg, int xsize, int ysize,
- int zmin, int zmax, int znear, int zfar, double fov);
+Scene createScene();
 // Construit le point 
 Point createPoint(float x, float y, float z);
 // Construit le quad 

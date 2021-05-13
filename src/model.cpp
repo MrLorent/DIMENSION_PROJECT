@@ -7,7 +7,7 @@
 // Construit le scene 
 Scene createScene(){
     Scene s ;
-    s.linkImg=NULL;
+    s.linkImg=' ';
     s.xsize=0;
     s.ysize=0;
     s.zmin=0;

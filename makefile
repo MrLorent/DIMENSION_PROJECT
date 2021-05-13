@@ -1,35 +1,30 @@
-
-#compilateur
 CC		= g++
-#Flags
 CFLAGS	= -Wall -O2 -g
-#Includes
-LDFLAGS	= -lSDL2 -lSDL2_image -lGLU -lGL -lm
+LDFLAGS	= -lSDL2 -lm
 
-BINDIR	= bin/
-SRCDIR	= src/
-OBJDIR	= obj/
-
-# main
-MAIN= main.o
-EXEC_MAIN= main.out
+BIN_DIR	= bin
+INC_DIR = -I include
+SRC_DIR	= src
+OBJ_DIR	= obj
 
 
-# Regles compilation 
+SRC_FILES 	= $(shell find $(SRC_DIR)/ -type f -name '*.cpp')
+OBJ_FILES 	= $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o, $(SRC_FILES))
+EXEC_BIN	= main.out
 
-all :
 
+all : $(OBJ_FILES)
 
-main : $(OBJDIR)$(MAIN)
-	$(CC) $(CFLAGS) $(OBJDIR)$(MAIN) -o $(BINDIR)$(EXEC_MAIN) $(LDFLAGS)
+main : $(OBJ_FILES)
+	@mkdir -p $(BIN_DIR)/
+	$(CC) -o $(BIN_DIR)/$(EXEC_BIN) $(OBJ_FILES) $(LDFLAGS)
 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p "$(@D)"
+	$(CC) -cpp $< -o $@ $(CFLAGS) $(INC_DIR)
 
 clean :
 	rm -rf *~
-	rm -rf $(SRCDIR)*/*~
-	rm -rf $(OBJDIR)
-	rm -rf $(BINDIR)*
-
-$(OBJDIR)%.o: $(SRCDIR)%.cpp
-	mkdir -p `dirname $@`
-	$(CC) -o $@ -c $< $(CFLAGS)
+	rm -rf $(SRC_DIR)/*/*~
+	rm -rf $(OBJ_DIR)/
+	rm -rf $(BIN_DIR)/*
