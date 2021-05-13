@@ -64,13 +64,13 @@ bool Node::isLeaf(){
 
 void Node::fillQuadTree(vector<vector<Point>> chart){
     // INSTANCIATION DU QUAD COURANT
-    this->a = chart[0][0];
-    this->b = chart[0][chart.size()-1];
-    this->c = chart[chart.size()-1][0];
-    this->d = chart[chart.size()-1][1];
+    this->a = chart.at(0).at(0);
+    this->b = chart.at(0).at(chart.size()-1);
+    this->c = chart.at(chart.size()-1).at(0);
+    this->d = chart.at(chart.size()-1).at(1);
 
     // INSTANCIATION DES ENFANTS SI BESOIN
-    if(chart[0].size() == 2){
+    if(chart.size() == 2){
         return;
     }else{
         int subSize = (chart.size()/2) -1;
@@ -107,7 +107,7 @@ void Node::fillQuadTree(vector<vector<Point>> chart){
 void Node::fillSubChart(vector<vector<Point>> chart, vector<vector<Point>> subChart, int widthStart,int heightStart){
     for(int i=widthStart; i<chart.size()-1;i++){
         for(int j=heightStart; i<chart[0].size()-1;i++){
-            subChart[i-widthStart][j-heightStart] = chart[i][j];
+            subChart.at(i-widthStart).at(j-heightStart) = chart.at(i).at(j);
         }
     }
 }
