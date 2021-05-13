@@ -106,7 +106,7 @@ void Node::fillQuadTree(vector<vector<Point>> chart){
 
 void Node::fillSubChart(vector<vector<Point>> chart, vector<vector<Point>> subChart, int widthStart,int heightStart){
     for(int i=widthStart; i<chart.size()-1;i++){
-        for(int j=heightStart; i<chart[0].size()-1;i++){
+        for(int j=heightStart; i<chart.at(0).size()-1;i++){
             subChart.at(i-widthStart).at(j-heightStart) = chart.at(i).at(j);
         }
     }
