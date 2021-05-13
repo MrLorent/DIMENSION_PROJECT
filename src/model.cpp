@@ -84,7 +84,7 @@ int loadPointsHeightmap(){
             cout << "\n ligne1 : " << ligne << endl ;  //On lit un mot depuis le fichier
             getline(fichier, ligne);
             cout << "\n ligne2 : " << ligne << endl ;
-            fichier.ignore();        //On change de mode
+            //fichier.ignore();        //On change de mode
 
             //On lit une ligne complète
 
@@ -95,11 +95,11 @@ int loadPointsHeightmap(){
             fichier >> nbPixelsY;
             cout << "\n nbY : " << nbPixelsY << endl ;
 
-            Point heightMap[nbPixelsX+100][nbPixelsY];
+            Point heightMap[nbPixelsX][nbPixelsY];
 
             for (int i=0; i < nbPixelsY ; i++ ){
                 cout << "\n ligne " << i << endl ;
-                for (int j=0; j< nbPixelsX+100 ; j++){
+                for (int j=0; j< nbPixelsX ; j++){
                     fichier >> Zvalue;
                     cout << " Z" << j << ": " << Zvalue << endl ;
                     heightMap[i][j]=createPoint(i,j,Zvalue);
