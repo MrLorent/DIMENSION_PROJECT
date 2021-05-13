@@ -6,6 +6,10 @@
 #include "../include/model.h"
 #include <math.h>
 
+#include <string>
+
+using namespace std;
+
 typedef struct Scene {
     string linkImg;
     int xsize, ysize, zmin, zmax, znear, zfar ;
