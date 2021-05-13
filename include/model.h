@@ -24,7 +24,7 @@ typedef struct Quad{
 } Quad;
 
 // Construit le scene 
-Scene createScene(string linkImg, int xsize, int ysize,
+Scene createScene(std::string linkImg, int xsize, int ysize,
  int zmin, int zmax, int znear, int zfar, double fov);
 // Construit le point 
 Point createPoint(float x, float y, float z);
