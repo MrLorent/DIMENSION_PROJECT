@@ -3,6 +3,11 @@
 
 #include "model.h"
 
+const int TOP_LEFT = 0;
+const int TOP_RIGHT = 1;
+const int BOTTOM_RIGHT = 2;
+const int BOTTOM_LEFT = 3;
+
 typedef struct Node {
     // CORNERS
     Point a; // Top left
@@ -16,23 +21,27 @@ typedef struct Node {
     Node* childC; // Bottom right child
     Node* childD; // Bottom left child
 
-    // ACCESSEURS
-    // En lecture
+    /*############### ACCESSEURS ###############*/
+    // EN LECTURE
 
     Node* getChildA();
     Node* getChildB();
     Node* getChildC();
     Node* getChildD();
     
-    // En Ecriture
+    // EN ECRITURE
 
-    // METHODES
+    /*############### METHODES ###############*/
     bool isLeaf();
+    void fillQuadTree(vector<vector<Point>> chart);
+    void fillSubChart(vector<vector<Point>> chart, vector<vector<Point>> subChart, int widthStart,int heightStart);
 
-    
+
 }Node, QuadTree;
 
-// CONSTRUCTEUR
+/*################ CONSTRUCTEURS ################*/
+
 Node* createNode(Point a, Point b, Point c, Point d);
+Node* createNode();
 
 #endif // QUADTREE_H
