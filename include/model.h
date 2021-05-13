@@ -1,8 +1,11 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <string>
+#include <iostream>
+
 typedef struct Scene {
-    string linkImg;
+    std::string linkImg;
     int xsize, ysize, zmin, zmax, znear, zfar ;
     double fov;
 } Scene ;
