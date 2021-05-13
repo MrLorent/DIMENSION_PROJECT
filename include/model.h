@@ -1,5 +1,10 @@
 #ifndef MODEL_H
 #define MODEL_H
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include "../include/model.h"
+#include <math.h>
 
 typedef struct Scene {
     string linkImg;

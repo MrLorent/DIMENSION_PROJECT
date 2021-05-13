@@ -14,10 +14,9 @@ void chargerHeightmap(Scene *s){
             //On lit le chemin de l'image depuis le fichier
             string linkImg;
             fichier >> linkImg; 
-            s->linkImg = tlinkImg;
+            s->linkImg = linkImg;
             
-
-            // cout << "lien recup : " << s->lien << endl ;
+            // cout << "lien recup : " << s->linkImg << endl ;
 
             int xsize, ysize, zmin, zmax, znear, zfar ;
             double fov;
@@ -35,10 +34,10 @@ void chargerHeightmap(Scene *s){
             s->zfar = zfar;
             fichier >> fov;
             s->fov = fov;
-            // cout << "\n donnée recup : " << leJeu->mode << endl ;
+            // cout << "\n donnée recup : " << endl ;
 
             
-            remove("sauvegarde.txt");
+            remove("timac.txt");
         }else
         {
             cout << "ERREUR: Impossible d'ouvrir le fichier en lecture." << endl;
