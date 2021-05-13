@@ -37,5 +37,8 @@ Quad createQuad(Point hautGauche,
     Point hautDroit,
     Point basDroit,
     Point basGauche);
+// Charge l'Heightmap
+void loadHeightmap(Scene *s);
+
 
 #endif
