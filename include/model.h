@@ -2,10 +2,11 @@
 #define MODEL_H
 
 #include <string>
-#include <iostream>
+
+using namespace std;
 
 typedef struct Scene {
-    std::string linkImg;
+    string linkImg;
     int xsize, ysize, zmin, zmax, znear, zfar ;
     double fov;
 } Scene ;
@@ -24,7 +25,7 @@ typedef struct Quad{
 } Quad;
 
 // Construit le scene 
-Scene createScene(std::string linkImg, int xsize, int ysize,
+Scene createScene(string linkImg, int xsize, int ysize,
  int zmin, int zmax, int znear, int zfar, double fov);
 // Construit le point 
 Point createPoint(float x, float y, float z);
