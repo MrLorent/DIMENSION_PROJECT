@@ -7,7 +7,7 @@
 using namespace std;
 
 void loadHeightmap(Scene *s){
-      ifstream fichier("../doc/timac.txt");
+      ifstream fichier("./doc/timac.txt");
       if(fichier) {
             //L'ouverture s'est bien passée, on peut donc lire
 
