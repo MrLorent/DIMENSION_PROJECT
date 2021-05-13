@@ -21,7 +21,7 @@ typedef struct Point{
     float z;
 } Point;
 
-typedef struct Quad{
+typedef struct Quad {
     Point hautGauche;
     Point hautDroit;
     Point basDroit;
@@ -33,10 +33,7 @@ Scene createScene();
 // Construit le point 
 Point createPoint(float x, float y, float z);
 // Construit le quad 
-Quad createQuad(Point hautGauche,
-    Point hautDroit,
-    Point basDroit,
-    Point basGauche);
+Quad createQuad(Point hautGauche, Point hautDroit,Point basDroit,Point basGauche);
 // Charge l'Heightmap
 void loadHeightmap(Scene *s);
 // Charge les pts de l'Heightmap
