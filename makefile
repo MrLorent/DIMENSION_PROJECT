@@ -1,6 +1,6 @@
 CC		= g++
 CFLAGS	= -Wall -O2 -g
-LDFLAGS	= -lSDL2 -lm
+LDFLAGS	= -lSDL2 -lm -lglut -lGLU -lGL 
 
 BIN_DIR	= bin
 INC_DIR = -I include
