@@ -4,18 +4,19 @@
 #include "../include/model.h"
 #include <math.h>
 
-// Construit le scene 
-Scene createScene(){
-    Scene s ;
-    s.linkImg=' ';
-    s.xsize=0;
-    s.ysize=0;
-    s.zmin=0;
-    s.zmax=0;
-    s.znear=0;
-    s.zfar=0;
-    s.fov=0;
-    return s;
+// Construit la scene 
+Params createParams(){
+    Params params;
+    params.linkImg=' ';
+    params.xsize=0;
+    params.ysize=0;
+    params.zmin=0;
+    params.zmax=0;
+    params.znear=0;
+    params.zfar=0;
+    params.fov=0;
+
+    return params;
 }
 
 // Construit le point 
@@ -30,15 +31,15 @@ Point createPoint(float x, float y, float z){
 // Construit le quad 
 Quad createQuad(Point hautGauche,Point hautDroit,Point basDroit, Point basGauche){
     Quad newQuad ;
-    newQuad.hautGauche=hautGauche;
-    newQuad.hautDroit=hautDroit;
-    newQuad.basDroit=basDroit;
-    newQuad.basGauche=basGauche;
+    newQuad.hautGauche = hautGauche;
+    newQuad.hautDroit = hautDroit;
+    newQuad.basDroit = basDroit;
+    newQuad.basGauche = basGauche;
     return newQuad;
 }
 
 // Charge l'Heightmap
-void loadHeightmap(Scene *s){
+void loadParams(Params* params){
       ifstream fichier("./doc/timac.txt");
       if(fichier) {
             //L'ouverture s'est bien passée, on peut donc lire
@@ -46,24 +47,24 @@ void loadHeightmap(Scene *s){
             //On lit le chemin de l'image depuis le fichier
             string linkImg;
             fichier >> linkImg; 
-            s->linkImg = linkImg;
+            params->linkImg = linkImg;
 
             int xsize, ysize, zmin, zmax, znear, zfar ;
             double fov;
             fichier >> xsize;
-            s->xsize = xsize;
+            params->xsize = xsize;
             fichier >> ysize;
-            s->ysize = ysize;
+            params->ysize = ysize;
             fichier >> zmin;
-            s->zmin = zmin;
+            params->zmin = zmin;
             fichier >> zmax;
-            s->zmax = zmax;
+            params->zmax = zmax;
             fichier >> znear;
-            s->zmax = zmax;
+            params->zmax = zmax;
             fichier >> zfar;
-            s->zfar = zfar;
+            params->zfar = zfar;
             fichier >> fov;
-            s->fov = fov;
+            params->fov = fov;
             // cout << "\n donnée recup " << endl ;
 
             remove("timac.txt");
@@ -74,8 +75,8 @@ void loadHeightmap(Scene *s){
 }
 
 // Charge les points
-int loadPointsHeightmap(){
-    ifstream fichier("./doc/image.ppm");
+int loadHeightMap(Params params, vector<vector<Point>> heightMap){
+    ifstream fichier(params.linkImg);
     if(fichier) {
             //L'ouverture s'est bien passée, on peut donc lire
 
@@ -95,14 +96,11 @@ int loadPointsHeightmap(){
             fichier >> nbPixelsY;
             cout << "\n nbY : " << nbPixelsY << endl ;
 
-            Point heightMap[nbPixelsX][nbPixelsY];
-
+            int x,y,z;
             for (int i=0; i < nbPixelsY ; i++ ){
-                cout << "\n ligne " << i << endl ;
                 for (int j=0; j< nbPixelsX ; j++){
                     fichier >> Zvalue;
-                    cout << " Z" << j << ": " << Zvalue << endl ;
-                    heightMap[i][j]=createPoint(i,j,Zvalue);
+                    heightMap.at(i).at(j)= createPoint(i,j,Zvalue);
                 }
             }
 

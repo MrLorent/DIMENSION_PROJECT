@@ -42,6 +42,7 @@ typedef struct Node {
 /*################ CONSTRUCTEURS ################*/
 
 Node* createNode(Point a, Point b, Point c, Point d);
-Node* createNode();
+
+//Node* createNode();
 
 #endif // QUADTREE_H

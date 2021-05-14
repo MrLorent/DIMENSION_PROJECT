@@ -5,14 +5,15 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include "../include/QuadTree.h"
 
 using namespace std;
 
-typedef struct Scene {
+typedef struct Params{
     string linkImg;
-    int xsize, ysize, zmin, zmax, znear, zfar ;
+    int xsize, ysize, zmin, zmax, znear, zfar;
     double fov;
-} Scene ;
+} Params;
 
 typedef struct Point{
     float x;
@@ -27,16 +28,17 @@ typedef struct Quad {
     Point basGauche;
 } Quad;
 
-// Construit le scene 
-Scene createScene();
 // Construit le point 
 Point createPoint(float x, float y, float z);
 // Construit le quad 
 Quad createQuad(Point hautGauche, Point hautDroit,Point basDroit,Point basGauche);
+
+// Construit le scene 
+Params createParams();
 // Charge l'Heightmap
-void loadHeightmap(Scene *s);
+void loadParams(Params* params);
 // Charge les pts de l'Heightmap
-int loadPointsHeightmap();
+int loadHeightMap(Params params, QuadTree* quadTree);
 
 
 #endif
