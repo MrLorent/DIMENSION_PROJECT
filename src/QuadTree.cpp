@@ -4,14 +4,21 @@
 
 // Créer un nouveaux node à partir de quatres 
 // points données
-Node* createNode(Point a, Point b, Point c, Point d){
-    // CREATION DU QUAD
+QuadTree* createQuadTree(){
+    // CREATION DU QUADTREE
+    QuadTree* newTree = new QuadTree;
+    // CHILDREN
+    newTree->childA = NULL;
+    newTree->childB = NULL;
+    newTree->childC = NULL;
+    newTree->childD = NULL;
+
+    return newTree;
+}
+
+Node* createNode(){
+    // CREATION DU NODE
     Node* newNode = new Node;
-    // QUAD CORNERS
-    newNode->a = a;
-    newNode->b = b;
-    newNode->c = c;
-    newNode->d = d;
     // CHILDREN
     newNode->childA = NULL;
     newNode->childB = NULL;
@@ -19,10 +26,6 @@ Node* createNode(Point a, Point b, Point c, Point d){
     newNode->childD = NULL;
 
     return newNode;
-}
-
-Node* createNode(){
-    return new Node;
 }
 
 /*################ ACCESSEURS ################*/
@@ -73,41 +76,14 @@ void Node::fillQuadTree(vector<vector<Point>> chart){
     if(chart.size() == 2){
         return;
     }else{
-        int subSize = (chart.size()/2) -1;
-        vector<vector<Point>> subChart;
         
-        // Pour chaque enfant
-        for(int i=TOP_LEFT; i <= BOTTOM_LEFT; i++){
-            switch(i){
-                case TOP_LEFT:
-                    fillSubChart(chart, subChart, 0,0);
-                    this->childA = createNode();
-                    this->childA->fillQuadTree(subChart);
-                    break;
-                case TOP_RIGHT:
-                    fillSubChart(chart, subChart, 0,chart.size()-1);
-                    this->childB = createNode();
-                    this->childB->fillQuadTree(subChart);
-                    break;
-                case BOTTOM_RIGHT:
-                    fillSubChart(chart, subChart, chart.size()-1,0);
-                    this->childC = createNode();
-                    this->childC->fillQuadTree(subChart);
-                    break;
-                case BOTTOM_LEFT:
-                    fillSubChart(chart, subChart, chart.size()-1,chart.size()-1);
-                    this->childD = createNode();
-                    this->childD->fillQuadTree(subChart);
-                    break;
-            }
-        }
     }
 }
 
 void Node::fillSubChart(vector<vector<Point>> chart, vector<vector<Point>> subChart, int widthStart,int heightStart){
     for(int i=widthStart; i<chart.size()-1;i++){
         for(int j=heightStart; i<chart.at(0).size()-1;i++){
-            subChart.at(i-widthStart).at(j-heightStart) = chart.at(i).at(j);
+            
         }
     }
 }
