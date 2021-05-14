@@ -5,7 +5,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
-#include "../include/QuadTree.h"
+//#include "../include/QuadTree.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ Params createParams();
 // Charge l'Heightmap
 void loadParams(Params* params);
 // Charge les pts de l'Heightmap
-int loadHeightMap(Params params, QuadTree* quadTree);
+//int loadHeightMap(Params params, QuadTree* quadTree);
 
 
 #endif

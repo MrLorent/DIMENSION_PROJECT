@@ -2,7 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include "../include/model.h"
-#include "../include/QuadTree.h"
+//#include "../include/QuadTree.h"
 
 
 #include <GL/glut.h>
@@ -168,7 +168,7 @@ int main (int argc, char** argv)
 {
   Params params = createParams();
   loadParams(&params);
-  int imageLoaded = loadHeightMap(params);
+  //int imageLoaded = loadHeightMap(params);
 
 	/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);
