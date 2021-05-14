@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <math.h>
 #include "../include/model.h"
 //#include "../include/QuadTree.h"
 #include "math.h"

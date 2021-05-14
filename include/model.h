@@ -26,7 +26,7 @@ typedef struct Quad {
     Point hautDroit;
     Point basDroit;
     Point basGauche;
-} Quad;
+}Quad;
 
 // Construit le point 
 Point createPoint(float x, float y, float z);
