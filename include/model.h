@@ -5,7 +5,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
-#include "../include/QuadTree.h"
+//#include "../include/QuadTree.h"
 
 using namespace std;
 
@@ -38,7 +38,13 @@ Params createParams();
 // Charge l'Heightmap
 void loadParams(Params* params);
 // Charge les pts de l'Heightmap
-int loadHeightMap(Params params, QuadTree* quadTree);
+int loadHeightMap(Params params, vector<vector<Point>> heightMap );
+// Adapte la taille de l'image en carré et puissance de 2
+void adaptNbPixels (*minNbPixels);
+// Converti valeur en position pour scène
+int convertValue (int n, int nbPixels, int size);
+// Converti valeur de z en élévation pour scène
+int convertElevation (int z, Params params);
 
 
 #endif

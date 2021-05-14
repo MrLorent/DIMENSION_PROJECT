@@ -38,6 +38,29 @@ Quad createQuad(Point hautGauche,Point hautDroit,Point basDroit, Point basGauche
     return newQuad;
 }
 
+
+int convertValue (int n, int nbPixels, int size){
+    return n*size/nbPixels;
+}
+
+int convertElevation (int z, Params params){
+    return params.zmin + z*(params.zmax - params.zmin);
+}
+
+void adaptNbPixels (*minNbPixels){
+    int nb;
+    for (int i = 0 ; pow(1,i)< *minNbPixels ; i++){
+        nb = 2 * 2 ;
+
+
+    }
+    if (*nbPixelsX % 2 != 0){
+        do { *nbPixelsX--; }
+        while (*nbPixelsX % 2 == 0);
+    } *nbPixelsX = *nbPixelsY;
+}
+
+
 // Charge l'Heightmap
 void loadParams(Params* params){
       ifstream fichier("./doc/timac.txt");
@@ -76,18 +99,17 @@ void loadParams(Params* params){
 
 // Charge les points
 int loadHeightMap(Params params, vector<vector<Point>> heightMap){
-    ifstream fichier(params.linkImg);
+    ifstream fichier("./doc/image.ppm");
     if(fichier) {
             //L'ouverture s'est bien passée, on peut donc lire
 
+            int minSize;
+            if (params.xsize<params.ysize) minSize = params.xsize;
+            else minSize = params.ysize;
+
             string ligne;
             getline(fichier, ligne); 
-            cout << "\n ligne1 : " << ligne << endl ;  //On lit un mot depuis le fichier
             getline(fichier, ligne);
-            cout << "\n ligne2 : " << ligne << endl ;
-            //fichier.ignore();        //On change de mode
-
-            //On lit une ligne complète
 
             int nbPixelsX, nbPixelsY, Zvalue;
 
@@ -96,11 +118,22 @@ int loadHeightMap(Params params, vector<vector<Point>> heightMap){
             fichier >> nbPixelsY;
             cout << "\n nbY : " << nbPixelsY << endl ;
 
+            int minNbPixels;
+            if (nbPixelsX<nbPixelsY) minNbPixels = nbPixelsX;
+            else minNbPixels = nbPixelsY;
+
+            adaptNbPixels (&minNbPixels);
+            cout << "\n Image réduite en format carré avec nbPixels = " << minNbPixels << endl ;
+
             int x,y,z;
-            for (int i=0; i < nbPixelsY ; i++ ){
-                for (int j=0; j< nbPixelsX ; j++){
+            for (int i=0; i < minNbPixels ; i++ ){
+                x=convertValue(i,minNbPixels,minSize);
+                for (int j=0; j< minNbPixels ; j++){
                     fichier >> Zvalue;
-                    heightMap.at(i).at(j)= createPoint(i,j,Zvalue);
+                    y=convertValue(j,minNbPixels,paraminSize);
+                    z=convertElevation (Zvalue, params);
+                    cout << "\n ligne " << j << " : " << x << " " <<  y << " " << z << endl ;
+                    heightMap.at(i).at(j)= createPoint(x,y,z);
                 }
             }
 

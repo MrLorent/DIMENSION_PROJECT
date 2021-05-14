@@ -2,7 +2,8 @@
 #include <fstream>
 #include <cstring>
 #include "../include/model.h"
-#include "../include/QuadTree.h"
+//#include "../include/QuadTree.h"
+#include "math.h"
 
 
 #include <GL/glut.h>
@@ -20,7 +21,6 @@ using namespace std;
 float profondeur = 3;
 float latitude = 0.0;
 float longitude = M_PI/2.;
-
 float obj_rot = 0.0;
 
 
@@ -168,7 +168,8 @@ int main (int argc, char** argv)
 {
   Params params = createParams();
   loadParams(&params);
-  int imageLoaded = loadHeightMap(params);
+  vector<vector<Point>> heightMap;
+  int imageLoaded = loadHeightMap(params, heightMap);
 
 	/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);
