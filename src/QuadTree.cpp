@@ -4,25 +4,16 @@
 
 // Créer un nouveaux node à partir de quatres 
 // points données
-Node* createNode(Point a, Point b, Point c, Point d){
+QuadTree* createQuadTree(){
     // CREATION DU QUAD
-    Node* newNode = new Node;
-    // QUAD CORNERS
-    newNode->a = a;
-    newNode->b = b;
-    newNode->c = c;
-    newNode->d = d;
+    QuadTree* newQuadTree = new QuadTree;
     // CHILDREN
-    newNode->childA = NULL;
-    newNode->childB = NULL;
-    newNode->childC = NULL;
-    newNode->childD = NULL;
+    newQuadTree->childA = NULL;
+    newQuadTree->childB = NULL;
+    newQuadTree->childC = NULL;
+    newQuadTree->childD = NULL;
 
-    return newNode;
-}
-
-Node* createNode(){
-    return new Node;
+    return newQuadTree;
 }
 
 /*################ ACCESSEURS ################*/
@@ -81,22 +72,22 @@ void Node::fillQuadTree(vector<vector<Point>> chart){
             switch(i){
                 case TOP_LEFT:
                     fillSubChart(chart, subChart, 0,0);
-                    this->childA = createNode();
+                    //this->childA = createNode();
                     this->childA->fillQuadTree(subChart);
                     break;
                 case TOP_RIGHT:
                     fillSubChart(chart, subChart, 0,chart.size()-1);
-                    this->childB = createNode();
+                    //this->childB = createNode();
                     this->childB->fillQuadTree(subChart);
                     break;
                 case BOTTOM_RIGHT:
                     fillSubChart(chart, subChart, chart.size()-1,0);
-                    this->childC = createNode();
+                    //this->childC = createNode();
                     this->childC->fillQuadTree(subChart);
                     break;
                 case BOTTOM_LEFT:
                     fillSubChart(chart, subChart, chart.size()-1,chart.size()-1);
-                    this->childD = createNode();
+                    //this->childD = createNode();
                     this->childD->fillQuadTree(subChart);
                     break;
             }
