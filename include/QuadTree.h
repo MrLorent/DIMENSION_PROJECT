@@ -1,19 +1,19 @@
 #ifndef QUADTREE_H
 #define QUADTREE
 
-#include "model.h"
+#include "geometry.h"
 
 const int TOP_LEFT = 0;
 const int TOP_RIGHT = 1;
 const int BOTTOM_RIGHT = 2;
 const int BOTTOM_LEFT = 3;
 
-typedef struct QuadTree {
+typedef struct Node {
     // CORNERS
-    Point a; // Top left
-    Point b; // Top right
-    Point c; // Bottom right
-    Point d; // Bottom left
+    Point3D a; // Top left
+    Point3D b; // Top right
+    Point3D c; // Bottom right
+    Point3D d; // Bottom left
     
     // CHILDREN
     Node* childA; // Top left child
@@ -33,8 +33,8 @@ typedef struct QuadTree {
 
     /*############### METHODES ###############*/
     bool isLeaf();
-    void fillQuadTree(vector<vector<Point>> chart);
-    void fillSubChart(vector<vector<Point>> chart, vector<vector<Point>> subChart, int widthStart,int heightStart);
+    void fillQuadTree(vector<vector<Point3D>> chart);
+    void fillSubChart(vector<vector<Point3D>> chart, vector<vector<Point3D>> subChart, int widthStart,int heightStart);
 
 }QuadTree, Node;
 

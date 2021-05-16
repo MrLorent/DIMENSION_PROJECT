@@ -40,6 +40,7 @@ void initParams(Params* params){
 }
 
 void initPointChart(PointChart* chart, const int width, const int height){
+    chart->points = new Point3D[width][height];
     chart->width = width;
     chart->height = height;
 }

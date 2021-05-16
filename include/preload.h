@@ -1,8 +1,6 @@
 #ifndef PRELOAD_H
 #define PRELOAD_H
 
-#include <array>
-
 #include "./geometry.h"
 
 /*------------- PARAMS -------------*/

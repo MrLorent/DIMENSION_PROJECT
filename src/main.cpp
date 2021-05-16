@@ -2,9 +2,9 @@
 #include <fstream>
 #include <cstring>
 #include <math.h>
-#include "../include/model.h"
+#include "../include/geometry.h"
+#include "../include/preload.h"
 //#include "../include/QuadTree.h"
-#include "math.h"
 
 
 #include <GL/glut.h>
@@ -168,9 +168,10 @@ static void kbdSpFunc(int c, int x, int y) {
 int main (int argc, char** argv)
 {
   Params params = createParams();
-  loadParams(&params);
-  vector<vector<Point>> heightMap;
-  int imageLoaded = loadHeightMap(params, heightMap);
+  PointChart heightMap;
+  
+  initParams(&params);
+  loadHeightMap(params, &heightMap);
 
 	/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);

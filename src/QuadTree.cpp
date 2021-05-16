@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "../include/QuadTree.h"
 
 /*################ CONSTRUCTEURS ################*/
@@ -65,7 +67,7 @@ bool Node::isLeaf(){
     }
 }
 
-void Node::fillQuadTree(vector<vector<Point>> chart){
+void Node::fillQuadTree(vector<vector<Point3D>> chart){
     // INSTANCIATION DU QUAD COURANT
     this->a = chart.at(0).at(0);
     this->b = chart.at(0).at(chart.size()-1);
@@ -80,7 +82,7 @@ void Node::fillQuadTree(vector<vector<Point>> chart){
     }
 }
 
-void Node::fillSubChart(vector<vector<Point>> chart, vector<vector<Point>> subChart, int widthStart,int heightStart){
+void Node::fillSubChart(vector<vector<Point3D>> chart, vector<vector<Point3D>> subChart, int widthStart,int heightStart){
     for(int i=widthStart; i<chart.size()-1;i++){
         for(int j=heightStart; i<chart.at(0).size()-1;i++){
             
