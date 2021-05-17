@@ -4,7 +4,7 @@
 #include <math.h>
 #include "../include/geometry.h"
 #include "../include/preload.h"
-//#include "../include/QuadTree.h"
+#include "../include/QuadTree.h"
 
 
 #include <GL/glut.h>
@@ -29,7 +29,7 @@ float obj_rot = 0.0;
 
 static void init() {
 
-	profondeur = 3;
+	profondeur = 4;
 	latitude = M_PI/2.0;
 	longitude = 0.0;
 	obj_rot = 0.0;
@@ -46,9 +46,6 @@ static void init() {
 	/* INITIALISATION DE LA SCENE */
 	//createCoordinates();
 }
-
-
-
 
 //---------FONCTION RESIZE DE LA PAGE--------------
 
@@ -98,11 +95,19 @@ static void drawFunc(void) {
 
 	/* Debut du dessin de la scène */
 	glPushMatrix();
-	
+
 	/* placement de la caméra */
-	gluLookAt(profondeur*sin(longitude)*sin(latitude),profondeur*cos(latitude),profondeur*cos(longitude)*sin(latitude),
-              0.0,0.0,0.0,
-              0.0,1.0,0.0);
+	gluLookAt(
+		profondeur*sin(longitude)*sin(latitude),
+		profondeur*cos(latitude),
+		profondeur*cos(longitude)*sin(latitude),
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		1.0,
+		0.0
+	);
 
 	glColor3f(1.0,0.0,0.0);
 	glDrawRepere(2.0);
@@ -121,7 +126,7 @@ static void drawFunc(void) {
 	glPushMatrix();
 	glRotatef(obj_rot,0.0,1.0,0.0);
 	glColor3f(1.0,1.0,1.0);
-	
+
 	glDisable(GL_LIGHTING);
 
 	/* Fin du dessin */
@@ -135,7 +140,6 @@ static void drawFunc(void) {
 }
 
 //------------------ ECOUTEURS EVENEMENTS -----------------------
-
 
 static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
@@ -165,15 +169,41 @@ static void kbdSpFunc(int c, int x, int y) {
 }
 
 
-int main (int argc, char** argv)
-{
-  Params params = createParams();
-  PointChart heightMap;
+int main (int argc, char** argv){
+	QuadTree quadTree = createQuadTree();
+  	Params params = createParams();
+  	PointChart heightMap;
   
-  initParams(&params);
-  loadHeightMap(params, &heightMap);
+  	initParams(&params);
+  	loadHeightMap(params, &heightMap);
+	quadTree.fillQuadTree(&heightMap);
 
-	/* traitement des paramètres du programme propres à GL */
+	// printPoint3D(quadTree.a);
+	// printPoint3D(quadTree.b);
+	// printPoint3D(quadTree.c);
+	// printPoint3D(quadTree.d);
+	// cout << endl;
+	// printPoint3D(quadTree.getChildA()->a);
+	// printPoint3D(quadTree.getChildA()->b);
+	// printPoint3D(quadTree.getChildA()->c);
+	// printPoint3D(quadTree.getChildA()->d);
+	// cout << endl;
+	// printPoint3D(quadTree.getChildB()->a);
+	// printPoint3D(quadTree.getChildB()->b);
+	// printPoint3D(quadTree.getChildB()->c);
+	// printPoint3D(quadTree.getChildB()->d);
+	// cout << endl;
+	// printPoint3D(quadTree.getChildC()->a);
+	// printPoint3D(quadTree.getChildC()->b);
+	// printPoint3D(quadTree.getChildC()->c);
+	// printPoint3D(quadTree.getChildC()->d);
+	// cout << endl;
+	// printPoint3D(quadTree.getChildD()->a);
+	// printPoint3D(quadTree.getChildD()->b);
+	// printPoint3D(quadTree.getChildD()->c);
+	// printPoint3D(quadTree.getChildD()->d);
+
+	/*/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);
 	/* initialisation du mode d'affichage :                */
 	/* RVB + ZBuffer + Double buffer.                      */
@@ -207,6 +237,4 @@ int main (int argc, char** argv)
 	glutMainLoop();
 	/* Cette partie du code n'est jamais atteinte */
 	return 0;
-
-
 }

@@ -26,14 +26,15 @@ void initParams(Params* params);
 /*------------- POINTCHART -------------*/
 
 struct PointChart{
-    Point3D* points;
-    int width;
-    int height;
+    Point3D** points; // [y][x]
+    int width; // x
+    int height; // y
 };
 
 // CONSTRUCTEUR
 
 void initPointChart(PointChart* chart, int width, int height);
+void freePointChart(PointChart* chart);
 
 // Charge les pts de l'Heightmap
 void loadHeightMap(Params params, PointChart* heightMap);

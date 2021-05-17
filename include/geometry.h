@@ -12,13 +12,15 @@ typedef struct Vec3f{
     float x;
     float y;
     float z;
-} Point3D, vector3D;
+} Point3D, Vector3D;
 
 /*-------- CONSTRUCTEURS ---------*/
 
 // Construit un point à partir de trois coordonnées
 Point3D createPoint(float x, float y, float z);
 
+void printPoint3D(Point3D p);
+void printVector3D(Vector3D v);
 
 /*############# QUADS #############*/
 

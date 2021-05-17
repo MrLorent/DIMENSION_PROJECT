@@ -40,9 +40,16 @@ void initParams(Params* params){
 }
 
 void initPointChart(PointChart* chart, const int width, const int height){
-    chart->points = new Point3D[width][height];
+    chart->points = new Point3D*[height];
     chart->width = width;
     chart->height = height;
+}
+
+void freePointChart(PointChart* chart){
+    for(int i=0; i<chart->height-1;i++){
+        free(chart->points[i]);
+    }
+    free(chart->points);
 }
 
 // Charge les points
@@ -58,21 +65,19 @@ void loadHeightMap(Params params, PointChart* heightMap){
         getline(file, line);
 
         file >> nbPixelsX;
-        cout << "\n nbX : " << nbPixelsX << endl ;
         file >> nbPixelsY;
-        cout << "\n nbY : " << nbPixelsY << endl ;
 
         initPointChart(heightMap, nbPixelsX, nbPixelsY);
 
         int x,y,z;
-        for (int i=0; i < nbPixelsX ; i++ ){
-            x=convertValue(i,nbPixelsX,params.xSize);
-            for (int j=0; j< nbPixelsY ; j++){
-                y=convertValue(j,nbPixelsY, params.ySize);
+        for (int i=0; i < nbPixelsY ; i++ ){
+            heightMap->points[i] = new Point3D[nbPixelsX];
+            y = i; //convertValue(i,nbPixelsY,params.ySize);
+            for (int j=0; j< nbPixelsX ; j++){
+                x = j; //convertValue(j,nbPixelsX, params.xSize);
                 
                 file >> Zvalue;
-                z=convertElevation (Zvalue, params);
-                cout << "\n ligne " << j << " : " << x << " " <<  y << " " << z << endl ;
+                z = convertElevation (Zvalue, params);
                 
                 heightMap->points[i][j] = createPoint(x,y,z);
             }
@@ -87,9 +92,9 @@ void loadHeightMap(Params params, PointChart* heightMap){
 }
 
 int convertValue (int n, int nbPixels, int size){
-    return n/nbPixels*size;
+    return ((float) n/nbPixels)*size;
 }
 
 int convertElevation (int z, Params params){
-    return params.zMin + z*(params.zMax - params.zMin);
+    return params.zMin + (float)(z/255)*(params.zMax - params.zMin);
 }
