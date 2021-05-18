@@ -162,8 +162,30 @@ static void kbdSpFunc(int c, int x, int y) {
 		case GLUT_KEY_PAGE_DOWN :
 			if (profondeur>0.1+STEP_PROF) profondeur -= STEP_PROF;
 			break;
+
 		default:
 			printf("Appui sur une touche spéciale\n");
+	}
+	glutPostRedisplay();
+}
+
+static void kbdFunc(unsigned char c, int x, int y) {
+	/* sortie du programme si utilisation des touches ESC, */
+	/* 'q' ou 'Q'*/
+	switch(c) {
+		case 27 :
+			exit(0);
+			break;
+		case 'Z' : case 'z' : 
+			break;
+		case 'S' : case 's' : 
+			break;
+		case 'Q' : case 'q' : 
+			break;
+		case 'D' : case 'd' : 
+			break;
+		default:
+			printf("Appui sur la touche %c\n",c);
 	}
 	glutPostRedisplay();
 }
@@ -223,7 +245,7 @@ int main (int argc, char** argv){
 	/* association de la fonction callback d'affichage */
 	glutDisplayFunc(drawFunc);
 	/* association de la fonction callback d'événement du clavier */
-	//glutKeyboardFunc(kbdFunc);
+	glutKeyboardFunc(kbdFunc);
 	/* association de la fonction callback d'événement du clavier (touches spéciales) */
 	glutSpecialFunc(kbdSpFunc);
 	/* association de la fonction callback d'événement souris */
