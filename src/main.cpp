@@ -21,18 +21,26 @@ using namespace std;
 /* variables globales pour la gestion de la caméra */
 float profondeur = 3;
 float latitude = 0.0;
-float longitude = M_PI/2.;
+float longitude = M_PI/2.0;
 float obj_rot = 0.0;
+
+float latitudeCam = 0.0;
+float longitudeCam = M_PI/2.0;
 
 
 //---------INITIALISATION--------------
 
 static void init() {
-
+	// POSITION CAMERA
 	profondeur = 4;
 	latitude = 0.0;
 	longitude = M_PI/2.0;
 	obj_rot = 0.0;
+
+	// POSITION REGARD CAMERA
+	latitudeCam = 0.0;
+	longitudeCam = 0.0;
+
 
 	/* INITIALISATION DES PARAMETRES GL */
 	/* couleur du fond (gris sombre) */
@@ -101,9 +109,9 @@ static void drawFunc(void) {
 		profondeur*cos(latitude)*sin(longitude), 	// CAMERA POSITION X
 		profondeur*sin(latitude)*sin(longitude),					// CAMERA POSITION Y
 		profondeur*cos(longitude),	// CAMERA POSITION Z
-		0.0,	// REFERENCE POSITION X
-		0.0,	// REFERENCE POSITION Y
-		0.0,	// REFERENCE POSITION Z
+		profondeur*cos(latitude)*sin(longitude) + cos(latitudeCam)*sin(longitudeCam),	// REFERENCE POSITION X
+		profondeur*sin(latitude)*sin(longitude) + sin(latitudeCam)*sin(longitudeCam),	// REFERENCE POSITION Y
+		profondeur*cos(longitude) + cos(longitudeCam),	// REFERENCE POSITION Z
 		0.0,
 		0.0,
 		1.0
@@ -176,13 +184,17 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case 27 :
 			exit(0);
 			break;
-		case 'Z' : case 'z' : 
+		case 'Z' : case 'z' :
+			if (longitudeCam>STEP_ANGLE) longitudeCam -= STEP_ANGLE;
 			break;
 		case 'S' : case 's' : 
+			if(longitudeCam<M_PI-STEP_ANGLE) longitudeCam += STEP_ANGLE;
 			break;
 		case 'Q' : case 'q' : 
+			latitudeCam -= STEP_ANGLE;
 			break;
 		case 'D' : case 'd' : 
+			latitudeCam += STEP_ANGLE;
 			break;
 		default:
 			printf("Appui sur la touche %c\n",c);
