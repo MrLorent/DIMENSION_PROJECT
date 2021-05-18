@@ -5,6 +5,7 @@
 #include "../include/geometry.h"
 #include "../include/preload.h"
 #include "../include/QuadTree.h"
+#include "../include/application.h"
 
 
 #include <GL/glut.h>
@@ -19,7 +20,7 @@ using namespace std;
 #define STEP_PROF	M_PI/90.
 
 /* variables globales pour la gestion de la caméra */
-Point3D positionCamera;
+Camera camera;
 float profondeur = 3;
 float latitude = 0.0; //HORIZONTAL
 float longitude = M_PI/2.0; //VERTICAL
@@ -203,14 +204,18 @@ static void kbdSpFunc(int c, int x, int y) {
 			if(longitude < M_PI-STEP_ANGLE) longitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_LEFT :
-			latitude -= STEP_ANGLE;
-			break;
-		case GLUT_KEY_RIGHT :
 			latitude += STEP_ANGLE;
 			break;
+		case GLUT_KEY_RIGHT :
+			latitude -= STEP_ANGLE;
+			break;
 		default:
+			if(GLUT_ACTIVE_SHIFT){
+				positionCamera.z -= 1;
+			}
 			printf("Appui sur une touche spéciale\n");
 	}
+
 	glutPostRedisplay();
 }
 
@@ -236,6 +241,9 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case 'D' : case 'd' : 
 			positionCamera.x -= 1. * cos(latitude + M_PI/2);
 			positionCamera.y -= 1. * sin(latitude + M_PI/2);
+			break;
+		case ' ' :
+			positionCamera.z += 1;
 			break;
 		default:
 			printf("Appui sur la touche %c\n",c);
