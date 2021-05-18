@@ -21,30 +21,25 @@ using namespace std;
 
 /* variables globales pour la gestion de la caméra */
 Camera camera;
-float profondeur = 3;
 float latitude = 0.0; //HORIZONTAL
 float longitude = M_PI/2.0; //VERTICAL
 float obj_rot = 0.0;
 
-float latitudeCam = 0.0;
-float longitudeCam = M_PI/2.0;
 
 
 //---------INITIALISATION--------------
 
 static void init() {
 	// POSITION CAMERA
-	positionCamera.x = 0.0;
-	positionCamera.y = 0.0;
-	positionCamera.z = 0.0;
-	profondeur = 4;
+	camera.position.x = 0;
+	camera.position.y = 0;
+	camera.position.z = 0;
+	camera.up.x = 0;
+	camera.up.y = 0;
+	camera.up.z = 1;
 	latitude = 0.0;
 	longitude = M_PI/2.0;
 	obj_rot = 0.0;
-
-	// POSITION REGARD CAMERA
-	latitudeCam = 0.0;
-	longitudeCam = M_PI/2.0;
 
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -151,15 +146,15 @@ static void drawFunc(void) {
 
 	/* placement de la caméra */
 	gluLookAt(
-		positionCamera.x,
-		positionCamera.y,
-		positionCamera.z,
-		positionCamera.x + cos(latitude)*sin(longitude), 	// CAMERA POSITION X
-		positionCamera.y + sin(latitude)*sin(longitude),	// CAMERA POSITION Y
-		positionCamera.z + cos(longitude),					// CAMERA POSITION Z
-		0.0,
-		0.0,
-		1.0
+		camera.position.x,
+		camera.position.y,
+		camera.position.z,
+		camera.position.x + cos(latitude)*sin(longitude), 	// CAMERA POSITION X
+		camera.position.y + sin(latitude)*sin(longitude),	// CAMERA POSITION Y
+		camera.position.z + cos(longitude),					// CAMERA POSITION Z
+		camera.up.x,
+		camera.up.y,
+		camera.up.z
 	);
 
 	glColor3f(1.0,0.0,0.0);
@@ -211,7 +206,7 @@ static void kbdSpFunc(int c, int x, int y) {
 			break;
 		default:
 			if(GLUT_ACTIVE_SHIFT){
-				positionCamera.z -= 1;
+				camera.position.z -= 1;
 			}
 			printf("Appui sur une touche spéciale\n");
 	}
@@ -227,23 +222,23 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			exit(0);
 			break;
 		case 'Z' : case 'z' :
-			positionCamera.x += 1. * cos(latitude);
-			positionCamera.y += 1. * sin(latitude);
+			camera.position.x += 1. * cos(latitude);
+			camera.position.y += 1. * sin(latitude);
 			break;
 		case 'S' : case 's' : 
-			positionCamera.x -= 1. * cos(latitude);
-			positionCamera.y -= 1. * sin(latitude);
+			camera.position.x -= 1. * cos(latitude);
+			camera.position.y -= 1. * sin(latitude);
 			break;
 		case 'Q' : case 'q' : 
-			positionCamera.x += 1. * cos(latitude + M_PI/2);
-			positionCamera.y += 1. * sin(latitude + M_PI/2);
+			camera.position.x += 1. * cos(latitude + M_PI/2);
+			camera.position.y += 1. * sin(latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
-			positionCamera.x -= 1. * cos(latitude + M_PI/2);
-			positionCamera.y -= 1. * sin(latitude + M_PI/2);
+			camera.position.x -= 1. * cos(latitude + M_PI/2);
+			camera.position.y -= 1. * sin(latitude + M_PI/2);
 			break;
 		case ' ' :
-			positionCamera.z += 1;
+			camera.position.z += 1;
 			break;
 		default:
 			printf("Appui sur la touche %c\n",c);
