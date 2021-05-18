@@ -98,12 +98,12 @@ static void drawFunc(void) {
 
 	/* placement de la caméra */
 	gluLookAt(
-		profondeur*sin(longitude)*sin(latitude),
-		profondeur*cos(latitude),
-		profondeur*cos(longitude)*sin(latitude),
-		0.0,
-		0.0,
-		0.0,
+		profondeur*sin(longitude)*sin(latitude), 	// CAMERA POSITION X
+		profondeur*cos(latitude),					// CAMERA POSITION Y
+		profondeur*cos(longitude)*sin(latitude),	// CAMERA POSITION Z
+		0.0,	// REFERENCE POSITION X
+		0.0,	// REFERENCE POSITION Y
+		0.0,	// REFERENCE POSITION Z
 		0.0,
 		1.0,
 		0.0
