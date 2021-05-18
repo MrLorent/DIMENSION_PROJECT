@@ -30,8 +30,8 @@ float obj_rot = 0.0;
 static void init() {
 
 	profondeur = 4;
-	latitude = M_PI/2.0;
-	longitude = 0.0;
+	latitude = 0.0;
+	longitude = M_PI/2.0;
 	obj_rot = 0.0;
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -98,15 +98,15 @@ static void drawFunc(void) {
 
 	/* placement de la caméra */
 	gluLookAt(
-		profondeur*sin(longitude)*sin(latitude), 	// CAMERA POSITION X
-		profondeur*cos(latitude),					// CAMERA POSITION Y
-		profondeur*cos(longitude)*sin(latitude),	// CAMERA POSITION Z
+		profondeur*cos(latitude)*sin(longitude), 	// CAMERA POSITION X
+		profondeur*sin(latitude)*sin(longitude),					// CAMERA POSITION Y
+		profondeur*cos(longitude),	// CAMERA POSITION Z
 		0.0,	// REFERENCE POSITION X
 		0.0,	// REFERENCE POSITION Y
 		0.0,	// REFERENCE POSITION Z
 		0.0,
-		1.0,
-		0.0
+		0.0,
+		1.0
 	);
 
 	glColor3f(1.0,0.0,0.0);
@@ -145,16 +145,16 @@ static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	switch(c) {
 		case GLUT_KEY_UP :
-			if (latitude>STEP_ANGLE) latitude -= STEP_ANGLE;
+			if (longitude>STEP_ANGLE) longitude -= STEP_ANGLE;
 			break;
 		case GLUT_KEY_DOWN :
-			if(latitude<M_PI-STEP_ANGLE) latitude += STEP_ANGLE;
+			if(longitude<M_PI-STEP_ANGLE) longitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_LEFT :
-			longitude -= STEP_ANGLE;
+			latitude -= STEP_ANGLE;
 			break;
 		case GLUT_KEY_RIGHT :
-			longitude += STEP_ANGLE;
+			latitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_PAGE_UP :
 			profondeur += STEP_PROF;
