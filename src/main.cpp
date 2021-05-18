@@ -19,9 +19,10 @@ using namespace std;
 #define STEP_PROF	M_PI/90.
 
 /* variables globales pour la gestion de la caméra */
+Point3D positionCamera;
 float profondeur = 3;
-float latitude = 0.0;
-float longitude = M_PI/2.0;
+float latitude = 0.0; //HORIZONTAL
+float longitude = M_PI/2.0; //VERTICAL
 float obj_rot = 0.0;
 
 float latitudeCam = 0.0;
@@ -32,6 +33,9 @@ float longitudeCam = M_PI/2.0;
 
 static void init() {
 	// POSITION CAMERA
+	positionCamera.x = 0.0;
+	positionCamera.y = 0.0;
+	positionCamera.z = 0.0;
 	profondeur = 4;
 	latitude = 0.0;
 	longitude = M_PI/2.0;
@@ -39,7 +43,7 @@ static void init() {
 
 	// POSITION REGARD CAMERA
 	latitudeCam = 0.0;
-	longitudeCam = 0.0;
+	longitudeCam = M_PI/2.0;
 
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -89,6 +93,46 @@ void glDrawRepere(float length) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
+	glTranslatef(3.0,0.0,0.0);
+	glBegin(GL_QUADS);
+
+    glColor3ub(255,0,0); //face rouge
+    glVertex3d(1,1,1);
+    glVertex3d(1,1,-1);
+    glVertex3d(-1,1,-1);
+    glVertex3d(-1,1,1);
+
+    glColor3ub(0,255,0); //face verte
+    glVertex3d(1,-1,1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(1,1,-1);
+    glVertex3d(1,1,1);
+
+    glColor3ub(0,0,255); //face bleue
+    glVertex3d(-1,-1,1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(1,-1,1);
+
+    glColor3ub(255,255,0); //face jaune
+    glVertex3d(-1,1,1);
+    glVertex3d(-1,1,-1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(-1,-1,1);
+
+    glColor3ub(0,255,255); //face cyan
+    glVertex3d(1,1,-1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(-1,1,-1);
+
+    glColor3ub(255,0,255); //face magenta
+    glVertex3d(1,-1,1);
+    glVertex3d(1,1,1);
+    glVertex3d(-1,1,1);
+    glVertex3d(-1,-1,1);
+
+    glEnd();
 }
 
 //------------------ AFFICHAGE -----------------------
@@ -106,12 +150,12 @@ static void drawFunc(void) {
 
 	/* placement de la caméra */
 	gluLookAt(
-		profondeur*cos(latitude)*sin(longitude), 	// CAMERA POSITION X
-		profondeur*sin(latitude)*sin(longitude),					// CAMERA POSITION Y
-		profondeur*cos(longitude),	// CAMERA POSITION Z
-		profondeur*cos(latitude)*sin(longitude) + cos(latitudeCam)*sin(longitudeCam),	// REFERENCE POSITION X
-		profondeur*sin(latitude)*sin(longitude) + sin(latitudeCam)*sin(longitudeCam),	// REFERENCE POSITION Y
-		profondeur*cos(longitude) + cos(longitudeCam),	// REFERENCE POSITION Z
+		positionCamera.x,
+		positionCamera.y,
+		positionCamera.z,
+		positionCamera.x + cos(latitude)*sin(longitude), 	// CAMERA POSITION X
+		positionCamera.y + sin(latitude)*sin(longitude),	// CAMERA POSITION Y
+		positionCamera.z + cos(longitude),					// CAMERA POSITION Z
 		0.0,
 		0.0,
 		1.0
@@ -153,10 +197,10 @@ static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	switch(c) {
 		case GLUT_KEY_UP :
-			if (longitude>STEP_ANGLE) longitude -= STEP_ANGLE;
+			if (longitude > STEP_ANGLE) longitude -= STEP_ANGLE;
 			break;
 		case GLUT_KEY_DOWN :
-			if(longitude<M_PI-STEP_ANGLE) longitude += STEP_ANGLE;
+			if(longitude < M_PI-STEP_ANGLE) longitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_LEFT :
 			latitude -= STEP_ANGLE;
@@ -164,13 +208,6 @@ static void kbdSpFunc(int c, int x, int y) {
 		case GLUT_KEY_RIGHT :
 			latitude += STEP_ANGLE;
 			break;
-		case GLUT_KEY_PAGE_UP :
-			profondeur += STEP_PROF;
-			break;
-		case GLUT_KEY_PAGE_DOWN :
-			if (profondeur>0.1+STEP_PROF) profondeur -= STEP_PROF;
-			break;
-
 		default:
 			printf("Appui sur une touche spéciale\n");
 	}
@@ -185,16 +222,20 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			exit(0);
 			break;
 		case 'Z' : case 'z' :
-			if (longitudeCam>STEP_ANGLE) longitudeCam -= STEP_ANGLE;
+			positionCamera.x += 1. * cos(latitude);
+			positionCamera.y += 1. * sin(latitude);
 			break;
 		case 'S' : case 's' : 
-			if(longitudeCam<M_PI-STEP_ANGLE) longitudeCam += STEP_ANGLE;
+			positionCamera.x -= 1. * cos(latitude);
+			positionCamera.y -= 1. * sin(latitude);
 			break;
 		case 'Q' : case 'q' : 
-			latitudeCam -= STEP_ANGLE;
+			positionCamera.x += 1. * cos(latitude + M_PI/2);
+			positionCamera.y += 1. * sin(latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
-			latitudeCam += STEP_ANGLE;
+			positionCamera.x -= 1. * cos(latitude + M_PI/2);
+			positionCamera.y -= 1. * sin(latitude + M_PI/2);
 			break;
 		default:
 			printf("Appui sur la touche %c\n",c);
