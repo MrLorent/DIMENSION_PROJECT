@@ -21,7 +21,7 @@ using namespace std;
 /* variables globales pour la gestion de la caméra */
 float profondeur = 3;
 float latitude = 0.0;
-float longitude = M_PI/2.;
+float longitude = M_PI/2;
 float obj_rot = 0.0;
 
 
@@ -33,6 +33,9 @@ static void init() {
 	latitude = M_PI/2.0;
 	longitude = 0.0;
 	obj_rot = 0.0;
+
+	float lat = 0.0;
+	float longi = 0.0;
 
 	/* INITIALISATION DES PARAMETRES GL */
 	/* couleur du fond (gris sombre) */
@@ -81,6 +84,46 @@ void glDrawRepere(float length) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
+
+	glBegin(GL_QUADS);
+
+    glColor3ub(255,0,0); //face rouge
+    glVertex3d(1,1,1);
+    glVertex3d(1,1,-1);
+    glVertex3d(-1,1,-1);
+    glVertex3d(-1,1,1);
+
+    glColor3ub(0,255,0); //face verte
+    glVertex3d(1,-1,1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(1,1,-1);
+    glVertex3d(1,1,1);
+
+    glColor3ub(0,0,255); //face bleue
+    glVertex3d(-1,-1,1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(1,-1,1);
+
+    glColor3ub(255,255,0); //face jaune
+    glVertex3d(-1,1,1);
+    glVertex3d(-1,1,-1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(-1,-1,1);
+
+    glColor3ub(0,255,255); //face cyan
+    glVertex3d(1,1,-1);
+    glVertex3d(1,-1,-1);
+    glVertex3d(-1,-1,-1);
+    glVertex3d(-1,1,-1);
+
+    glColor3ub(255,0,255); //face magenta
+    glVertex3d(1,-1,1);
+    glVertex3d(1,1,1);
+    glVertex3d(-1,1,1);
+    glVertex3d(-1,-1,1);
+
+    glEnd();
 }
 
 //------------------ AFFICHAGE -----------------------
@@ -101,9 +144,9 @@ static void drawFunc(void) {
 		profondeur*sin(longitude)*sin(latitude), 	// CAMERA POSITION X
 		profondeur*cos(latitude),					// CAMERA POSITION Y
 		profondeur*cos(longitude)*sin(latitude),	// CAMERA POSITION Z
-		0.0,	// REFERENCE POSITION X
-		0.0,	// REFERENCE POSITION Y
-		0.0,	// REFERENCE POSITION Z
+		profondeur*sin(longitude)*sin(latitude) + cos(longi)*sin(lat), 	// CAMERA POSITION X
+		profondeur*cos(latitude)+ cos(lat),				// CAMERA POSITION Y
+		profondeur*sin(longi)*sin(lat),	// CAMERA POSITION Z
 		0.0,
 		1.0,
 		0.0
