@@ -33,14 +33,11 @@ typedef struct Node {
 
     /*############### METHODES ###############*/
     bool isLeaf();
-    void fillQuadTree(PointChart* chart);
-    void fillSubChart(PointChart* chart, PointChart* subChart, int width, int height, int widthStart,int heightStart);
 
 }QuadTree, Node;
 
 /*################ CONSTRUCTEURS ################*/
 
-QuadTree createQuadTree();
-Node* createNode();
+Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * heightMap, Params params);
 
 #endif // QUADTREE_H

@@ -6,13 +6,15 @@
 Params createParams(){
     Params params;
     params.linkHeightMap="";
-    params.xSize=0;
-    params.ySize=0;
-    params.zMin=0;
-    params.zMax=0;
-    params.zNear=0;
-    params.zFar=0;
-    params.fov=0;
+    params.xPixels = 0;
+    params.yPixels = 0;
+    params.xSize = 0;
+    params.ySize = 0;
+    params.zMin = 0;
+    params.zMax = 0;
+    params.zNear = 0;
+    params.zFar = 0;
+    params.fov = 0;
 
     return params;
 }
@@ -24,7 +26,6 @@ void initParams(Params* params){
 
         //On lit le chemin de l'image depuis le fichier
         file >> params->linkHeightMap;
-        cout << params->linkHeightMap;
         file >> params->xSize;
         file >> params->ySize;
         file >> params->zMin;
@@ -33,7 +34,7 @@ void initParams(Params* params){
         file >> params->zFar;
         file >> params->fov;
 
-        remove("timac.txt");
+        remove("params.timac");
     }else{
         cout << "ERREUR: Impossible d'ouvrir le fichier params.timac." << endl;
     }
@@ -53,31 +54,30 @@ void freePointChart(PointChart* chart){
 }
 
 // Charge les points
-void loadHeightMap(Params params, PointChart* heightMap){
-    ifstream file(params.linkHeightMap);
+void loadHeightMap(Params* params, PointChart* heightMap){
+    ifstream file(params->linkHeightMap);
 
     if(file) {
         //L'ouverture s'est bien passée, on peut donc lire
-        int nbPixelsX, nbPixelsY, Zvalue;
+        int Zvalue;
 
         string line;
         getline(file, line); 
         getline(file, line);
 
-        file >> nbPixelsX;
-        file >> nbPixelsY;
+        file >> params->xPixels;
+        file >> params->yPixels;
 
-        initPointChart(heightMap, nbPixelsX, nbPixelsY);
+        initPointChart(heightMap, params->xPixels, params->yPixels);
 
         int x,y,z;
-        for (int i=0; i < nbPixelsY ; i++ ){
-            heightMap->points[i] = new Point3D[nbPixelsX];
-            y = i; //convertValue(i,nbPixelsY,params.ySize);
-            for (int j=0; j< nbPixelsX ; j++){
-                x = j; //convertValue(j,nbPixelsX, params.xSize);
+        for (int i=0; i < params->yPixels ; i++ ){
+            heightMap->points[i] = new Point3D[params->xPixels];
+            y = i;
+            for (int j=0; j< params->xPixels ; j++){
+                x = j;
                 
-                file >> Zvalue;
-                z = convertElevation (Zvalue, params);
+                file >> z;
                 
                 heightMap->points[i][j] = createPoint(x,y,z);
             }
@@ -91,10 +91,12 @@ void loadHeightMap(Params params, PointChart* heightMap){
         
 }
 
-int convertValue (int n, int nbPixels, int size){
-    return ((float) n/nbPixels)*size;
-}
+Point3D createMapPoint(Point3D p, Params params){
+    Point3D newMapPoint;
 
-int convertElevation (int z, Params params){
-    return params.zMin + (float)(z/255)*(params.zMax - params.zMin);
+    newMapPoint.x = ((float) p.x/params.xPixels)*params.xSize;
+    newMapPoint.y = ((float) p.y/params.yPixels)*params.ySize;
+    newMapPoint.z = params.zMin + (float)(p.z/255)*(params.zMax - params.zMin);
+
+    return newMapPoint;
 }

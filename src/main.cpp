@@ -57,7 +57,7 @@ static void init() {
 
 //---------FONCTION RESIZE DE LA PAGE--------------
 
-static void reshapeFunc(int width,int height) {
+static void reshapeFunc(int width, int height) {
 	GLfloat  h = (GLfloat) width / (GLfloat) height ;
 	
 	/* dimension de l'écran GL */
@@ -146,12 +146,12 @@ static void drawFunc(void) {
 
 	/* placement de la caméra */
 	gluLookAt(
-		camera.position.x,
-		camera.position.y,
-		camera.position.z,
-		camera.position.x + cos(latitude)*sin(longitude), 	// CAMERA POSITION X
-		camera.position.y + sin(latitude)*sin(longitude),	// CAMERA POSITION Y
-		camera.position.z + cos(longitude),					// CAMERA POSITION Z
+		camera.position.x,	// CAMERA POSITION X
+		camera.position.y,	// CAMERA POSITION Y
+		camera.position.z,	// CAMERA POSITION Z
+		camera.position.x + cos(latitude)*sin(longitude), 	// LOOK DIRECTION X
+		camera.position.y + sin(latitude)*sin(longitude),	// LOOK DIRECTION Y
+		camera.position.z + cos(longitude),		// LOOK DIRECTION Z
 		camera.up.x,
 		camera.up.y,
 		camera.up.z
@@ -248,38 +248,45 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 
 int main (int argc, char** argv){
-	QuadTree quadTree = createQuadTree();
+	QuadTree* quadTree;
   	Params params = createParams();
   	PointChart heightMap;
   
   	initParams(&params);
-  	loadHeightMap(params, &heightMap);
-	quadTree.fillQuadTree(&heightMap);
+  	loadHeightMap(&params, &heightMap);
+	quadTree = createQuadTree(
+		heightMap.points[heightMap.height - 1][0],
+		heightMap.points[heightMap.height - 1][heightMap.width - 1],
+		heightMap.points[0][heightMap.width - 1],
+		heightMap.points[0][0],
+		&heightMap,
+		params
+	);
 
-	// printPoint3D(quadTree.a);
-	// printPoint3D(quadTree.b);
-	// printPoint3D(quadTree.c);
-	// printPoint3D(quadTree.d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildA()->a);
-	// printPoint3D(quadTree.getChildA()->b);
-	// printPoint3D(quadTree.getChildA()->c);
-	// printPoint3D(quadTree.getChildA()->d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildB()->a);
-	// printPoint3D(quadTree.getChildB()->b);
-	// printPoint3D(quadTree.getChildB()->c);
-	// printPoint3D(quadTree.getChildB()->d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildC()->a);
-	// printPoint3D(quadTree.getChildC()->b);
-	// printPoint3D(quadTree.getChildC()->c);
-	// printPoint3D(quadTree.getChildC()->d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildD()->a);
-	// printPoint3D(quadTree.getChildD()->b);
-	// printPoint3D(quadTree.getChildD()->c);
-	// printPoint3D(quadTree.getChildD()->d);
+	printPoint3D(quadTree->a);
+	printPoint3D(quadTree->b);
+	printPoint3D(quadTree->c);
+	printPoint3D(quadTree->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildA()->a);
+	printPoint3D(quadTree->getChildA()->b);
+	printPoint3D(quadTree->getChildA()->c);
+	printPoint3D(quadTree->getChildA()->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildB()->a);
+	printPoint3D(quadTree->getChildB()->b);
+	printPoint3D(quadTree->getChildB()->c);
+	printPoint3D(quadTree->getChildB()->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildC()->a);
+	printPoint3D(quadTree->getChildC()->b);
+	printPoint3D(quadTree->getChildC()->c);
+	printPoint3D(quadTree->getChildC()->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildD()->a);
+	printPoint3D(quadTree->getChildD()->b);
+	printPoint3D(quadTree->getChildD()->c);
+	printPoint3D(quadTree->getChildD()->d);
 
 	/*/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);
