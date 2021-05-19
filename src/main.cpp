@@ -21,8 +21,6 @@ using namespace std;
 
 /* variables globales pour la gestion de la caméra */
 Camera camera;
-float latitude = 0.0; //HORIZONTAL
-float longitude = M_PI/2.0; //VERTICAL
 float obj_rot = 0.0;
 
 
@@ -37,8 +35,8 @@ static void init() {
 	camera.up.x = 0;
 	camera.up.y = 0;
 	camera.up.z = 1;
-	latitude = 0.0;
-	longitude = M_PI/2.0;
+	camera.latitude = 0.0;
+	camera.longitude = M_PI/2.0;
 	obj_rot = 0.0;
 
 
@@ -149,9 +147,9 @@ static void drawFunc(void) {
 		camera.position.x,	// CAMERA POSITION X
 		camera.position.y,	// CAMERA POSITION Y
 		camera.position.z,	// CAMERA POSITION Z
-		camera.position.x + cos(latitude)*sin(longitude), 	// LOOK DIRECTION X
-		camera.position.y + sin(latitude)*sin(longitude),	// LOOK DIRECTION Y
-		camera.position.z + cos(longitude),		// LOOK DIRECTION Z
+		camera.position.x + cos(camera.latitude)*sin(camera.longitude), 	// LOOK DIRECTION X
+		camera.position.y + sin(camera.latitude)*sin(camera.longitude),	// LOOK DIRECTION Y
+		camera.position.z + cos(camera.longitude),		// LOOK DIRECTION Z
 		camera.up.x,
 		camera.up.y,
 		camera.up.z
@@ -193,16 +191,16 @@ static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	switch(c) {
 		case GLUT_KEY_UP :
-			if (longitude > STEP_ANGLE) longitude -= STEP_ANGLE;
+			if (camera.longitude > STEP_ANGLE) camera.longitude -= STEP_ANGLE;
 			break;
 		case GLUT_KEY_DOWN :
-			if(longitude < M_PI-STEP_ANGLE) longitude += STEP_ANGLE;
+			if(camera.longitude < M_PI-STEP_ANGLE) camera.longitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_LEFT :
-			latitude += STEP_ANGLE;
+			camera.latitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_RIGHT :
-			latitude -= STEP_ANGLE;
+			camera.latitude -= STEP_ANGLE;
 			break;
 		default:
 			if(GLUT_ACTIVE_SHIFT){
@@ -222,20 +220,20 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			exit(0);
 			break;
 		case 'Z' : case 'z' :
-			camera.position.x += 1. * cos(latitude);
-			camera.position.y += 1. * sin(latitude);
+			camera.position.x += 1. * cos(camera.latitude);
+			camera.position.y += 1. * sin(camera.latitude);
 			break;
 		case 'S' : case 's' : 
-			camera.position.x -= 1. * cos(latitude);
-			camera.position.y -= 1. * sin(latitude);
+			camera.position.x -= 1. * cos(camera.latitude);
+			camera.position.y -= 1. * sin(camera.latitude);
 			break;
 		case 'Q' : case 'q' : 
-			camera.position.x += 1. * cos(latitude + M_PI/2);
-			camera.position.y += 1. * sin(latitude + M_PI/2);
+			camera.position.x += 1. * cos(camera.latitude + M_PI/2);
+			camera.position.y += 1. * sin(camera.latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
-			camera.position.x -= 1. * cos(latitude + M_PI/2);
-			camera.position.y -= 1. * sin(latitude + M_PI/2);
+			camera.position.x -= 1. * cos(camera.latitude + M_PI/2);
+			camera.position.y -= 1. * sin(camera.latitude + M_PI/2);
 			break;
 		case ' ' :
 			camera.position.z += 1;
@@ -248,9 +246,9 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 
 int main (int argc, char** argv){
-	QuadTree* quadTree;
   	Params params = createParams();
   	PointChart heightMap;
+	QuadTree* quadTree;
   
   	initParams(&params);
   	loadHeightMap(&params, &heightMap);

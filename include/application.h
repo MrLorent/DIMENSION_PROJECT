@@ -4,7 +4,8 @@ using namespace std;
 
 struct Camera{
     Point3D position;
-    Vector3D direction;
+    float latitude; // HRIZONTALE
+    float longitude; // VERTICAL
     Vector3D up;
 };
 
