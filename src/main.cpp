@@ -5,6 +5,7 @@
 #include "../include/geometry.h"
 #include "../include/preload.h"
 #include "../include/QuadTree.h"
+#include "../include/application.h"
 
 
 #include <GL/glut.h>
@@ -19,23 +20,28 @@ using namespace std;
 #define STEP_PROF	M_PI/90.
 
 /* variables globales pour la gestion de la caméra */
+Camera camera;
 float profondeur = 3;
 float latitude = 0.0;
 float longitude = M_PI/2;
 float obj_rot = 0.0;
 
 
+
 //---------INITIALISATION--------------
 
 static void init() {
-
-	profondeur = 4;
-	latitude = M_PI/2.0;
-	longitude = 0.0;
+	// POSITION CAMERA
+	camera.position.x = 0;
+	camera.position.y = 0;
+	camera.position.z = 0;
+	camera.up.x = 0;
+	camera.up.y = 0;
+	camera.up.z = 1;
+	camera.latitude = 0.0;
+	camera.longitude = M_PI/2.0;
 	obj_rot = 0.0;
 
-	float lat = 0.0;
-	float longi = 0.0;
 
 	/* INITIALISATION DES PARAMETRES GL */
 	/* couleur du fond (gris sombre) */
@@ -52,7 +58,7 @@ static void init() {
 
 //---------FONCTION RESIZE DE LA PAGE--------------
 
-static void reshapeFunc(int width,int height) {
+static void reshapeFunc(int width, int height) {
 	GLfloat  h = (GLfloat) width / (GLfloat) height ;
 	
 	/* dimension de l'écran GL */
@@ -84,7 +90,7 @@ void glDrawRepere(float length) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
-
+	glTranslatef(3.0,0.0,0.0);
 	glBegin(GL_QUADS);
 
     glColor3ub(255,0,0); //face rouge
@@ -141,15 +147,15 @@ static void drawFunc(void) {
 
 	/* placement de la caméra */
 	gluLookAt(
-		profondeur*sin(longitude)*sin(latitude), 	// CAMERA POSITION X
-		profondeur*cos(latitude),					// CAMERA POSITION Y
-		profondeur*cos(longitude)*sin(latitude),	// CAMERA POSITION Z
-		profondeur*sin(longitude)*sin(latitude) + cos(longi)*sin(lat), 	// CAMERA POSITION X
-		profondeur*cos(latitude)+ cos(lat),				// CAMERA POSITION Y
-		profondeur*sin(longi)*sin(lat),	// CAMERA POSITION Z
-		0.0,
-		1.0,
-		0.0
+		camera.position.x,	// CAMERA POSITION X
+		camera.position.y,	// CAMERA POSITION Y
+		camera.position.z,	// CAMERA POSITION Z
+		camera.position.x + cos(camera.latitude)*sin(camera.longitude), 	// LOOK DIRECTION X
+		camera.position.y + sin(camera.latitude)*sin(camera.longitude),	// LOOK DIRECTION Y
+		camera.position.z + cos(camera.longitude),		// LOOK DIRECTION Z
+		camera.up.x,
+		camera.up.y,
+		camera.up.z
 	);
 
 	glColor3f(1.0,0.0,0.0);
@@ -188,27 +194,24 @@ static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	switch(c) {
 		case GLUT_KEY_UP :
-			if (latitude>STEP_ANGLE) latitude -= STEP_ANGLE;
+			if (camera.longitude > STEP_ANGLE) camera.longitude -= STEP_ANGLE;
 			break;
 		case GLUT_KEY_DOWN :
-			if(latitude<M_PI-STEP_ANGLE) latitude += STEP_ANGLE;
+			if(camera.longitude < M_PI-STEP_ANGLE) camera.longitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_LEFT :
-			longitude -= STEP_ANGLE;
+			camera.latitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_RIGHT :
-			longitude += STEP_ANGLE;
+			camera.latitude -= STEP_ANGLE;
 			break;
-		case GLUT_KEY_PAGE_UP :
-			profondeur += STEP_PROF;
-			break;
-		case GLUT_KEY_PAGE_DOWN :
-			if (profondeur>0.1+STEP_PROF) profondeur -= STEP_PROF;
-			break;
-
 		default:
+			if(GLUT_ACTIVE_SHIFT){
+				camera.position.z -= 1;
+			}
 			printf("Appui sur une touche spéciale\n");
 	}
+
 	glutPostRedisplay();
 }
 
@@ -219,13 +222,24 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case 27 :
 			exit(0);
 			break;
-		case 'Z' : case 'z' : 
+		case 'Z' : case 'z' :
+			camera.position.x += 1. * cos(camera.latitude);
+			camera.position.y += 1. * sin(camera.latitude);
 			break;
 		case 'S' : case 's' : 
+			camera.position.x -= 1. * cos(camera.latitude);
+			camera.position.y -= 1. * sin(camera.latitude);
 			break;
 		case 'Q' : case 'q' : 
+			camera.position.x += 1. * cos(camera.latitude + M_PI/2);
+			camera.position.y += 1. * sin(camera.latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
+			camera.position.x -= 1. * cos(camera.latitude + M_PI/2);
+			camera.position.y -= 1. * sin(camera.latitude + M_PI/2);
+			break;
+		case ' ' :
+			camera.position.z += 1;
 			break;
 		default:
 			printf("Appui sur la touche %c\n",c);
@@ -235,38 +249,45 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 
 int main (int argc, char** argv){
-	QuadTree quadTree = createQuadTree();
   	Params params = createParams();
   	PointChart heightMap;
+	QuadTree* quadTree;
   
   	initParams(&params);
-  	loadHeightMap(params, &heightMap);
-	quadTree.fillQuadTree(&heightMap);
+  	loadHeightMap(&params, &heightMap);
+	quadTree = createQuadTree(
+		heightMap.points[heightMap.height - 1][0],
+		heightMap.points[heightMap.height - 1][heightMap.width - 1],
+		heightMap.points[0][heightMap.width - 1],
+		heightMap.points[0][0],
+		&heightMap,
+		params
+	);
 
-	// printPoint3D(quadTree.a);
-	// printPoint3D(quadTree.b);
-	// printPoint3D(quadTree.c);
-	// printPoint3D(quadTree.d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildA()->a);
-	// printPoint3D(quadTree.getChildA()->b);
-	// printPoint3D(quadTree.getChildA()->c);
-	// printPoint3D(quadTree.getChildA()->d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildB()->a);
-	// printPoint3D(quadTree.getChildB()->b);
-	// printPoint3D(quadTree.getChildB()->c);
-	// printPoint3D(quadTree.getChildB()->d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildC()->a);
-	// printPoint3D(quadTree.getChildC()->b);
-	// printPoint3D(quadTree.getChildC()->c);
-	// printPoint3D(quadTree.getChildC()->d);
-	// cout << endl;
-	// printPoint3D(quadTree.getChildD()->a);
-	// printPoint3D(quadTree.getChildD()->b);
-	// printPoint3D(quadTree.getChildD()->c);
-	// printPoint3D(quadTree.getChildD()->d);
+	printPoint3D(quadTree->a);
+	printPoint3D(quadTree->b);
+	printPoint3D(quadTree->c);
+	printPoint3D(quadTree->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildA()->a);
+	printPoint3D(quadTree->getChildA()->b);
+	printPoint3D(quadTree->getChildA()->c);
+	printPoint3D(quadTree->getChildA()->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildB()->a);
+	printPoint3D(quadTree->getChildB()->b);
+	printPoint3D(quadTree->getChildB()->c);
+	printPoint3D(quadTree->getChildB()->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildC()->a);
+	printPoint3D(quadTree->getChildC()->b);
+	printPoint3D(quadTree->getChildC()->c);
+	printPoint3D(quadTree->getChildC()->d);
+	cout << endl;
+	printPoint3D(quadTree->getChildD()->a);
+	printPoint3D(quadTree->getChildD()->b);
+	printPoint3D(quadTree->getChildD()->c);
+	printPoint3D(quadTree->getChildD()->d);
 
 	/*/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);

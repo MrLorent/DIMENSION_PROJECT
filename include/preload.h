@@ -6,6 +6,8 @@
 /*------------- PARAMS -------------*/
 typedef struct Params{
     string linkHeightMap;
+    int xPixels;
+    int yPixels;
     int xSize;
     int ySize;
     int zMin;
@@ -37,12 +39,9 @@ void initPointChart(PointChart* chart, int width, int height);
 void freePointChart(PointChart* chart);
 
 // Charge les pts de l'Heightmap
-void loadHeightMap(Params params, PointChart* heightMap);
+void loadHeightMap(Params* params, PointChart* heightMap);
 
 // Converti valeur en position pour scène
-int convertValue (int n, int nbPixels, int size);
-
-// Converti valeur de z en élévation pour scène
-int convertElevation (int z, Params params);
+Point3D createMapPoint(Point3D p, Params params);
 
 #endif
