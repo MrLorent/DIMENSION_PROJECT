@@ -300,6 +300,9 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case ' ' :
 			camera.position.z += 1;
 			break;
+		case 'F' : case 'f' : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+			break;
+		case 'P' : case 'p' : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 		default:
 			printf("Appui sur la touche %c\n",c);
 	}
@@ -384,6 +387,8 @@ int main (int argc, char** argv){
 	/* boucle principale de gestion des événements */
 	glutMainLoop();
 	/* Cette partie du code n'est jamais atteinte */
+
+
 	return 0;
 }
 
