@@ -136,18 +136,18 @@ void glDrawRepere(float length,GLuint texture) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
+	
 	glTranslatef(3.0,0.0,0.0);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glEnable(GL_TEXTURE_2D);
 	glColor4f(1, 1, 1, 1);
-
 	glBegin(GL_POLYGON);
 		glTexCoord3f( 0,  0, 0); glVertex3f(-5,  5,  0);
 		glTexCoord3f( 1,  0, 0); glVertex3f( 5,  5,  0);
 		glTexCoord3f( 1,  1, 0); glVertex3f( 5, -5,  0);
 		glTexCoord3f( 0,  1, 0); glVertex3f(-5, -5,  0);
 	glEnd();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBegin(GL_QUADS);
 		glColor3ub(255,255,255); //face rouge
@@ -358,13 +358,14 @@ int main (int argc, char** argv){
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DEPTH|GLUT_DOUBLE);
 	/* placement et dimentions originales de la fenêtre */
 	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(2000,2000);
 	/* ouverture de la fenêtre */
 	if (glutCreateWindow("DIMENSION PROJECT") == GL_FALSE) {
 		return 1;
 	}
     
 	textures[0]=(char*)"doc/roche.jpg";
+
 	texture[0]=creaTexture(textures[0]);
 
 	init();
