@@ -7,6 +7,8 @@
 #include "../include/QuadTree.h"
 #include "../include/application.h"
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <GL/glut.h>
 #include <GL/glu.h>
@@ -23,7 +25,10 @@ using namespace std;
 Camera camera;
 float obj_rot = 0.0;
 
+//---------TEXTURE---------
 
+char *textures[15];
+GLuint texture[50];
 
 //---------INITIALISATION--------------
 
@@ -72,9 +77,53 @@ static void reshapeFunc(int width, int height) {
 	glLoadIdentity();
 }
 
+//---------FONCTION CREATION TEXTURE--------------
+
+GLuint creaTexture(char *chemin){
+
+   
+    SDL_Surface* image = IMG_Load(chemin);
+    if(NULL == image) {
+        fprintf(stderr, "Echec du chargement de l'image %s\n", chemin);
+        exit(EXIT_FAILURE);
+    }
+
+    GLuint texture_id;
+    glGenTextures(1, &texture_id);
+
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    GLenum format;
+    switch(image->format->BytesPerPixel) {
+        case 1:
+            format = GL_RED;
+            break;
+        case 3:
+            format = GL_RGB;
+            break;
+        case 4:
+            format = GL_RGBA;
+            break;
+        default:
+            fprintf(stderr, "Format des pixels de l'image %s non supporte.\n", chemin);
+            return EXIT_FAILURE;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+
+    glBindTexture(GL_TEXTURE_2D, 0);  
+    
+    SDL_FreeSurface(image);
+
+    return texture_id;
+
+}
+
 //-----------------DRAW ---------------
 
-void glDrawRepere(float length) {
+void glDrawRepere(float length,GLuint texture) {
 	// dessin du repère
 	glBegin(GL_LINES);
 		glColor3f(1.,0.,0.);
@@ -88,50 +137,62 @@ void glDrawRepere(float length) {
 		glVertex3i(0.,0.,length);
 	glEnd();
 	glTranslatef(3.0,0.0,0.0);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glEnable(GL_TEXTURE_2D);
+	glColor4f(1, 1, 1, 1);
+
+	glBegin(GL_POLYGON);
+		glTexCoord3f( 0,  0, 0); glVertex3f(-5,  5,  0);
+		glTexCoord3f( 1,  0, 0); glVertex3f( 5,  5,  0);
+		glTexCoord3f( 1,  1, 0); glVertex3f( 5, -5,  0);
+		glTexCoord3f( 0,  1, 0); glVertex3f(-5, -5,  0);
+	glEnd();
+
 	glBegin(GL_QUADS);
+		glColor3ub(255,255,255); //face rouge
+		glVertex3d(1,1,1);
+		glVertex3d(1,1,-1);
+		glVertex3d(-1,1,-1);
+		glVertex3d(-1,1,1);
 
-    glColor3ub(255,0,0); //face rouge
-    glVertex3d(1,1,1);
-    glVertex3d(1,1,-1);
-    glVertex3d(-1,1,-1);
-    glVertex3d(-1,1,1);
+		glColor3ub(0,255,0); //face verte
+		glVertex3d(1,-1,1);
+		glVertex3d(1,-1,-1);
+		glVertex3d(1,1,-1);
+		glVertex3d(1,1,1);
 
-    glColor3ub(0,255,0); //face verte
-    glVertex3d(1,-1,1);
-    glVertex3d(1,-1,-1);
-    glVertex3d(1,1,-1);
-    glVertex3d(1,1,1);
+		glColor3ub(0,0,255); //face bleue
+		glVertex3d(-1,-1,1);
+		glVertex3d(-1,-1,-1);
+		glVertex3d(1,-1,-1);
+		glVertex3d(1,-1,1);
 
-    glColor3ub(0,0,255); //face bleue
-    glVertex3d(-1,-1,1);
-    glVertex3d(-1,-1,-1);
-    glVertex3d(1,-1,-1);
-    glVertex3d(1,-1,1);
+		glColor3ub(255,255,0); //face jaune
+		glVertex3d(-1,1,1);
+		glVertex3d(-1,1,-1);
+		glVertex3d(-1,-1,-1);
+		glVertex3d(-1,-1,1);
 
-    glColor3ub(255,255,0); //face jaune
-    glVertex3d(-1,1,1);
-    glVertex3d(-1,1,-1);
-    glVertex3d(-1,-1,-1);
-    glVertex3d(-1,-1,1);
+		glColor3ub(0,255,255); //face cyan
+		glVertex3d(1,1,-1);
+		glVertex3d(1,-1,-1);
+		glVertex3d(-1,-1,-1);
+		glVertex3d(-1,1,-1);
 
-    glColor3ub(0,255,255); //face cyan
-    glVertex3d(1,1,-1);
-    glVertex3d(1,-1,-1);
-    glVertex3d(-1,-1,-1);
-    glVertex3d(-1,1,-1);
-
-    glColor3ub(255,0,255); //face magenta
-    glVertex3d(1,-1,1);
-    glVertex3d(1,1,1);
-    glVertex3d(-1,1,1);
-    glVertex3d(-1,-1,1);
-
+		glColor3ub(255,0,255); //face magenta
+		glVertex3d(1,-1,1);
+		glVertex3d(1,1,1);
+		glVertex3d(-1,1,1);
+		glVertex3d(-1,-1,1);
     glEnd();
 }
 
 //------------------ AFFICHAGE -----------------------
 
 static void drawFunc(void) { 
+
+
 	/* reinitialisation des buffers : couleur et ZBuffer */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -147,20 +208,21 @@ static void drawFunc(void) {
 		camera.position.x,	// CAMERA POSITION X
 		camera.position.y,	// CAMERA POSITION Y
 		camera.position.z,	// CAMERA POSITION Z
-		camera.position.x + cos(camera.latitude)*sin(camera.longitude), 	// LOOK DIRECTION X
+		camera.position.x + cos(camera.latitude)*sin(camera.longitude), // LOOK DIRECTION X
 		camera.position.y + sin(camera.latitude)*sin(camera.longitude),	// LOOK DIRECTION Y
-		camera.position.z + cos(camera.longitude),		// LOOK DIRECTION Z
+		camera.position.z + cos(camera.longitude),						// LOOK DIRECTION Z
 		camera.up.x,
 		camera.up.y,
 		camera.up.z
 	);
 
 	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0);
+	glDrawRepere(2.0,texture[0]);
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
 	float intensite[3] = {1000.0,1000.0,1000.0};
+	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0,GL_POSITION,position);
@@ -298,6 +360,9 @@ int main (int argc, char** argv){
 	if (glutCreateWindow("DIMENSION PROJECT") == GL_FALSE) {
 		return 1;
 	}
+    
+	textures[0]=(char*)"doc/roche.jpg";
+	texture[0]=creaTexture(textures[0]);
 
 	init();
 
@@ -321,3 +386,4 @@ int main (int argc, char** argv){
 	/* Cette partie du code n'est jamais atteinte */
 	return 0;
 }
+
