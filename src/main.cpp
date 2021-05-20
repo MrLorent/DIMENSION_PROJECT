@@ -77,6 +77,8 @@ static void reshapeFunc(int width, int height) {
 
 //-----------------DRAW ---------------
 
+
+
 void glDrawRepere(float length) {
 	// dessin du repère
 	glBegin(GL_LINES);
@@ -160,6 +162,20 @@ static void drawFunc(void) {
 
 	glColor3f(1.0,0.0,0.0);
 	glDrawRepere(2.0);
+	
+	glPushMatrix();
+		glTranslatef(5+camera.position.x + cos(camera.latitude)*sin(camera.longitude), 	
+		5+camera.position.y + sin(camera.latitude)*sin(camera.longitude),	
+		cos(camera.longitude));
+		glRotatef(90+camera.latitude*180/M_PI,0,0,1);
+		glBegin(GL_QUADS);
+			glColor3ub(255,255,255); //carré blanc
+			glVertex3d(0.5,0.5,0.5);
+			glVertex3d(0.5,0.5,-0.5);
+			glVertex3d(-0.5,0.5,-0.5);
+			glVertex3d(-0.5,0.5,0.5);
+		glEnd();
+	glPopMatrix();
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
