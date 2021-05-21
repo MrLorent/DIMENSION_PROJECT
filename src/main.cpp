@@ -23,7 +23,6 @@ using namespace std;
 
 /* variables globales pour la gestion de la caméra */
 Camera camera;
-float obj_rot = 0.0;
 
 //---------TEXTURE---------
 
@@ -36,13 +35,12 @@ static void init() {
 	// POSITION CAMERA
 	camera.position.x = 0;
 	camera.position.y = 0;
-	camera.position.z = 0;
+	camera.position.z = 1;
 	camera.up.x = 0;
 	camera.up.y = 0;
 	camera.up.z = 1;
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
-	obj_rot = 0.0;
 
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -136,8 +134,6 @@ void glDrawRepere(float length,GLuint texture) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
-	
-	glTranslatef(3.0,0.0,0.0);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glColor4f(1, 1, 1, 1);
@@ -149,6 +145,7 @@ void glDrawRepere(float length,GLuint texture) {
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glTranslatef(3.0,0.0,1.0);
 	glBegin(GL_QUADS);
 		glColor3ub(255,255,255); //face rouge
 		glVertex3d(1,1,1);
@@ -191,8 +188,6 @@ void glDrawRepere(float length,GLuint texture) {
 //------------------ AFFICHAGE -----------------------
 
 static void drawFunc(void) { 
-
-
 	/* reinitialisation des buffers : couleur et ZBuffer */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -232,7 +227,6 @@ static void drawFunc(void) {
 	//glLightf(GL_LIGHT0,GL_SPECULAR,black);
 
 	glPushMatrix();
-	glRotatef(obj_rot,0.0,1.0,0.0);
 	glColor3f(1.0,1.0,1.0);
 
 	glDisable(GL_LIGHTING);
