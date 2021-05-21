@@ -82,7 +82,27 @@ static void drawFunc(void) {
 	);
 
 	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0,texture[0]);
+	glDrawRepere(2.0);
+
+	float arbre_x=0;
+	float arbre_y=0;
+	float arbre_z=0;
+
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	glPushMatrix();
+		glTranslatef(arbre_x - cos(camera.latitude)*sin(camera.longitude), 
+		arbre_y - sin(camera.latitude)*sin(camera.longitude),	
+		arbre_z);
+		glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
+		glColor4f(1, 1, 1, 1);
+		glBegin(GL_POLYGON);
+		glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
+		glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
+		glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
+		glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
+		glEnd();
+	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D,0);
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
@@ -232,6 +252,11 @@ int main (int argc, char** argv){
 	if (glutCreateWindow("DIMENSION PROJECT") == GL_FALSE) {
 		return 1;
 	}
+    
+	textures[0]=(char*)"doc/roche.jpg";
+	textures[1]=(char*)"doc/arbre.jpg";
+	texture[0]=creaTexture(textures[0]);
+	texture[1]=creaTexture(textures[1]);
 
 	init();
 
