@@ -1,33 +1,6 @@
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include <math.h>
-#include "../include/geometry.h"
-#include "../include/preload.h"
-#include "../include/QuadTree.h"
-#include "../include/application.h"
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
-#include <GL/glut.h>
-#include <GL/glu.h>
-#include <GL/gl.h>
+#include "../include/globales.h"
 
 using namespace std;
-
-//---------VARIABLES GLOBALES--------------
-
-#define STEP_ANGLE	M_PI/90.
-#define STEP_PROF	M_PI/90.
-
-/* variables globales pour la gestion de la caméra */
-Camera camera;
-
-//---------TEXTURE---------
-
-char *textures[15];
-GLuint texture[50];
 
 //---------INITIALISATION--------------
 
@@ -42,6 +15,13 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 
+	// PARAMETRE DE TEXTURE
+	wireFrame = false;
+	textures[0]=(char*)"doc/roche.jpg";
+
+	for(int i=0; i<2;i++){
+		texture[i]=creaTexture(textures[i]);
+	}
 
 	/* INITIALISATION DES PARAMETRES GL */
 	/* couleur du fond (gris sombre) */
@@ -294,9 +274,15 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case ' ' :
 			camera.position.z += 1;
 			break;
-		case 'F' : case 'f' : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+		case 'F' : case 'f' : 
+			if(wireFrame){
+				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+				wireFrame = false;
+			}else{
+				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+				wireFrame = true;
+			}
 			break;
-		case 'P' : case 'p' : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 		default:
 			printf("Appui sur la touche %c\n",c);
 	}
@@ -305,9 +291,8 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 
 int main (int argc, char** argv){
-  	Params params = createParams();
+  	params = createParams();
   	PointChart heightMap;
-	QuadTree* quadTree;
   
   	initParams(&params);
   	loadHeightMap(&params, &heightMap);
@@ -357,10 +342,6 @@ int main (int argc, char** argv){
 	if (glutCreateWindow("DIMENSION PROJECT") == GL_FALSE) {
 		return 1;
 	}
-    
-	textures[0]=(char*)"doc/roche.jpg";
-
-	texture[0]=creaTexture(textures[0]);
 
 	init();
 
