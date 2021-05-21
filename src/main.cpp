@@ -1,6 +1,32 @@
-#include "../include/globales.h"
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <math.h>
 
-GLuint creaTexture(char *chemin);
+#include "../include/draw.h"
+#include "../include/objects.h"
+#include "../include/geometry.h"
+#include "../include/preload.h"
+#include "../include/QuadTree.h"
+
+//---------VARIABLES GLOBALES--------------
+
+#define STEP_ANGLE	M_PI/90.
+#define STEP_PROF	M_PI/90.
+
+Params params;
+
+/* variables globales pour la gestion de la caméra */
+Camera camera;
+
+QuadTree* quadTree;
+
+bool wireFrame;
+
+//---------TEXTURE---------
+
+char* textures[15];
+GLuint texture[50];
 
 using namespace std;
 
@@ -17,9 +43,10 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 
-	// PARAMETRE DE TEXTURE
+	// PARAMETRES DE TEXTURE
 	wireFrame = false;
 	textures[0]=(char*)"doc/roche.jpg";
+	textures[1] = (char*)"doc/arbre.jpg";
 
 	for(int i=0; i<1;i++){
 		texture[i]=creaTexture(textures[i]);
@@ -57,113 +84,6 @@ static void reshapeFunc(int width, int height) {
 	glLoadIdentity();
 }
 
-//---------FONCTION CREATION TEXTURE--------------
-
-GLuint creaTexture(char *chemin){
-    SDL_Surface* image = IMG_Load(chemin);
-    if(NULL == image) {
-        fprintf(stderr, "Echec du chargement de l'image %s\n", chemin);
-        exit(EXIT_FAILURE);
-    }
-
-    GLuint texture_id;
-    glGenTextures(1, &texture_id);
-
-    glBindTexture(GL_TEXTURE_2D, texture_id);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    GLenum format;
-    switch(image->format->BytesPerPixel) {
-        case 1:
-            format = GL_RED;
-            break;
-        case 3:
-            format = GL_RGB;
-            break;
-        case 4:
-            format = GL_RGBA;
-            break;
-        default:
-            fprintf(stderr, "Format des pixels de l'image %s non supporte.\n", chemin);
-            return EXIT_FAILURE;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
-
-    glBindTexture(GL_TEXTURE_2D, 0);  
-    
-    SDL_FreeSurface(image);
-
-    return texture_id;
-
-}
-
-//-----------------DRAW ---------------
-
-void glDrawRepere(float length) {
-	// dessin du repère
-	glBegin(GL_LINES);
-		glColor3f(1.,0.,0.);
-		glVertex3f(0.,0.,0.);
-		glVertex3f(length,0.,0.);
-		glColor3f(0.,1.,0.);
-		glVertex3i(0.,0.,0.);
-		glVertex3i(0.,length,0.);
-		glColor3f(0.,0.,1.);
-		glVertex3i(0.,0.,0.);
-		glVertex3i(0.,0.,length);
-	glEnd();
-
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glColor4f(1, 1, 1, 1);
-	glBegin(GL_POLYGON);
-		glTexCoord3f( 0,  0, 0); glVertex3f(-5,  5,  0);
-		glTexCoord3f( 1,  0, 0); glVertex3f( 5,  5,  0);
-		glTexCoord3f( 1,  1, 0); glVertex3f( 5, -5,  0);
-		glTexCoord3f( 0,  1, 0); glVertex3f(-5, -5,  0);
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D,0);
-/*
-	glBegin(GL_QUADS);
-		glColor3ub(255,255,255); //face rouge
-		glVertex3d(1,1,1);
-		glVertex3d(1,1,-1);
-		glVertex3d(-1,1,-1);
-		glVertex3d(-1,1,1);
-
-		glColor3ub(0,255,0); //face verte
-		glVertex3d(1,-1,1);
-		glVertex3d(1,-1,-1);
-		glVertex3d(1,1,-1);
-		glVertex3d(1,1,1);
-
-		glColor3ub(0,0,255); //face bleue
-		glVertex3d(-1,-1,1);
-		glVertex3d(-1,-1,-1);
-		glVertex3d(1,-1,-1);
-		glVertex3d(1,-1,1);
-
-		glColor3ub(255,255,0); //face jaune
-		glVertex3d(-1,1,1);
-		glVertex3d(-1,1,-1);
-		glVertex3d(-1,-1,-1);
-		glVertex3d(-1,-1,1);
-
-		glColor3ub(0,255,255); //face cyan
-		glVertex3d(1,1,-1);
-		glVertex3d(1,-1,-1);
-		glVertex3d(-1,-1,-1);
-		glVertex3d(-1,1,-1);
-
-		glColor3ub(255,0,255); //face magenta
-		glVertex3d(1,-1,1);
-		glVertex3d(1,1,1);
-		glVertex3d(-1,1,1);
-		glVertex3d(-1,-1,1);
-    glEnd();*/
-}
-
 //------------------ AFFICHAGE -----------------------
 
 static void drawFunc(void) { 
@@ -191,7 +111,7 @@ static void drawFunc(void) {
 	);
 
 	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0);
+	glDrawRepere(2.0, texture);
 
 	Tree t1 = createTree(2,2,0);
 	Tree t2 = createTree(3,1,0);
@@ -347,11 +267,6 @@ int main (int argc, char** argv){
 	if (glutCreateWindow("DIMENSION PROJECT") == GL_FALSE) {
 		return 1;
 	}
-    
-	textures[0]=(char*)"doc/roche.jpg";
-	textures[1]=(char*)"doc/arbre.jpg";
-	texture[0]=creaTexture(textures[0]);
-	texture[1]=creaTexture(textures[1]);
 
 	init();
 

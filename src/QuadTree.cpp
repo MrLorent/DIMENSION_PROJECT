@@ -15,10 +15,10 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
         // CREATION DU QUADTREE
         Node* newNode = new Node;
 
-        newNode->a = a; //createMapPoint(a, params);
-        newNode->b = b; //createMapPoint(b, params);
-        newNode->c = c; //createMapPoint(c, params);
-        newNode->d = d; //createMapPoint(d, params);
+        newNode->a = createMapPoint(a, params);
+        newNode->b = createMapPoint(b, params);
+        newNode->c = createMapPoint(c, params);
+        newNode->d = createMapPoint(d, params);
 
         int leftWidth = 1, rightWidth = 1;
         int topHeight = 1, bottomHeight = 1;
