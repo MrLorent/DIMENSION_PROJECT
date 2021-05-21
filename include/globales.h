@@ -16,18 +16,18 @@
 #define STEP_ANGLE	M_PI/90.
 #define STEP_PROF	M_PI/90.
 
-Params params;
+extern Params params;
 
 /* variables globales pour la gestion de la caméra */
-Camera camera;
+extern Camera camera;
 
-QuadTree* quadTree;
+extern QuadTree* quadTree;
 
-bool wireFrame;
+extern bool wireFrame;
 
 //---------TEXTURE---------
 
-char *textures[15];
+char* textures[15];
 GLuint texture[50];
 
 #endif // GLOBALES_H

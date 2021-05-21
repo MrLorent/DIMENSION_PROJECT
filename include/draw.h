@@ -8,6 +8,6 @@
 #include <GL/gl.h>
 
 GLuint creaTexture(char *chemin);
-void glDrawRepere(float length);
+void glDrawRepere(float length, GLuint texture[15]);
 
 #endif // DRAW_H

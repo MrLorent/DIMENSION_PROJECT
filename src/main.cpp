@@ -1,4 +1,32 @@
-#include "../include/globales.h"
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <math.h>
+
+#include "../include/draw.h"
+#include "../include/objects.h"
+#include "../include/geometry.h"
+#include "../include/preload.h"
+#include "../include/QuadTree.h"
+
+//---------VARIABLES GLOBALES--------------
+
+#define STEP_ANGLE	M_PI/90.
+#define STEP_PROF	M_PI/90.
+
+Params params;
+
+/* variables globales pour la gestion de la caméra */
+Camera camera;
+
+QuadTree* quadTree;
+
+bool wireFrame;
+
+//---------TEXTURE---------
+
+char* textures[15];
+GLuint texture[50];
 
 using namespace std;
 
@@ -15,9 +43,10 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 
-	// PARAMETRE DE TEXTURE
+	// PARAMETRES DE TEXTURE
 	wireFrame = false;
 	textures[0]=(char*)"doc/roche.jpg";
+	textures[1] = (char*)"doc/arbre.jpg";
 
 	for(int i=0; i<1;i++){
 		texture[i]=creaTexture(textures[i]);
@@ -82,7 +111,7 @@ static void drawFunc(void) {
 	);
 
 	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0);
+	glDrawRepere(2.0, texture);
 
 	float arbre_x=0;
 	float arbre_y=0;
@@ -252,11 +281,6 @@ int main (int argc, char** argv){
 	if (glutCreateWindow("DIMENSION PROJECT") == GL_FALSE) {
 		return 1;
 	}
-    
-	textures[0]=(char*)"doc/roche.jpg";
-	textures[1]=(char*)"doc/arbre.jpg";
-	texture[0]=creaTexture(textures[0]);
-	texture[1]=creaTexture(textures[1]);
 
 	init();
 
