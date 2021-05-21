@@ -2,6 +2,7 @@
 #define QUADTREE_H
 
 #include "geometry.h"
+#include "../include/preload.h"
 
 const int TOP_LEFT = 0;
 const int TOP_RIGHT = 1;
@@ -16,10 +17,10 @@ typedef struct Node {
     Point3D d; // Bottom left
     
     // CHILDREN
-    Node* childA; // Top left child
-    Node* childB; // Top right child
-    Node* childC; // Bottom right child
-    Node* childD; // Bottom left child
+    Node* childA = NULL; // Top left child
+    Node* childB = NULL; // Top right child
+    Node* childC = NULL; // Bottom right child
+    Node* childD = NULL; // Bottom left child
 
     /*############### ACCESSEURS ###############*/
     // EN LECTURE

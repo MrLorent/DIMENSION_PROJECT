@@ -108,6 +108,30 @@ void glDrawRepere(float length, GLuint texture[15]) {
     glEnd();
 }
 
-void glDrawHeightMap(){
+void glDrawHeightMap(QuadTree* quadTree){
+    if(!quadTree)
+    {
+        return;
+    }
 
+    if(quadTree->isLeaf())
+    {
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.1,0.1,0.1);
+            glVertex3f(quadTree->a.x,quadTree->a.y,quadTree->a.z);
+            glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
+            glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
+
+            glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
+            glVertex3f(quadTree->c.x,quadTree->c.y,quadTree->c.z);
+            glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
+        glEnd();
+    }
+    else
+    {
+        glDrawHeightMap(quadTree->childA);
+        glDrawHeightMap(quadTree->childB);
+        glDrawHeightMap(quadTree->childC);
+        glDrawHeightMap(quadTree->childD);
+    }
 }

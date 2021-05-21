@@ -34,9 +34,6 @@ void initParams(Params* params){
         file >> params->zFar;
         file >> params->fov;
 
-        cout << params->zNear << endl;
-	    cout << params->zFar << endl;
-
         remove("params.timac");
     }else{
         cout << "ERREUR: Impossible d'ouvrir le fichier params.timac." << endl;

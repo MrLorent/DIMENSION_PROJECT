@@ -8,13 +8,13 @@ typedef struct Params{
     string linkHeightMap;
     int xPixels;
     int yPixels;
-    int xSize;
-    int ySize;
-    int zMin;
-    int zMax;
-    int zNear;
-    int zFar;
-    double fov;
+    float xSize;
+    float ySize;
+    float zMin;
+    float zMax;
+    float zNear;
+    float zFar;
+    float fov;
 } Params;
 
 // CONSTRUCTEUR

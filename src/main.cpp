@@ -76,7 +76,7 @@ static void reshapeFunc(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	/* définition de la camera */
-	gluPerspective( 60.0, h, 0.01, 10.0 );			// Angle de vue, rapport largeur/hauteur, near, far
+	gluPerspective( params.fov, h, params.zNear, params.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
 
 	/* Retour a la pile de matrice Modelview
 			et effacement de celle-ci */
@@ -110,28 +110,29 @@ static void drawFunc(void) {
 		camera.up.z
 	);
 
-	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0, texture);
+	// glColor3f(1.0,0.0,0.0);
+	// glDrawRepere(2.0, texture);
 
-	float arbre_x=0;
-	float arbre_y=0;
-	float arbre_z=0;
+	// float arbre_x=0;
+	// float arbre_y=0;
+	// float arbre_z=0;
 
-	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	glPushMatrix();
-		glTranslatef(arbre_x - cos(camera.latitude)*sin(camera.longitude), 
-		arbre_y - sin(camera.latitude)*sin(camera.longitude),	
-		arbre_z);
-		glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
-		glColor4f(1, 1, 1, 1);
-		glBegin(GL_POLYGON);
-		glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
-		glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
-		glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
-		glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
-		glEnd();
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D,0);
+	// glBindTexture(GL_TEXTURE_2D, texture[1]);
+	// glPushMatrix();
+	// 	glTranslatef(arbre_x - cos(camera.latitude)*sin(camera.longitude), 
+	// 	arbre_y - sin(camera.latitude)*sin(camera.longitude),	
+	// 	arbre_z);
+	// 	glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
+	// 	glColor4f(1, 1, 1, 1);
+	// 	glBegin(GL_POLYGON);
+	// 	glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
+	// 	glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
+	// 	glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
+	// 	glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
+	// 	glEnd();
+	// glPopMatrix();
+	// glBindTexture(GL_TEXTURE_2D,0);
+	glDrawHeightMap(quadTree);
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
@@ -244,30 +245,30 @@ int main (int argc, char** argv){
 		params
 	);
 
-	printPoint3D(quadTree->a);
-	printPoint3D(quadTree->b);
-	printPoint3D(quadTree->c);
-	printPoint3D(quadTree->d);
-	cout << endl;
-	printPoint3D(quadTree->getChildA()->a);
-	printPoint3D(quadTree->getChildA()->b);
-	printPoint3D(quadTree->getChildA()->c);
-	printPoint3D(quadTree->getChildA()->d);
-	cout << endl;
-	printPoint3D(quadTree->getChildB()->a);
-	printPoint3D(quadTree->getChildB()->b);
-	printPoint3D(quadTree->getChildB()->c);
-	printPoint3D(quadTree->getChildB()->d);
-	cout << endl;
-	printPoint3D(quadTree->getChildC()->a);
-	printPoint3D(quadTree->getChildC()->b);
-	printPoint3D(quadTree->getChildC()->c);
-	printPoint3D(quadTree->getChildC()->d);
-	cout << endl;
-	printPoint3D(quadTree->getChildD()->a);
-	printPoint3D(quadTree->getChildD()->b);
-	printPoint3D(quadTree->getChildD()->c);
-	printPoint3D(quadTree->getChildD()->d);
+	// printPoint3D(quadTree->a);
+	// printPoint3D(quadTree->b);
+	// printPoint3D(quadTree->c);
+	// printPoint3D(quadTree->d);
+	// cout << endl;
+	// printPoint3D(quadTree->getChildA()->a);
+	// printPoint3D(quadTree->getChildA()->b);
+	// printPoint3D(quadTree->getChildA()->c);
+	// printPoint3D(quadTree->getChildA()->d);
+	// cout << endl;
+	// printPoint3D(quadTree->getChildB()->a);
+	// printPoint3D(quadTree->getChildB()->b);
+	// printPoint3D(quadTree->getChildB()->c);
+	// printPoint3D(quadTree->getChildB()->d);
+	// cout << endl;
+	// printPoint3D(quadTree->getChildC()->a);
+	// printPoint3D(quadTree->getChildC()->b);
+	// printPoint3D(quadTree->getChildC()->c);
+	// printPoint3D(quadTree->getChildC()->d);
+	// cout << endl;
+	// printPoint3D(quadTree->getChildD()->a);
+	// printPoint3D(quadTree->getChildD()->b);
+	// printPoint3D(quadTree->getChildD()->c);
+	// printPoint3D(quadTree->getChildD()->d);
 
 	/*/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);
