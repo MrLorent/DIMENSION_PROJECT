@@ -115,6 +115,28 @@ void glDrawHeightMap(QuadTree* quadTree){
         return;
     }
 
+    if(quadTree->isLeaf())
+    {
+        glBegin(GL_TRIANGLES);
+            glColor3f(0.1,0.1,0.1);
+            glVertex3f(quadTree->a.x,quadTree->a.y,quadTree->a.z);
+            glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
+            glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
+
+            glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
+            glVertex3f(quadTree->c.x,quadTree->c.y,quadTree->c.z);
+            glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
+        glEnd();
+    }
+    else
+    {
+        glDrawHeightMap(quadTree->childA);
+        glDrawHeightMap(quadTree->childB);
+        glDrawHeightMap(quadTree->childC);
+        glDrawHeightMap(quadTree->childD);
+    }
+}
+
 void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]) {
 	for (int i=0 ; i<6 ; i++){
 		glBindTexture(GL_TEXTURE_2D, textures[1]);

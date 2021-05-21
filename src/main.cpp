@@ -117,12 +117,12 @@ static void drawFunc(void) {
 		camera.up.z
 	);
 
-	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0, textures);
+	// glColor3f(1.0,0.0,0.0);
+	// glDrawRepere(2.0, textures);
 
-	glPushMatrix();
-		glDrawTrees(trees, camera, textures);
-	glPopMatrix();
+	// glPushMatrix();
+	// 	glDrawTrees(trees, camera, textures);
+	// glPopMatrix();
 	glDrawHeightMap(quadTree);
 
 	float position[4] = {5.0,5.0,5.0,1.0};

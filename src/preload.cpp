@@ -96,7 +96,7 @@ Point3D createMapPoint(Point3D p, Params params){
 
     newMapPoint.x = ((float) p.x/params.xPixels)*params.xSize;
     newMapPoint.y = ((float) p.y/params.yPixels)*params.ySize;
-    newMapPoint.z = params.zMin + (float)(p.z/255)*(params.zMax - params.zMin);
+    newMapPoint.z = params.zMin + (p.z/255.0)*(params.zMax - params.zMin);
 
     return newMapPoint;
 }
