@@ -196,22 +196,8 @@ static void drawFunc(void) {
 	Tree t1 = createTree(2,2,0);
 	Tree t2 = createTree(3,1,0);
 
-	
-	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	glPushMatrix();
-		glTranslatef(arbre_x - cos(camera.latitude)*sin(camera.longitude), 
-		arbre_y - sin(camera.latitude)*sin(camera.longitude),	
-		arbre_z);
-		glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
-		glColor4f(1, 1, 1, 1);
-		glBegin(GL_POLYGON);
-		glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
-		glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
-		glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
-		glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
-		glEnd();
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D,0);
+	glDrawTree(t1);
+	glDrawTree(t2);
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
