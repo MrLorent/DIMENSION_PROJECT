@@ -1,6 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 #include "geometry.h"
+#include "objects.h"
 
 using namespace std;
 
@@ -11,4 +12,13 @@ struct Camera{
     Vector3D up;
 };
 
-#endif // OBJECTS_H
+struct Tree{
+    float x;
+    float y;
+    float z;
+};
+
+void createTrees(Tree trees[6]);
+
+
+#endif 

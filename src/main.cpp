@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include <math.h>
+#include <time.h> 
 
 #include "../include/draw.h"
 #include "../include/objects.h"
@@ -23,10 +24,13 @@ QuadTree* quadTree;
 
 bool wireFrame;
 
+Tree trees[6];
+
+
 //---------TEXTURE---------
 
-char* textures[15];
-GLuint texture[50];
+char* texturesLinks[10];
+GLuint textures[10];
 
 using namespace std;
 
@@ -43,13 +47,16 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 
+	// POSITIONS ARBRES
+	createTrees(trees);
+
 	// PARAMETRES DE TEXTURE
 	wireFrame = false;
-	textures[0]=(char*)"doc/roche.jpg";
-	textures[1] = (char*)"doc/arbre.jpg";
+	texturesLinks[0]=(char*)"doc/roche.jpg";
+	texturesLinks[1] = (char*)"doc/arbre.jpg";
 
-	for(int i=0; i<1;i++){
-		texture[i]=creaTexture(textures[i]);
+	for(int i=0; i<2;i++){
+		textures[i]=creaTexture(texturesLinks[i]);
 	}
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -110,28 +117,12 @@ static void drawFunc(void) {
 		camera.up.z
 	);
 
-	// glColor3f(1.0,0.0,0.0);
-	// glDrawRepere(2.0, texture);
+	glColor3f(1.0,0.0,0.0);
+	glDrawRepere(2.0, textures);
 
-	// float arbre_x=0;
-	// float arbre_y=0;
-	// float arbre_z=0;
-
-	// glBindTexture(GL_TEXTURE_2D, texture[1]);
-	// glPushMatrix();
-	// 	glTranslatef(arbre_x - cos(camera.latitude)*sin(camera.longitude), 
-	// 	arbre_y - sin(camera.latitude)*sin(camera.longitude),	
-	// 	arbre_z);
-	// 	glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
-	// 	glColor4f(1, 1, 1, 1);
-	// 	glBegin(GL_POLYGON);
-	// 	glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
-	// 	glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
-	// 	glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
-	// 	glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
-	// 	glEnd();
-	// glPopMatrix();
-	// glBindTexture(GL_TEXTURE_2D,0);
+	glPushMatrix();
+		glDrawTrees(trees, camera, textures);
+	glPopMatrix();
 	glDrawHeightMap(quadTree);
 
 	float position[4] = {5.0,5.0,5.0,1.0};
@@ -148,6 +139,7 @@ static void drawFunc(void) {
 
 	glPushMatrix();
 	glColor3f(1.0,1.0,1.0);
+	glPopMatrix();
 
 	glDisable(GL_LIGHTING);
 
@@ -233,6 +225,7 @@ static void kbdFunc(unsigned char c, int x, int y) {
 int main (int argc, char** argv){
   	params = createParams();
   	PointChart heightMap;
+	srand (time(NULL));
   
   	initParams(&params);
   	loadHeightMap(&params, &heightMap);
