@@ -110,20 +110,24 @@ void glDrawRepere(float length, GLuint textures[10]) {
 }
 
 
-void glDrawTree(Tree t, Camera camera, GLuint textures[10]) {
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
-	glPushMatrix();
-		glTranslatef(t.x - cos(camera.latitude)*sin(camera.longitude), 
-		t.y - sin(camera.latitude)*sin(camera.longitude),	
-		t.z);
-		glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
-		glColor4f(1, 1, 1, 1);
-		glBegin(GL_POLYGON);
-		glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
-		glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
-		glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
-		glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
-		glEnd();
-	glPopMatrix();
-	glBindTexture(GL_TEXTURE_2D,0);
+void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]) {
+	for (int i=0 ; i<6 ; i++){
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
+		glPushMatrix();
+			
+			glTranslatef(trees[i].x - cos(camera.latitude)*sin(camera.longitude), 
+			trees[i].y - sin(camera.latitude)*sin(camera.longitude),	
+			trees[i].z);
+			glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
+			glColor4f(1, 1, 1, 1);
+			glBegin(GL_POLYGON);
+			glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
+			glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
+			glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
+			glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
+			glEnd();
+			
+		glPopMatrix();
+		glBindTexture(GL_TEXTURE_2D,0);
+	}
 }

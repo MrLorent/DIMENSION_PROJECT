@@ -18,7 +18,7 @@ struct Tree{
     float z;
 };
 
-Tree createTree(float x, float y, float z);
+void createTrees(Tree trees[6]);
 
 
 #endif 

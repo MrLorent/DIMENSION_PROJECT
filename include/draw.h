@@ -11,6 +11,6 @@
 
 GLuint creaTexture(char *chemin);
 void glDrawRepere(float length, GLuint textures[10]);
-void glDrawTree(Tree t, Camera camera, GLuint textures[10]);
+void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]);
 
 #endif // DRAW_H

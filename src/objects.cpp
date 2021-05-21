@@ -1,11 +1,13 @@
 #include "../include/objects.h"
+#include <time.h> 
 
-// Crée l'arbre
-Tree createTree(float x, float y, float z){
-    Tree newTree ;
-    newTree.x=x;
-    newTree.y=y;
-    newTree.z=z;
-    return newTree;
+
+// Crée un tableau d'arbres
+void createTrees(Tree trees[6]){
+    for (int i=0; i<6 ; i++){
+        trees[i].x = rand() % 4 + (-1);
+        trees[i].y= rand() % 4 + (-1);
+        trees[i].z=0;
+    }
 };
 

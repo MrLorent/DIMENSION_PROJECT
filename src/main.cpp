@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstring>
 #include <math.h>
+#include <time.h> 
 
 #include "../include/draw.h"
 #include "../include/objects.h"
@@ -23,6 +24,9 @@ QuadTree* quadTree;
 
 bool wireFrame;
 
+Tree trees[6];
+
+
 //---------TEXTURE---------
 
 char* texturesLinks[10];
@@ -42,6 +46,9 @@ static void init() {
 	camera.up.z = 1;
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
+
+	// POSITIONS ARBRES
+	createTrees(trees);
 
 	// PARAMETRES DE TEXTURE
 	wireFrame = false;
@@ -114,10 +121,7 @@ static void drawFunc(void) {
 	glDrawRepere(2.0, textures);
 
 	glPushMatrix();
-	Tree t1 = createTree(2,2,0);
-	glDrawTree(t1, camera, textures);
-	Tree t2 = createTree(3,1,0);
-	glDrawTree(t2, camera, textures);
+		glDrawTrees(trees, camera, textures);
 	glPopMatrix();
 
 	float position[4] = {5.0,5.0,5.0,1.0};
@@ -220,6 +224,7 @@ static void kbdFunc(unsigned char c, int x, int y) {
 int main (int argc, char** argv){
   	params = createParams();
   	PointChart heightMap;
+	srand (time(NULL));
   
   	initParams(&params);
   	loadHeightMap(&params, &heightMap);
