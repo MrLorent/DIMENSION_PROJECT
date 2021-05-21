@@ -1,3 +1,4 @@
+#include "../include/globales.h"
 #include "../include/draw.h"
 
 //---------FONCTION CREATION TEXTURE--------------
@@ -44,7 +45,7 @@ GLuint creaTexture(char *chemin){
 
 //-----------------DRAW ---------------
 
-void glDrawRepere(float length,GLuint texture) {
+void glDrawRepere(float length) {
 	// dessin du repère
 	glBegin(GL_LINES);
 		glColor3f(1.,0.,0.);
@@ -58,7 +59,7 @@ void glDrawRepere(float length,GLuint texture) {
 		glVertex3i(0.,0.,length);
 	glEnd();
 
-	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glColor4f(1, 1, 1, 1);
 	glBegin(GL_POLYGON);
 		glTexCoord3f( 0,  0, 0); glVertex3f(-5,  5,  0);
@@ -109,5 +110,5 @@ void glDrawRepere(float length,GLuint texture) {
 }
 
 void glDrawHeightMap(){
-    
+
 }

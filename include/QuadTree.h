@@ -1,5 +1,5 @@
 #ifndef QUADTREE_H
-#define QUADTREE
+#define QUADTREE_H
 
 #include "geometry.h"
 

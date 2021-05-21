@@ -1,3 +1,5 @@
+#ifndef GLOBALES_H
+#define GLOBALES_H
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -27,3 +29,5 @@ bool wireFrame;
 
 char *textures[15];
 GLuint texture[50];
+
+#endif // GLOBALES_H
