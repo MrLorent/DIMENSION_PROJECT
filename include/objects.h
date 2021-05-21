@@ -9,3 +9,9 @@ struct Camera{
     Vector3D up;
 };
 
+struct Tree{
+    float x;
+    float y;
+    float z;
+};
+

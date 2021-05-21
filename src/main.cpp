@@ -124,7 +124,7 @@ void glDrawRepere(float length) {
 		glTexCoord3f( 0,  1, 0); glVertex3f(-5, -5,  0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D,0);
-
+/*
 	glBegin(GL_QUADS);
 		glColor3ub(255,255,255); //face rouge
 		glVertex3d(1,1,1);
@@ -193,10 +193,10 @@ static void drawFunc(void) {
 	glColor3f(1.0,0.0,0.0);
 	glDrawRepere(2.0);
 
-	float arbre_x=0;
-	float arbre_y=0;
-	float arbre_z=0;
+	Tree t1 = createTree(2,2,0);
+	Tree t2 = createTree(3,1,0);
 
+	
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
 	glPushMatrix();
 		glTranslatef(arbre_x - cos(camera.latitude)*sin(camera.longitude), 
