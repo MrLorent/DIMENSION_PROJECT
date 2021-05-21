@@ -1,6 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 #include "geometry.h"
+#include "objects.h"
 
 using namespace std;
 
@@ -17,3 +18,7 @@ struct Tree{
     float z;
 };
 
+Tree createTree(float x, float y, float z);
+
+
+#endif 

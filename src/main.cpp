@@ -25,8 +25,8 @@ bool wireFrame;
 
 //---------TEXTURE---------
 
-char* textures[15];
-GLuint texture[50];
+char* texturesLinks[10];
+GLuint textures[10];
 
 using namespace std;
 
@@ -45,11 +45,11 @@ static void init() {
 
 	// PARAMETRES DE TEXTURE
 	wireFrame = false;
-	textures[0]=(char*)"doc/roche.jpg";
-	textures[1] = (char*)"doc/arbre.jpg";
+	texturesLinks[0]=(char*)"doc/roche.jpg";
+	texturesLinks[1] = (char*)"doc/arbre.jpg";
 
-	for(int i=0; i<1;i++){
-		texture[i]=creaTexture(textures[i]);
+	for(int i=0; i<2;i++){
+		textures[i]=creaTexture(texturesLinks[i]);
 	}
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -111,13 +111,14 @@ static void drawFunc(void) {
 	);
 
 	glColor3f(1.0,0.0,0.0);
-	glDrawRepere(2.0, texture);
+	glDrawRepere(2.0, textures);
 
+	glPushMatrix();
 	Tree t1 = createTree(2,2,0);
+	glDrawTree(t1, camera, textures);
 	Tree t2 = createTree(3,1,0);
-
-	glDrawTree(t1);
-	glDrawTree(t2);
+	glDrawTree(t2, camera, textures);
+	glPopMatrix();
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
@@ -133,6 +134,7 @@ static void drawFunc(void) {
 
 	glPushMatrix();
 	glColor3f(1.0,1.0,1.0);
+	glPopMatrix();
 
 	glDisable(GL_LIGHTING);
 
