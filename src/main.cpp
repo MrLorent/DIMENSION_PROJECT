@@ -37,7 +37,25 @@ using namespace std;
 //---------INITIALISATION--------------
 
 static void init() {
-	// POSITION CAMERA
+	PointChart heightMap;
+
+	// RECUPERATION DES PARAMETRES .TIMAC
+	params = createParams();
+  	initParams(&params);
+  	loadHeightMap(&params, &heightMap);
+	
+	// INITIALISATION DU QUADTREE
+	quadTree = createQuadTree(
+		heightMap.points[heightMap.height - 1][0],
+		heightMap.points[heightMap.height - 1][heightMap.width - 1],
+		heightMap.points[0][heightMap.width - 1],
+		heightMap.points[0][0],
+		&heightMap,
+		params
+	);
+	freePointChart(&heightMap);
+
+	// INITIALISATION DE LA POSITION DE LA CAMERA
 	camera.position.x = 0;
 	camera.position.y = 0;
 	camera.position.z = 1;
@@ -48,6 +66,7 @@ static void init() {
 	camera.longitude = M_PI/2.0;
 
 	// POSITIONS ARBRES
+	srand (time(NULL));
 	createTrees(trees);
 
 	// PARAMETRES DE TEXTURE
@@ -56,7 +75,7 @@ static void init() {
 	texturesLinks[1] = (char*)"doc/arbre.jpg";
 
 	for(int i=0; i<2;i++){
-		textures[i]=creaTexture(texturesLinks[i]);
+		textures[i] = creaTexture(texturesLinks[i]);
 	}
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -104,44 +123,44 @@ static void drawFunc(void) {
 	/* Debut du dessin de la scène */
 	glPushMatrix();
 
-	/* placement de la caméra */
-	gluLookAt(
-		camera.position.x,	// CAMERA POSITION X
-		camera.position.y,	// CAMERA POSITION Y
-		camera.position.z,	// CAMERA POSITION Z
-		camera.position.x + cos(camera.latitude)*sin(camera.longitude), // LOOK DIRECTION X
-		camera.position.y + sin(camera.latitude)*sin(camera.longitude),	// LOOK DIRECTION Y
-		camera.position.z + cos(camera.longitude),						// LOOK DIRECTION Z
-		camera.up.x,
-		camera.up.y,
-		camera.up.z
-	);
+		/* placement de la caméra */
+		gluLookAt(
+			camera.position.x,	// CAMERA POSITION X
+			camera.position.y,	// CAMERA POSITION Y
+			camera.position.z,	// CAMERA POSITION Z
+			camera.position.x + cos(camera.latitude)*sin(camera.longitude), // LOOK DIRECTION X
+			camera.position.y + sin(camera.latitude)*sin(camera.longitude),	// LOOK DIRECTION Y
+			camera.position.z + cos(camera.longitude),						// LOOK DIRECTION Z
+			camera.up.x,
+			camera.up.y,
+			camera.up.z
+		);
 
-	// glColor3f(1.0,0.0,0.0);
-	// glDrawRepere(2.0, textures);
+		// glColor3f(1.0,0.0,0.0);
+		// glDrawRepere(2.0, textures);
 
-	// glPushMatrix();
-	// 	glDrawTrees(trees, camera, textures);
-	// glPopMatrix();
-	glDrawHeightMap(quadTree);
+		// glPushMatrix();
+		// 	glDrawTrees(trees, camera, textures);
+		// glPopMatrix();
+		glDrawHeightMap(quadTree);
 
-	float position[4] = {5.0,5.0,5.0,1.0};
-	float black[3] = {0.0,0.0,0.0};
-	float intensite[3] = {1000.0,1000.0,1000.0};
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0,GL_POSITION,position);
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
-	glLightfv(GL_LIGHT0,GL_SPECULAR,black);
-	//glLightf(GL_LIGHT0,GL_,black);
-	//glLightf(GL_LIGHT0,GL_SPECULAR,black);
+		float position[4] = {5.0,5.0,5.0,1.0};
+		float black[3] = {0.0,0.0,0.0};
+		float intensite[3] = {1000.0,1000.0,1000.0};
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		glLightfv(GL_LIGHT0,GL_POSITION,position);
+		glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
+		glLightfv(GL_LIGHT0,GL_SPECULAR,black);
+		//glLightf(GL_LIGHT0,GL_,black);
+		//glLightf(GL_LIGHT0,GL_SPECULAR,black);
 
-	glPushMatrix();
-	glColor3f(1.0,1.0,1.0);
-	glPopMatrix();
+		glPushMatrix();
+		glColor3f(1.0,1.0,1.0);
+		glPopMatrix();
 
-	glDisable(GL_LIGHTING);
+		glDisable(GL_LIGHTING);
 
 	/* Fin du dessin */
 	glPopMatrix();
@@ -223,21 +242,6 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 
 int main (int argc, char** argv){
-  	params = createParams();
-  	PointChart heightMap;
-	srand (time(NULL));
-  
-  	initParams(&params);
-  	loadHeightMap(&params, &heightMap);
-	quadTree = createQuadTree(
-		heightMap.points[heightMap.height - 1][0],
-		heightMap.points[heightMap.height - 1][heightMap.width - 1],
-		heightMap.points[0][heightMap.width - 1],
-		heightMap.points[0][0],
-		&heightMap,
-		params
-	);
-
 	// printPoint3D(quadTree->a);
 	// printPoint3D(quadTree->b);
 	// printPoint3D(quadTree->c);
