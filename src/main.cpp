@@ -1,5 +1,7 @@
 #include "../include/globales.h"
 
+GLuint creaTexture(char *chemin);
+
 using namespace std;
 
 //---------INITIALISATION--------------
@@ -19,7 +21,7 @@ static void init() {
 	wireFrame = false;
 	textures[0]=(char*)"doc/roche.jpg";
 
-	for(int i=0; i<2;i++){
+	for(int i=0; i<1;i++){
 		texture[i]=creaTexture(textures[i]);
 	}
 
@@ -58,8 +60,6 @@ static void reshapeFunc(int width, int height) {
 //---------FONCTION CREATION TEXTURE--------------
 
 GLuint creaTexture(char *chemin){
-
-   
     SDL_Surface* image = IMG_Load(chemin);
     if(NULL == image) {
         fprintf(stderr, "Echec du chargement de l'image %s\n", chemin);
