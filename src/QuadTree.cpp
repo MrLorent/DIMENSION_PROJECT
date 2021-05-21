@@ -121,3 +121,28 @@ Node* Node::getChildD() {
 bool Node::isLeaf(){
     return this->childA == NULL && this->childB == NULL && this->childC == NULL && this->childD == NULL;
 }
+
+int Node::height(){
+    if(this->isLeaf()){
+        return 1;
+    }else{
+        int heightA = 0, heightB = 0, heightC = 0, heightD = 0;
+
+        // RECUPERATION DES HAUTEURS DES ENFANTS
+        if(this->childA) heightA = this->childA->height();
+        if(this->childB) heightB = this->childB->height();
+        if(this->childC) heightC = this->childC->height();
+        if(this->childD) heightD = this->childD->height();
+
+        // PREMIERE COMPARAISON
+        if(heightA < heightB) heightA = heightB;
+        if(heightC < heightD) heightC = heightD;
+
+        // SECONDE ET DERNIERE COMPARAISON
+        if(heightA > heightC){
+            return heightA + 1;
+        }else{
+            return heightC + 1;
+        }
+    }
+}

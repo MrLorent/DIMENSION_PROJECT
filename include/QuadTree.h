@@ -34,6 +34,7 @@ typedef struct Node {
 
     /*############### METHODES ###############*/
     bool isLeaf();
+    int height();
 
 }QuadTree, Node;
 
