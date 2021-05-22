@@ -51,60 +51,66 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[10])
   float D=50;
 
   glColor4f(1, 1, 1, 1);
-  /* Sides */
   
+  //Dessous
   glBindTexture(GL_TEXTURE_2D,textures[6]);
   glBegin(GL_QUADS);
-  glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
-  glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
-  glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
-  glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+    glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
+    glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
+    glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+    glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
   glEnd();
   glBindTexture(GL_TEXTURE_2D,0);
 
-  glColor3ub(255,0,255);
-  glBindTexture(GL_TEXTURE_2D,textures[3]);
-  glBegin(GL_QUADS);
-  glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,-D+z);
-  glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
-  glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,+D+z);
-  glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
 
+  //Dessus
   glBindTexture(GL_TEXTURE_2D,textures[7]);
   glBegin(GL_QUADS);
-  glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
-  glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
-  glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
-  glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
+    glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+    glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+    glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
+    glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
   glEnd();
   glBindTexture(GL_TEXTURE_2D,0);
 
-  glBindTexture(GL_TEXTURE_2D,textures[2]);
-  glBegin(GL_QUADS);
-  glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
-  glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,-D+z);
-  glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
-  glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
-  /* Top and Bottom */
-  glBindTexture(GL_TEXTURE_2D,textures[5]);
-  glBegin(GL_QUADS);
-  glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,-D+z);
-  glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,-D+z);
-  glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,+D+z);
-  glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
-
+  //Devant
   glBindTexture(GL_TEXTURE_2D,textures[4]);
   glBegin(GL_QUADS);
-  glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
-  glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
-  glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
-  glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
+    glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
+    glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+    glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,+D+z);
+    glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+
+  //derriere
+  glBindTexture(GL_TEXTURE_2D,textures[2]);
+  glBegin(GL_QUADS);
+    glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+    glTexCoord2f(1,1); glVertex3f(-D+x,-D+y,-D+z);
+    glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+    glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,+D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+  //gauche
+  glBindTexture(GL_TEXTURE_2D,textures[3]);
+  glBegin(GL_QUADS);
+    glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
+    glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
+    glTexCoord2f(0,0); glVertex3f(+D+x,+D+y,+D+z);
+    glTexCoord2f(1,0); glVertex3f(-D+x,+D+y,+D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+  //droite
+  glBindTexture(GL_TEXTURE_2D,textures[5]);
+  glBegin(GL_QUADS);
+    glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
+    glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
+    glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
+    glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
   glEnd();
   glBindTexture(GL_TEXTURE_2D,0);
 
