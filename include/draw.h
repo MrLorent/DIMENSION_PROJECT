@@ -15,5 +15,6 @@ GLuint creaTexture(char *chemin);
 void glDrawRepere(float length, GLuint textures[10]);
 void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]);
 void glDrawHeightMap(QuadTree* quadTree);
+void glDrawSkybox(float x,float y,float z,  GLuint textures[10]);
 
 #endif // DRAW_H

@@ -71,11 +71,18 @@ static void init() {
 
 	// PARAMETRES DE TEXTURE
 	wireFrame = false;
-	texturesLinks[0]=(char*)"doc/roche.jpg";
-	texturesLinks[1] = (char*)"doc/arbre.jpg";
+	//texturesLinks[0] = (char*)"doc/roche.jpg";
+	//texturesLinks[1] = (char*)"doc/arbre.jpg";
+	texturesLinks[2] = (char*)"doc/test1.png";
+	texturesLinks[3] = (char*)"doc/test2.png";
+	texturesLinks[4] = (char*)"doc/test3.png";
+	texturesLinks[5] = (char*)"doc/test4.png";
+	texturesLinks[6] = (char*)"doc/right.bmp";
+	texturesLinks[7] = (char*)"doc/left.bmp";
 
-	for(int i=0; i<2;i++){
-		textures[i] = creaTexture(texturesLinks[i]);
+	for(int i=2; i<8;i++){
+		cout << texturesLinks[i];
+		textures[i]=creaTexture(texturesLinks[i]);
 	}
 
 	/* INITIALISATION DES PARAMETRES GL */
@@ -136,25 +143,32 @@ static void drawFunc(void) {
 			camera.up.z
 		);
 
-		// glColor3f(1.0,0.0,0.0);
-		// glDrawRepere(2.0, textures);
+	glColor3f(1.0,0.0,0.0);
+
+	
 
 		// glPushMatrix();
 		// 	glDrawTrees(trees, camera, textures);
 		// glPopMatrix();
 		glDrawHeightMap(quadTree);
 
-		float position[4] = {5.0,5.0,5.0,1.0};
-		float black[3] = {0.0,0.0,0.0};
-		float intensite[3] = {1000.0,1000.0,1000.0};
-		glEnable(GL_TEXTURE_2D);
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		glLightfv(GL_LIGHT0,GL_POSITION,position);
-		glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
-		glLightfv(GL_LIGHT0,GL_SPECULAR,black);
-		//glLightf(GL_LIGHT0,GL_,black);
-		//glLightf(GL_LIGHT0,GL_SPECULAR,black);
+	glPushMatrix();
+		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
+	glPopMatrix();
+
+	glDrawRepere(2.0, textures);
+
+	float position[4] = {5.0,5.0,5.0,1.0};
+	float black[3] = {0.0,0.0,0.0};
+	float intensite[3] = {1000.0,1000.0,1000.0};
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0,GL_POSITION,position);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
+	glLightfv(GL_LIGHT0,GL_SPECULAR,black);
+	//glLightf(GL_LIGHT0,GL_,black);
+	//glLightf(GL_LIGHT0,GL_SPECULAR,black);
 
 		glPushMatrix();
 		glColor3f(1.0,1.0,1.0);

@@ -4,6 +4,7 @@
 //---------FONCTION CREATION TEXTURE--------------
 
 GLuint creaTexture(char *chemin){
+	cout << chemin;
     SDL_Surface* image = IMG_Load(chemin);
     if(NULL == image) {
         fprintf(stderr, "Echec du chargement de l'image %s\n", chemin);
@@ -33,7 +34,7 @@ GLuint creaTexture(char *chemin){
             return EXIT_FAILURE;
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
 
     glBindTexture(GL_TEXTURE_2D, 0);  
     
@@ -44,6 +45,74 @@ GLuint creaTexture(char *chemin){
 }
 
 //-----------------DRAW ---------------
+
+void glDrawSkybox(float x,float y,float z,  GLuint textures[10])
+{
+
+  float D=50;
+
+  glColor4f(1, 1, 1, 1);
+  /* Sides */
+  
+  glBindTexture(GL_TEXTURE_2D,textures[6]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
+  glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
+  glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+  glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+  glColor3ub(255,0,255);
+  glBindTexture(GL_TEXTURE_2D,textures[3]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,-D+z);
+  glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
+  glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,+D+z);
+  glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+  glBindTexture(GL_TEXTURE_2D,textures[7]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+  glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+  glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
+  glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+  glBindTexture(GL_TEXTURE_2D,textures[2]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
+  glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,-D+z);
+  glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
+  glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,+D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+  /* Top and Bottom */
+  glBindTexture(GL_TEXTURE_2D,textures[5]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,-D+z);
+  glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,-D+z);
+  glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,+D+z);
+  glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,+D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+  glBindTexture(GL_TEXTURE_2D,textures[4]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
+  glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
+  glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
+  glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
+  glEnd();
+  glBindTexture(GL_TEXTURE_2D,0);
+
+ 
+}
+
+
 
 void glDrawRepere(float length, GLuint textures[10]) {
 	// dessin du repère
@@ -58,7 +127,7 @@ void glDrawRepere(float length, GLuint textures[10]) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
-
+/*
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	glColor4f(1, 1, 1, 1);
 	glBegin(GL_POLYGON);
@@ -69,7 +138,7 @@ void glDrawRepere(float length, GLuint textures[10]) {
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	/*glTranslatef(3.0,0.0,1.0);
+	glTranslatef(3.0,0.0,1.0);
 	glBegin(GL_QUADS);
 		glColor3ub(255,255,255); //face rouge
 		glVertex3d(1,1,1);
@@ -118,7 +187,7 @@ void glDrawHeightMap(QuadTree* quadTree){
     if(quadTree->isLeaf())
     {
         glBegin(GL_TRIANGLES);
-            glColor3f(0.1,0.1,0.1);
+            glColor4f(1, 1, 1, 1);
             glVertex3f(quadTree->a.x,quadTree->a.y,quadTree->a.z);
             glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
             glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
@@ -136,7 +205,7 @@ void glDrawHeightMap(QuadTree* quadTree){
         glDrawHeightMap(quadTree->childD);
     }
 }
-
+/*
 void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]) {
 	for (int i=0 ; i<6 ; i++){
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
@@ -157,4 +226,4 @@ void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]) {
 		glPopMatrix();
 		glBindTexture(GL_TEXTURE_2D,0);
 	}
-}
+}*/
