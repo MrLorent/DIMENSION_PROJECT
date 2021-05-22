@@ -3,10 +3,10 @@
 
 //---------FONCTION CREATION TEXTURE--------------
 
-GLuint creaTexture(char *chemin){
-    SDL_Surface* image = IMG_Load(chemin);
+GLuint creaTexture(char* path){
+    SDL_Surface* image = IMG_Load(path);
     if(NULL == image) {
-        fprintf(stderr, "Echec du chargement de l'image %s\n", chemin);
+        fprintf(stderr, "Echec du chargement de l'image %s\n", path);
         exit(EXIT_FAILURE);
     }
 
@@ -29,7 +29,7 @@ GLuint creaTexture(char *chemin){
             format = GL_RGBA;
             break;
         default:
-            fprintf(stderr, "Format des pixels de l'image %s non supporte.\n", chemin);
+            fprintf(stderr, "Format des pixels de l'image %s non supporte.\n", path);
             return EXIT_FAILURE;
     }
 

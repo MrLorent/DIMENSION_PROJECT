@@ -2,7 +2,7 @@
 #define QUADTREE_H
 
 #include "geometry.h"
-#include "../include/preload.h"
+#include "preload.h"
 
 const int TOP_LEFT = 0;
 const int TOP_RIGHT = 1;

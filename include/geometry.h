@@ -22,6 +22,7 @@ Point3D createPoint(float x, float y, float z);
 void printPoint3D(Point3D p);
 void printVector3D(Vector3D v);
 
+
 /*############# QUADS #############*/
 
 typedef struct Quad {

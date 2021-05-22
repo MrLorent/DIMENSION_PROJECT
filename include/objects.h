@@ -5,11 +5,21 @@
 
 using namespace std;
 
-struct Camera{
+struct Camera {
+    // GLUT_LOOK_AT PARAMETERS
     Point3D position;
-    float latitude; // HRIZONTALE
+    float latitude; // HORIZONTALE
     float longitude; // VERTICAL
     Vector3D up;
+
+    // VISUAL FIELD
+    float zNear;
+    float zFar;
+    float fov;
+
+    Vector3D a;
+    Vector3D b;
+    Vector3D c;
 };
 
 struct Tree{
