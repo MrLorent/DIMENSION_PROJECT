@@ -12,27 +12,26 @@ Params createParams(){
     params.ySize = 0;
     params.zMin = 0;
     params.zMax = 0;
-    params.zNear = 0;
-    params.zFar = 0;
-    params.fov = 0;
 
     return params;
 }
 
-void initParams(Params* params){
+void readParams(Params* params, Camera* camera){
     ifstream file("./doc/params.timac");
     if(file) {
         //L'ouverture s'est bien passée, on peut donc lire
 
-        //On lit le chemin de l'image depuis le fichier
+        // PARAMETRE DE LA MAP
         file >> params->linkHeightMap;
         file >> params->xSize;
         file >> params->ySize;
         file >> params->zMin;
         file >> params->zMax;
-        file >> params->zNear;
-        file >> params->zFar;
-        file >> params->fov;
+
+        // PARAMETRE CAMERA
+        file >> camera->zNear;
+        file >> camera->zFar;
+        file >> camera->fov;
 
         remove("params.timac");
     }else{

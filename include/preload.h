@@ -1,7 +1,8 @@
 #ifndef PRELOAD_H
 #define PRELOAD_H
 
-#include "./geometry.h"
+#include "geometry.h"
+#include "objects.h"
 
 /*------------- PARAMS -------------*/
 typedef struct Params{
@@ -12,9 +13,6 @@ typedef struct Params{
     float ySize;
     float zMin;
     float zMax;
-    float zNear;
-    float zFar;
-    float fov;
 } Params;
 
 // CONSTRUCTEUR
@@ -23,7 +21,7 @@ typedef struct Params{
 Params createParams();
 
 // Charge l'Heightmap
-void initParams(Params* params);
+void readParams(Params* params, Camera* camera);
 
 /*------------- POINTCHART -------------*/
 

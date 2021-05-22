@@ -41,7 +41,7 @@ static void init() {
 
 	// RECUPERATION DES PARAMETRES .TIMAC
 	params = createParams();
-  	initParams(&params);
+  	readParams(&params, &camera);
   	loadHeightMap(&params, &heightMap);
 	
 	// INITIALISATION DU QUADTREE
@@ -109,7 +109,7 @@ static void reshapeFunc(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	/* définition de la camera */
-	gluPerspective( params.fov, h, params.zNear, params.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
+	gluPerspective( camera.fov, h, camera.zNear, camera.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
 
 	/* Retour a la pile de matrice Modelview
 			et effacement de celle-ci */

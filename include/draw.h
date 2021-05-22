@@ -9,9 +9,9 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-#include "../include/QuadTree.h"
+#include "QuadTree.h"
 
-GLuint creaTexture(char *chemin);
+GLuint creaTexture(char* path);
 void glDrawRepere(float length, GLuint textures[10]);
 void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]);
 void glDrawHeightMap(QuadTree* quadTree);
