@@ -7,6 +7,7 @@
 /*------------- PARAMS -------------*/
 typedef struct Params{
     string linkHeightMap;
+    float rgbMaxValue;
     int xPixels;
     int yPixels;
     float xSize;

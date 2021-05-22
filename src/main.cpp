@@ -103,6 +103,9 @@ static void init() {
 static void reshapeFunc(int width, int height) {
 	GLfloat  h = (GLfloat) width / (GLfloat) height ;
 	
+	camera.fovForFrustum = camera.fov*M_PI/180;
+	camera.fovForFrustum = 2.0 * atan(tan(camera.fovForFrustum * 0.5) * h);
+	
 	/* dimension de l'écran GL */
 	glViewport(0, 0, (GLint)width, (GLint)height);
 	/* construction de la matrice de projection */
@@ -145,12 +148,7 @@ static void drawFunc(void) {
 
 	glColor3f(1.0,0.0,0.0);
 
-	
-
-		// glPushMatrix();
-		// 	glDrawTrees(trees, camera, textures);
-		// glPopMatrix();
-		glDrawHeightMap(quadTree);
+	glDrawHeightMap(quadTree, &camera);
 
 	glPushMatrix();
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);

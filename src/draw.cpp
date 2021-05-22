@@ -47,7 +47,6 @@ GLuint creaTexture(char* path){
 
 void glDrawSkybox(float x,float y,float z,  GLuint textures[10])
 {
-
   float D=50;
 
   glColor4f(1, 1, 1, 1);
@@ -117,8 +116,6 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[10])
  
 }
 
-
-
 void glDrawRepere(float length, GLuint textures[10]) {
 	// dessin du repère
 	glBegin(GL_LINES);
@@ -132,62 +129,18 @@ void glDrawRepere(float length, GLuint textures[10]) {
 		glVertex3i(0.,0.,0.);
 		glVertex3i(0.,0.,length);
 	glEnd();
-/*
-	glBindTexture(GL_TEXTURE_2D, textures[0]);
-	glColor4f(1, 1, 1, 1);
-	glBegin(GL_POLYGON);
-		glTexCoord3f( 0,  0, 0); glVertex3f(-5,  5,  0);
-		glTexCoord3f( 1,  0, 0); glVertex3f( 5,  5,  0);
-		glTexCoord3f( 1,  1, 0); glVertex3f( 5, -5,  0);
-		glTexCoord3f( 0,  1, 0); glVertex3f(-5, -5,  0);
-	glEnd();
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	glTranslatef(3.0,0.0,1.0);
-	glBegin(GL_QUADS);
-		glColor3ub(255,255,255); //face rouge
-		glVertex3d(1,1,1);
-		glVertex3d(1,1,-1);
-		glVertex3d(-1,1,-1);
-		glVertex3d(-1,1,1);
-
-		glColor3ub(0,255,0); //face verte
-		glVertex3d(1,-1,1);
-		glVertex3d(1,-1,-1);
-		glVertex3d(1,1,-1);
-		glVertex3d(1,1,1);
-
-		glColor3ub(0,0,255); //face bleue
-		glVertex3d(-1,-1,1);
-		glVertex3d(-1,-1,-1);
-		glVertex3d(1,-1,-1);
-		glVertex3d(1,-1,1);
-
-		glColor3ub(255,255,0); //face jaune
-		glVertex3d(-1,1,1);
-		glVertex3d(-1,1,-1);
-		glVertex3d(-1,-1,-1);
-		glVertex3d(-1,-1,1);
-
-		glColor3ub(0,255,255); //face cyan
-		glVertex3d(1,1,-1);
-		glVertex3d(1,-1,-1);
-		glVertex3d(-1,-1,-1);
-		glVertex3d(-1,1,-1);
-
-		glColor3ub(255,0,255); //face magenta
-		glVertex3d(1,-1,1);
-		glVertex3d(1,1,1);
-		glVertex3d(-1,1,1);
-		glVertex3d(-1,-1,1);
-    glEnd();*/
 }
 
-void glDrawHeightMap(QuadTree* quadTree){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera){
     if(!quadTree)
     {
         return;
     }
+
+	if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
+	{
+		return;
+	}
 
     if(quadTree->isLeaf())
     {
@@ -204,10 +157,10 @@ void glDrawHeightMap(QuadTree* quadTree){
     }
     else
     {
-        glDrawHeightMap(quadTree->childA);
-        glDrawHeightMap(quadTree->childB);
-        glDrawHeightMap(quadTree->childC);
-        glDrawHeightMap(quadTree->childD);
+        glDrawHeightMap(quadTree->childA, camera);
+        glDrawHeightMap(quadTree->childB, camera);
+        glDrawHeightMap(quadTree->childC, camera);
+        glDrawHeightMap(quadTree->childD, camera);
     }
 }
 /*
