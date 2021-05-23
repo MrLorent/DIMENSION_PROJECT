@@ -26,11 +26,12 @@ bool wireFrame;
 
 Tree trees[6];
 
+float speed;
 
 //---------TEXTURE---------
 
-char* texturesLinks[10];
-GLuint textures[10];
+char* texturesLinks[15];
+GLuint textures[15];
 
 using namespace std;
 
@@ -79,8 +80,12 @@ static void init() {
 	texturesLinks[5] = (char*)"doc/skybox-derriere.png";
 	texturesLinks[6] = (char*)"doc/skybox-dessous.png";
 	texturesLinks[7] = (char*)"doc/skybox-dessus.png";
+	texturesLinks[8] = (char*)"doc/herbe.jpg";
+	texturesLinks[9] = (char*)"doc/roche.jpg";
+	texturesLinks[10] = (char*)"doc/roche2.jpg";
+	texturesLinks[11] = (char*)"doc/neige.jpeg";
 
-	for(int i=0; i<8;i++){
+	for(int i=0; i<12;i++){
 		cout << texturesLinks[i];
 		textures[i]=creaTexture(texturesLinks[i]);
 	}
@@ -148,31 +153,26 @@ static void drawFunc(void) {
 
 	glColor3f(1.0,0.0,0.0);
 
-	glDrawHeightMap(quadTree, &camera);
+	glDrawHeightMap(quadTree, &camera, textures);
 
 	glPushMatrix();
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
 	glPopMatrix();
 
-	glDrawRepere(2.0, textures);
+	glDrawRepere(2.0);
 
 	float position[4] = {5.0,5.0,5.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
 	float intensite[3] = {1000.0,1000.0,1000.0};
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0,GL_POSITION,position);
-	glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
-	glLightfv(GL_LIGHT0,GL_SPECULAR,black);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	//glLightfv(GL_LIGHT0,GL_POSITION,position);
+	//glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
+	//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
 	//glLightf(GL_LIGHT0,GL_,black);
 	//glLightf(GL_LIGHT0,GL_SPECULAR,black);
-
-		glPushMatrix();
-		glColor3f(1.0,1.0,1.0);
-		glPopMatrix();
-
-		glDisable(GL_LIGHTING);
+	//glDisable(GL_LIGHTING);
 
 	/* Fin du dessin */
 	glPopMatrix();
@@ -214,28 +214,31 @@ static void kbdSpFunc(int c, int x, int y) {
 static void kbdFunc(unsigned char c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	/* 'q' ou 'Q'*/
+
+	speed=0.01*params.xSize;
+
 	switch(c) {
 		case 27 :
 			exit(0);
 			break;
 		case 'Z' : case 'z' :
-			camera.position.x += 1. * cos(camera.latitude);
-			camera.position.y += 1. * sin(camera.latitude);
+			camera.position.x += speed * cos(camera.latitude);
+			camera.position.y += speed * sin(camera.latitude);
 			break;
 		case 'S' : case 's' : 
-			camera.position.x -= 1. * cos(camera.latitude);
-			camera.position.y -= 1. * sin(camera.latitude);
+			camera.position.x -= speed * cos(camera.latitude);
+			camera.position.y -= speed * sin(camera.latitude);
 			break;
 		case 'Q' : case 'q' : 
-			camera.position.x += 1. * cos(camera.latitude + M_PI/2);
-			camera.position.y += 1. * sin(camera.latitude + M_PI/2);
+			camera.position.x += speed * cos(camera.latitude + M_PI/2);
+			camera.position.y += speed * sin(camera.latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
-			camera.position.x -= 1. * cos(camera.latitude + M_PI/2);
-			camera.position.y -= 1. * sin(camera.latitude + M_PI/2);
+			camera.position.x -= speed * cos(camera.latitude + M_PI/2);
+			camera.position.y -= speed * sin(camera.latitude + M_PI/2);
 			break;
 		case ' ' :
-			camera.position.z += 1;
+			camera.position.z += speed;
 			break;
 		case 'F' : case 'f' : 
 			if(wireFrame){

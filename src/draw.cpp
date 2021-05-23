@@ -33,7 +33,7 @@ GLuint creaTexture(char* path){
             return EXIT_FAILURE;
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
 
     glBindTexture(GL_TEXTURE_2D, 0);  
     
@@ -45,7 +45,7 @@ GLuint creaTexture(char* path){
 
 //-----------------DRAW ---------------
 
-void glDrawSkybox(float x,float y,float z,  GLuint textures[10])
+void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 {
   float D=50;
 
@@ -116,7 +116,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[10])
  
 }
 
-void glDrawRepere(float length, GLuint textures[10]) {
+void glDrawRepere(float length) {
 	// dessin du repère
 	glBegin(GL_LINES);
 		glColor3f(1.,0.,0.);
@@ -131,36 +131,53 @@ void glDrawRepere(float length, GLuint textures[10]) {
 	glEnd();
 }
 
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     if(!quadTree)
     {
         return;
     }
 
-	if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
+	/*if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
 	{
 		return;
-	}
+	}*/
 
     if(quadTree->isLeaf())
     {
+        float averageHeight=(quadTree->a.z+quadTree->b.z+quadTree->d.z)/3;
+        if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[8]);
+        if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[9]);
+        if(averageHeight>0.50 && averageHeight<=0.75)glBindTexture(GL_TEXTURE_2D,textures[10]);
+        if(averageHeight>0.75 && averageHeight<=1)glBindTexture(GL_TEXTURE_2D,textures[11]);
+
         glBegin(GL_TRIANGLES);
             glColor4f(1, 1, 1, 1);
-            glVertex3f(quadTree->a.x,quadTree->a.y,quadTree->a.z);
-            glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
-            glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
-
-            glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
-            glVertex3f(quadTree->c.x,quadTree->c.y,quadTree->c.z);
-            glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
+            glTexCoord2f(1,1); glVertex3f(quadTree->a.x,quadTree->a.y,quadTree->a.z); 
+            glTexCoord2f(0,1); glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
+            glTexCoord2f(0,0); glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
         glEnd();
+        glBindTexture(GL_TEXTURE_2D,0);
+
+        averageHeight=(quadTree->b.z+quadTree->c.z+quadTree->d.z)/3;
+        if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[8]);
+        if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[9]);
+        if(averageHeight>0.50 && averageHeight<=0.75)glBindTexture(GL_TEXTURE_2D,textures[10]);
+        if(averageHeight>0.75 && averageHeight<=1)glBindTexture(GL_TEXTURE_2D,textures[11]);
+
+        glBegin(GL_TRIANGLES);
+            glColor4f(1, 1, 1, 1);
+            glTexCoord2f(1,1); glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
+            glTexCoord2f(0,1); glVertex3f(quadTree->c.x,quadTree->c.y,quadTree->c.z);
+            glTexCoord2f(0,0); glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D,0);
     }
     else
     {
-        glDrawHeightMap(quadTree->childA, camera);
-        glDrawHeightMap(quadTree->childB, camera);
-        glDrawHeightMap(quadTree->childC, camera);
-        glDrawHeightMap(quadTree->childD, camera);
+        glDrawHeightMap(quadTree->childA, camera, textures);
+        glDrawHeightMap(quadTree->childB, camera, textures);
+        glDrawHeightMap(quadTree->childC, camera, textures);
+        glDrawHeightMap(quadTree->childD, camera, textures);
     }
 }
 /*

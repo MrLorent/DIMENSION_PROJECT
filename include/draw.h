@@ -11,9 +11,9 @@
 #include "objects.h"
 
 GLuint creaTexture(char* path);
-void glDrawRepere(float length, GLuint textures[10]);
-void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]);
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera);
-void glDrawSkybox(float x,float y,float z,  GLuint textures[10]);
+void glDrawRepere(float length);
+void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[15]);
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]);
+void glDrawSkybox(float x,float y,float z,  GLuint textures[15]);
 
 #endif // DRAW_H
