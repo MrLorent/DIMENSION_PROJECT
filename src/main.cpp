@@ -13,9 +13,9 @@
 /*############# VARIABLES GLOBALES #############*/
 
 /*---------- GLOBALES POUR LA CAMERA ----------*/
-Camera camera;
 const float STEP_ANGLE = M_PI/90.;
-float speedFactor;
+float SPEED_FACTOR;
+Camera camera;
 
 
 /*------------ GLOBALES POUR LA MAP -----------*/
@@ -25,13 +25,12 @@ Point3D trees[6];
 
 /*------------- GLOBALES TEXTURE --------------*/
 bool wireFrame;
-char* texturesLinks[15];
 GLuint textures[15];
 
 
 using namespace std;
 
-/*############# INITIALISATION #############*/
+/*############## INITIALISATION ##############*/
 
 static void init() {
 	Params params;
@@ -70,29 +69,11 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 	/* Coefficient de vitesse calculer selon la taille de la map */
-	speedFactor = 0.001 * (params.xSize * params.ySize)/2;
+	SPEED_FACTOR = 0.001 * (params.xSize * params.ySize)/2;
 
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
-	texturesLinks[0] = (char*)"doc/roche.jpg";
-	texturesLinks[1] = (char*)"doc/arbre1.png";
-	texturesLinks[2] = (char*)"doc/skybox-droite.png";
-	texturesLinks[3] = (char*)"doc/skybox-devant.png";
-	texturesLinks[4] = (char*)"doc/skybox-gauche.png";
-	texturesLinks[5] = (char*)"doc/skybox-derriere.png";
-	texturesLinks[6] = (char*)"doc/skybox-dessous.png";
-	texturesLinks[7] = (char*)"doc/skybox-dessus.png";
-	texturesLinks[8] = (char*)"doc/herbe.jpg";
-	texturesLinks[9] = (char*)"doc/roche.jpg";
-	texturesLinks[10] = (char*)"doc/roche2.jpg";
-	texturesLinks[11] = (char*)"doc/neige.jpeg";
-	texturesLinks[12] = (char*)"doc/arbre2.png";
-	texturesLinks[13] = (char*)"doc/arbre3.png";
-	texturesLinks[14] = (char*)"doc/arbre4.png";
-
-	for(int i=0; i<15;i++){
-		textures[i]=creaTexture(texturesLinks[i]);
-	}
+	loadTextures(textures);
 
 	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
@@ -107,7 +88,7 @@ static void init() {
 	//createCoordinates();
 }
 
-//---------FONCTION RESIZE DE LA PAGE--------------
+/*############ RESIZE DE LA FENETRE #############*/
 
 static void reshapeFunc(int width, int height) {
 	GLfloat  h = (GLfloat) width / (GLfloat) height ;
@@ -129,7 +110,7 @@ static void reshapeFunc(int width, int height) {
 	glLoadIdentity();
 }
 
-//------------------ AFFICHAGE -----------------------
+/*################# AFFICHAGE #################*/
 
 static void drawFunc(void) { 
 	/* reinitialisation des buffers : couleur et ZBuffer */
@@ -191,7 +172,7 @@ static void drawFunc(void) {
 	glutSwapBuffers();
 }
 
-//------------------ ECOUTEURS EVENEMENTS -----------------------
+/*########### ECOUTEURS D'EVENEMENTS ############*/
 
 static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
@@ -210,7 +191,7 @@ static void kbdSpFunc(int c, int x, int y) {
 			break;
 		default:
 			if(GLUT_ACTIVE_SHIFT){
-				camera.position.z -= speedFactor;
+				camera.position.z -= SPEED_FACTOR;
 			}
 			printf("Appui sur une touche spéciale\n");
 	}
@@ -227,23 +208,23 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			exit(0);
 			break;
 		case 'Z' : case 'z' :
-			camera.position.x += speedFactor * cos(camera.latitude);
-			camera.position.y += speedFactor * sin(camera.latitude);
+			camera.position.x += SPEED_FACTOR * cos(camera.latitude);
+			camera.position.y += SPEED_FACTOR * sin(camera.latitude);
 			break;
 		case 'S' : case 's' : 
-			camera.position.x -= speedFactor * cos(camera.latitude);
-			camera.position.y -= speedFactor * sin(camera.latitude);
+			camera.position.x -= SPEED_FACTOR * cos(camera.latitude);
+			camera.position.y -= SPEED_FACTOR * sin(camera.latitude);
 			break;
 		case 'Q' : case 'q' : 
-			camera.position.x += speedFactor * cos(camera.latitude + M_PI/2);
-			camera.position.y += speedFactor * sin(camera.latitude + M_PI/2);
+			camera.position.x += SPEED_FACTOR * cos(camera.latitude + M_PI/2);
+			camera.position.y += SPEED_FACTOR * sin(camera.latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
-			camera.position.x -= speedFactor * cos(camera.latitude + M_PI/2);
-			camera.position.y -= speedFactor * sin(camera.latitude + M_PI/2);
+			camera.position.x -= SPEED_FACTOR * cos(camera.latitude + M_PI/2);
+			camera.position.y -= SPEED_FACTOR * sin(camera.latitude + M_PI/2);
 			break;
 		case ' ' :
-			camera.position.z += speedFactor;
+			camera.position.z += SPEED_FACTOR;
 			break;
 		case 'F' : case 'f' : 
 			if(wireFrame){
@@ -262,30 +243,6 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 
 int main (int argc, char** argv){
-	// printPoint3D(quadTree->a);
-	// printPoint3D(quadTree->b);
-	// printPoint3D(quadTree->c);
-	// printPoint3D(quadTree->d);
-	// cout << endl;
-	// printPoint3D(quadTree->getChildA()->a);
-	// printPoint3D(quadTree->getChildA()->b);
-	// printPoint3D(quadTree->getChildA()->c);
-	// printPoint3D(quadTree->getChildA()->d);
-	// cout << endl;
-	// printPoint3D(quadTree->getChildB()->a);
-	// printPoint3D(quadTree->getChildB()->b);
-	// printPoint3D(quadTree->getChildB()->c);
-	// printPoint3D(quadTree->getChildB()->d);
-	// cout << endl;
-	// printPoint3D(quadTree->getChildC()->a);
-	// printPoint3D(quadTree->getChildC()->b);
-	// printPoint3D(quadTree->getChildC()->c);
-	// printPoint3D(quadTree->getChildC()->d);
-	// cout << endl;
-	// printPoint3D(quadTree->getChildD()->a);
-	// printPoint3D(quadTree->getChildD()->b);
-	// printPoint3D(quadTree->getChildD()->c);
-	// printPoint3D(quadTree->getChildD()->d);
 
 	/*/* traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);

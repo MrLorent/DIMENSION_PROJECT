@@ -1,7 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include <math.h>
 #include "../include/geometry.h"
 
 // Construit le point 

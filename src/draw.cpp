@@ -3,6 +3,30 @@
 
 /*################# TEXTURE #################*/
 
+void loadTextures(GLuint textures[15])
+{
+    char* texturesLinks[15];
+    texturesLinks[0] = (char*)"doc/roche.jpg";
+    texturesLinks[1] = (char*)"doc/arbre1.png";
+    texturesLinks[2] = (char*)"doc/skybox-droite.png";
+    texturesLinks[3] = (char*)"doc/skybox-devant.png";
+    texturesLinks[4] = (char*)"doc/skybox-gauche.png";
+    texturesLinks[5] = (char*)"doc/skybox-derriere.png";
+    texturesLinks[6] = (char*)"doc/skybox-dessous.png";
+    texturesLinks[7] = (char*)"doc/skybox-dessus.png";
+    texturesLinks[8] = (char*)"doc/herbe.jpg";
+    texturesLinks[9] = (char*)"doc/roche.jpg";
+    texturesLinks[10] = (char*)"doc/roche2.jpg";
+    texturesLinks[11] = (char*)"doc/neige.jpeg";
+    texturesLinks[12] = (char*)"doc/arbre2.png";
+    texturesLinks[13] = (char*)"doc/arbre3.png";
+    texturesLinks[14] = (char*)"doc/arbre4.png";
+
+    for(int i=0; i<15;i++){
+      textures[i]=creaTexture(texturesLinks[i]);
+    }
+}
+
 // Fonction permettant de créer une texture GLuint
 // à partir d'un chemin vers une image
 GLuint creaTexture(char* path){

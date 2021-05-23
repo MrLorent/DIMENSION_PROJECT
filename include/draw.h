@@ -11,6 +11,7 @@
 #include "objects.h"
 
 GLuint creaTexture(char* path);
+void loadTextures(GLuint textures[15]);
 void glDrawRepere(float length);
 void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]);
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]);
