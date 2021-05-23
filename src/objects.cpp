@@ -22,10 +22,6 @@ bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
     this->frontLimit = createVectorFromPoints(left, right);
     this->rightLimit = createVectorFromPoints(right, this->position);
 
-    printPoint3D(this->leftLimit);
-    printPoint3D(this->frontLimit);
-    printPoint3D(this->rightLimit);
-
     Point3D pointsToCheck[4] = { a, b, c, d };
 
     if(allOnLeft(position, this->leftLimit, pointsToCheck))

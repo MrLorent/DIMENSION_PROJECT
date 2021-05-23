@@ -30,4 +30,4 @@ struct Camera {
 
 bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4]);
 
-#endif 
+#endif
