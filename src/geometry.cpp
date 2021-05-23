@@ -22,6 +22,16 @@ Vector3D createVectorFromPoints(Point3D p1, Point3D p2)
     return v;
 }
 
+Vector3D invertVector(Vector3D v){
+    Vector3D newVector;
+
+    newVector.x = -v.x;
+    newVector.y = -v.y;
+    newVector.z = -v.z;
+
+    return newVector;
+}
+
 float dot(Vector3D v1, Vector3D v2)
 {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;

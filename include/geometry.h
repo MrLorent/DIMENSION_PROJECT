@@ -21,6 +21,8 @@ Point3D createPoint(float x, float y, float z);
 
 Vector3D createVectorFromPoints(Point3D p1, Point3D p2);
 
+Vector3D invertVector(Vector3D v);
+
 float dot(Vector3D v1, Vector3D v2);
 
 float norm(Vector3D v);
