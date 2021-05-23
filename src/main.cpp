@@ -86,8 +86,11 @@ static void init() {
 	texturesLinks[9] = (char*)"doc/roche.jpg";
 	texturesLinks[10] = (char*)"doc/roche2.jpg";
 	texturesLinks[11] = (char*)"doc/neige.jpeg";
+	texturesLinks[12] = (char*)"doc/arbre2.png";
+	texturesLinks[13] = (char*)"doc/arbre3.png";
+	texturesLinks[14] = (char*)"doc/arbre4.png";
 
-	for(int i=0; i<12;i++){
+	for(int i=0; i<15;i++){
 		cout << texturesLinks[i];
 		textures[i]=creaTexture(texturesLinks[i]);
 	}
@@ -123,6 +126,7 @@ static void reshapeFunc(int width, int height) {
 
 	/* Retour a la pile de matrice Modelview
 			et effacement de celle-ci */
+	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -154,6 +158,9 @@ static void drawFunc(void) {
 		);
 
 	glColor3f(1.0,0.0,0.0);
+
+	glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glDrawHeightMap(quadTree, &camera, textures);
 

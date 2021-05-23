@@ -12,7 +12,7 @@
 
 GLuint creaTexture(char* path);
 void glDrawRepere(float length);
-void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[15]);
+void glDrawTree(Point3D treePoint, float latitude, float averageHeight, GLuint textures[15] );
 void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]);
 void glDrawSkybox(float x,float y,float z,  GLuint textures[15]);
 

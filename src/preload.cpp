@@ -108,7 +108,7 @@ Point3D createMapPoint(Point3D p, Params params){
 void LoadTrees(PointChart* heightMap){
     int randomX=0;
     int randomY=0;
-    for (int j=0; j < heightMap->width/4 ; j++){
+    for (int j=0; j < heightMap->width/2 ; j++){
         randomX= rand() % heightMap->width;
         randomY= rand() % heightMap->height;
         heightMap->points[randomY][randomX].tree = true;

@@ -33,7 +33,7 @@ GLuint creaTexture(char* path){
             return EXIT_FAILURE;
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, format, GL_UNSIGNED_BYTE, image->pixels);
 
     glBindTexture(GL_TEXTURE_2D, 0);  
     
@@ -157,6 +157,10 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
         glEnd();
         glBindTexture(GL_TEXTURE_2D,0);
 
+        glDrawTree(quadTree->a, camera->latitude, averageHeight, textures);
+        glDrawTree(quadTree->b, camera->latitude, averageHeight, textures);
+        glDrawTree(quadTree->d, camera->latitude, averageHeight, textures);
+
         averageHeight=(quadTree->b.z+quadTree->c.z+quadTree->d.z)/3;
         if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[8]);
         if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[9]);
@@ -170,11 +174,10 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
             glTexCoord2f(0,0); glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
         glEnd();
         glBindTexture(GL_TEXTURE_2D,0);
-
-        glDrawTree(quadTree->a,camera, textures);
-        glDrawTree(quadTree->b,camera, textures);
-        glDrawTree(quadTree->c,camera, textures);
-        glDrawTree(quadTree->d,camera, textures);
+        
+        glDrawTree(quadTree->b, camera->latitude, averageHeight, textures);
+        glDrawTree(quadTree->c, camera->latitude, averageHeight, textures);
+        glDrawTree(quadTree->d, camera->latitude, averageHeight, textures);
 
     }
     else
@@ -186,15 +189,18 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     }
 }
 
-void glDrawTree(Point3D treePoint, Camera camera, GLuint textures[10] ) {
+void glDrawTree(Point3D treePoint, float latitude, float averageHeight, GLuint textures[15] ) {
   if(treePoint.tree ==  true) {
-		glBindTexture(GL_TEXTURE_2D, textures[1]);
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glPushMatrix();
+    if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[1]);
+    if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[12]);
+    if(averageHeight>0.50 && averageHeight<=0.75)glBindTexture(GL_TEXTURE_2D,textures[13]);
+    if(averageHeight>0.75 && averageHeight<=1)glBindTexture(GL_TEXTURE_2D,textures[14]);
+		
+    glPushMatrix();
       glTranslatef(treePoint.x, treePoint.y,treePoint.z);
-      glRotatef(camera.latitude*180/M_PI,0.,0.,1.);
+      glRotatef(latitude*180/M_PI,0.,0.,1.);
 			glColor4f(1, 1, 1, 1);
+      glScalef(0.25,0.25,0.25);
 			glPushMatrix();
         glBegin(GL_POLYGON);
         glTexCoord2f( 0,  0); glVertex3f(0,-0.5,1);
