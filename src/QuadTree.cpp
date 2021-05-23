@@ -16,6 +16,9 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
     newNode->c = createMapPoint(c, params);
     newNode->d = createMapPoint(d, params);
 
+    /* On indique si un des quatres points du quad contient un tree */
+    newNode->hasTree = a.tree || b.tree || c.tree || d.tree;
+
     if(width == 1 && height == 1)
     {
         newNode->childA = NULL;

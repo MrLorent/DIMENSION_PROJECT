@@ -9,7 +9,7 @@ using namespace std;
 struct Camera {
     // GLUT_LOOK_AT PARAMETERS
     Point3D position;
-    float latitude; // HORIZONTALE
+    float latitude; // HORIZONTAL
     float longitude; // VERTICAL
     Vector3D up;
 

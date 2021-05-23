@@ -15,6 +15,9 @@ typedef struct Node {
     Point3D b; // Top right
     Point3D c; // Bottom right
     Point3D d; // Bottom left
+
+    // TREES
+    bool hasTree;
     
     // CHILDREN
     Node* childA = NULL; // Top left child

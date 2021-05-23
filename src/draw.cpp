@@ -1,8 +1,10 @@
 #include "../include/draw.h"
 #include "../include/objects.h"
 
-//---------FONCTION CREATION TEXTURE--------------
+/*################# TEXTURE #################*/
 
+// Fonction permettant de créer une texture GLuint
+// à partir d'un chemin vers une image
 GLuint creaTexture(char* path){
     SDL_Surface* image = IMG_Load(path);
     if(NULL == image) {
@@ -43,8 +45,25 @@ GLuint creaTexture(char* path){
 
 }
 
-//-----------------DRAW ---------------
+/*############## FONCTION DRAW ##############*/
 
+// Fonction permettant de générer un repère
+void glDrawRepere(float length) {
+	// dessin du repère
+	glBegin(GL_LINES);
+		glColor3f(1.,0.,0.);
+		glVertex3f(0.,0.,0.);
+		glVertex3f(length,0.,0.);
+		glColor3f(0.,1.,0.);
+		glVertex3i(0.,0.,0.);
+		glVertex3i(0.,length,0.);
+		glColor3f(0.,0.,1.);
+		glVertex3i(0.,0.,0.);
+		glVertex3i(0.,0.,length);
+	glEnd();
+}
+
+// Fonction qui génère la skybox
 void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 {
   float D=50;
@@ -115,20 +134,6 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
  
 }
 
-void glDrawRepere(float length) {
-	// dessin du repère
-	glBegin(GL_LINES);
-		glColor3f(1.,0.,0.);
-		glVertex3f(0.,0.,0.);
-		glVertex3f(length,0.,0.);
-		glColor3f(0.,1.,0.);
-		glVertex3i(0.,0.,0.);
-		glVertex3i(0.,length,0.);
-		glColor3f(0.,0.,1.);
-		glVertex3i(0.,0.,0.);
-		glVertex3i(0.,0.,length);
-	glEnd();
-}
 
 void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     if(!quadTree)
@@ -138,47 +143,27 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
 
     if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
     {
-      return;
+        return;
     }
 
     if(quadTree->isLeaf())
     {
-        float averageHeight=(quadTree->a.z+quadTree->b.z+quadTree->d.z)/3;
-        if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[8]);
-        if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[9]);
-        if(averageHeight>0.50 && averageHeight<=0.75)glBindTexture(GL_TEXTURE_2D,textures[10]);
-        if(averageHeight>0.75 && averageHeight<=1)glBindTexture(GL_TEXTURE_2D,textures[11]);
+        // ON DESSINE LES ELEMENTS DE LA MAP
 
-        glBegin(GL_TRIANGLES);
-            glColor4f(1, 1, 1, 1);
-            glTexCoord2f(1,1); glVertex3f(quadTree->a.x,quadTree->a.y,quadTree->a.z); 
-            glTexCoord2f(0,1); glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
-            glTexCoord2f(0,0); glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
-        glEnd();
-        glBindTexture(GL_TEXTURE_2D,0);
+        /* On dessine le triangle en haut à gauche du quad */
+        glDrawTriangle(quadTree->a, quadTree->b, quadTree->d, textures);
 
-        glDrawTree(quadTree->a, camera->latitude, averageHeight, textures);
-        glDrawTree(quadTree->b, camera->latitude, averageHeight, textures);
-        glDrawTree(quadTree->d, camera->latitude, averageHeight, textures);
+        /* On dessine le triangle en bas à droite du quad */
+        glDrawTriangle(quadTree->b, quadTree->c, quadTree->d, textures);
 
-        averageHeight=(quadTree->b.z+quadTree->c.z+quadTree->d.z)/3;
-        if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[8]);
-        if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[9]);
-        if(averageHeight>0.50 && averageHeight<=0.75)glBindTexture(GL_TEXTURE_2D,textures[10]);
-        if(averageHeight>0.75 && averageHeight<=1)glBindTexture(GL_TEXTURE_2D,textures[11]);
-
-        glBegin(GL_TRIANGLES);
-            glColor4f(1, 1, 1, 1);
-            glTexCoord2f(1,1); glVertex3f(quadTree->b.x,quadTree->b.y,quadTree->b.z);
-            glTexCoord2f(0,1); glVertex3f(quadTree->c.x,quadTree->c.y,quadTree->c.z);
-            glTexCoord2f(0,0); glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
-        glEnd();
-        glBindTexture(GL_TEXTURE_2D,0);
-        
-        glDrawTree(quadTree->b, camera->latitude, averageHeight, textures);
-        glDrawTree(quadTree->c, camera->latitude, averageHeight, textures);
-        glDrawTree(quadTree->d, camera->latitude, averageHeight, textures);
-
+        if(quadTree->hasTree)
+        {
+            /* On dessine les arbres s'il y en a */
+            glDrawTree(quadTree->a, camera->latitude, textures);
+            glDrawTree(quadTree->b, camera->latitude, textures);
+            glDrawTree(quadTree->c, camera->latitude, textures);
+            glDrawTree(quadTree->d, camera->latitude, textures);
+        }
     }
     else
     {
@@ -189,28 +174,46 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     }
 }
 
-void glDrawTree(Point3D treePoint, float latitude, float averageHeight, GLuint textures[15] ) {
-  if(treePoint.tree ==  true) {
-    if(averageHeight>=0 && averageHeight<=0.25)glBindTexture(GL_TEXTURE_2D,textures[1]);
-    if(averageHeight>0.25 && averageHeight<=0.50)glBindTexture(GL_TEXTURE_2D,textures[12]);
-    if(averageHeight>0.50 && averageHeight<=0.75)glBindTexture(GL_TEXTURE_2D,textures[13]);
-    if(averageHeight>0.75 && averageHeight<=1)glBindTexture(GL_TEXTURE_2D,textures[14]);
-		
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]){
+    float averageHeight = (a.z + b.z + c.z)/3;
+    if(averageHeight>=0 && averageHeight<=0.25)   glBindTexture(GL_TEXTURE_2D,textures[8]);
+    if(averageHeight>0.25 && averageHeight<=0.50)   glBindTexture(GL_TEXTURE_2D,textures[9]);
+    if(averageHeight>0.50 && averageHeight<=0.75)   glBindTexture(GL_TEXTURE_2D,textures[10]);
+    if(averageHeight>0.75 && averageHeight<=1)    glBindTexture(GL_TEXTURE_2D,textures[11]);
+
+    glBegin(GL_TRIANGLES);
+        glColor4f(1, 1, 1, 1);
+        glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
+        glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
+        glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
+}
+
+void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15] ) {
+    if(!treePoint.tree)
+    {
+      return;
+    }
+
+    if(treePoint.z>=0 && treePoint.z<=0.25)   glBindTexture(GL_TEXTURE_2D,textures[1]);
+    if(treePoint.z>0.25 && treePoint.z<=0.50)   glBindTexture(GL_TEXTURE_2D,textures[12]);
+    if(treePoint.z>0.50 && treePoint.z<=0.75)   glBindTexture(GL_TEXTURE_2D,textures[13]);
+    if(treePoint.z>0.75 && treePoint.z<=1)  glBindTexture(GL_TEXTURE_2D,textures[14]);
+    
     glPushMatrix();
-      glTranslatef(treePoint.x, treePoint.y,treePoint.z);
-      glRotatef(latitude*180/M_PI,0.,0.,1.);
-			glColor4f(1, 1, 1, 1);
-      glScalef(0.25,0.25,0.25);
-			glPushMatrix();
-        glBegin(GL_POLYGON);
-        glTexCoord2f( 0,  0); glVertex3f(0,-0.5,1);
-        glTexCoord2f( 1,  0); glVertex3f(0,0.5,1);
-        glTexCoord2f( 1,  1); glVertex3f(0,0.5,0);
-        glTexCoord2f( 0,  1); glVertex3f(0,-0.5,0);
-			  glEnd();
-      glPopMatrix();
-      	
-		glPopMatrix();
-		glBindTexture(GL_TEXTURE_2D,0);
-	}
+        glTranslatef(treePoint.x, treePoint.y,treePoint.z);
+        glRotatef(latitude*180/M_PI,0.,0.,1.);
+        glColor4f(1, 1, 1, 1);
+        glScalef(0.25,0.25,0.25);
+        glPushMatrix();
+            glBegin(GL_POLYGON);
+            glTexCoord2f( 0,  0); glVertex3f(0,-0.5,1);
+            glTexCoord2f( 1,  0); glVertex3f(0,0.5,1);
+            glTexCoord2f( 1,  1); glVertex3f(0,0.5,0);
+            glTexCoord2f( 0,  1); glVertex3f(0,-0.5,0);
+            glEnd();
+        glPopMatrix();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D,0);
 }

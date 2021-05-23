@@ -10,34 +10,31 @@
 #include "../include/preload.h"
 #include "../include/QuadTree.h"
 
-//---------VARIABLES GLOBALES--------------
+/*############# VARIABLES GLOBALES #############*/
 
-#define STEP_ANGLE	M_PI/90.
-#define STEP_PROF	M_PI/90.
-
-Params params;
-
-/* variables globales pour la gestion de la caméra */
+/*---------- GLOBALES POUR LA CAMERA ----------*/
 Camera camera;
+const float STEP_ANGLE = M_PI/90.;
+float speedFactor;
 
+
+/*------------ GLOBALES POUR LA MAP -----------*/
 QuadTree* quadTree;
-
-bool wireFrame;
-
 Point3D trees[6];
 
-float speed;
 
-//---------TEXTURE---------
-
+/*------------- GLOBALES TEXTURE --------------*/
+bool wireFrame;
 char* texturesLinks[15];
 GLuint textures[15];
 
+
 using namespace std;
 
-//---------INITIALISATION--------------
+/*############# INITIALISATION #############*/
 
 static void init() {
+	Params params;
 	PointChart heightMap;
 
 	// RECUPERATION DES PARAMETRES .TIMAC
@@ -45,7 +42,7 @@ static void init() {
   	readParams(&params, &camera);
   	loadHeightMap(&params, &heightMap);
 
-	// CHARGEMENT ARBRES
+	// INITIALISATION DES ARBRES
 	srand (time(NULL));
 	LoadTrees(&heightMap);
 	
@@ -60,19 +57,22 @@ static void init() {
 	);
 	freePointChart(&heightMap);
 
-	// INITIALISATION DE LA POSITION DE LA CAMERA
+	// INITIALISATION DES PARAMETRES DE CAMERA
+	/* Paramètre de position de la camera dans la map*/
 	camera.position.x = 0;
 	camera.position.y = 0;
 	camera.position.z = 1;
+	/* Vecteur up : vecteur normal au plan du sol (0;0;1) */
 	camera.up.x = 0;
 	camera.up.y = 0;
 	camera.up.z = 1;
+	/* Paramètre de position du regard */
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
+	/* Coefficient de vitesse calculer selon la taille de la map */
+	speedFactor = 0.001 * (params.xSize * params.ySize)/2;
 
-
-
-	// PARAMETRES DE TEXTURE
+	// INITIALISATION DES TEXTURES
 	wireFrame = false;
 	texturesLinks[0] = (char*)"doc/roche.jpg";
 	texturesLinks[1] = (char*)"doc/arbre1.png";
@@ -94,7 +94,7 @@ static void init() {
 		textures[i]=creaTexture(texturesLinks[i]);
 	}
 
-	/* INITIALISATION DES PARAMETRES GL */
+	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
 	glClearColor(0.3,0.3,0.3,0.0);
 	/* activation du ZBuffer */
@@ -197,10 +197,10 @@ static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	switch(c) {
 		case GLUT_KEY_UP :
-			if (camera.longitude > STEP_ANGLE) camera.longitude -= STEP_ANGLE;
+			if (camera.longitude > M_PI/6) camera.longitude -= STEP_ANGLE;
 			break;
 		case GLUT_KEY_DOWN :
-			if(camera.longitude < M_PI-STEP_ANGLE) camera.longitude += STEP_ANGLE;
+			if(camera.longitude < M_PI-M_PI/6) camera.longitude += STEP_ANGLE;
 			break;
 		case GLUT_KEY_LEFT :
 			camera.latitude += STEP_ANGLE;
@@ -210,7 +210,7 @@ static void kbdSpFunc(int c, int x, int y) {
 			break;
 		default:
 			if(GLUT_ACTIVE_SHIFT){
-				camera.position.z -= 1;
+				camera.position.z -= speedFactor;
 			}
 			printf("Appui sur une touche spéciale\n");
 	}
@@ -222,30 +222,28 @@ static void kbdFunc(unsigned char c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	/* 'q' ou 'Q'*/
 
-	speed=0.01*params.xSize;
-
 	switch(c) {
 		case 27 :
 			exit(0);
 			break;
 		case 'Z' : case 'z' :
-			camera.position.x += speed * cos(camera.latitude);
-			camera.position.y += speed * sin(camera.latitude);
+			camera.position.x += speedFactor * cos(camera.latitude);
+			camera.position.y += speedFactor * sin(camera.latitude);
 			break;
 		case 'S' : case 's' : 
-			camera.position.x -= speed * cos(camera.latitude);
-			camera.position.y -= speed * sin(camera.latitude);
+			camera.position.x -= speedFactor * cos(camera.latitude);
+			camera.position.y -= speedFactor * sin(camera.latitude);
 			break;
 		case 'Q' : case 'q' : 
-			camera.position.x += speed * cos(camera.latitude + M_PI/2);
-			camera.position.y += speed * sin(camera.latitude + M_PI/2);
+			camera.position.x += speedFactor * cos(camera.latitude + M_PI/2);
+			camera.position.y += speedFactor * sin(camera.latitude + M_PI/2);
 			break;
 		case 'D' : case 'd' : 
-			camera.position.x -= speed * cos(camera.latitude + M_PI/2);
-			camera.position.y -= speed * sin(camera.latitude + M_PI/2);
+			camera.position.x -= speedFactor * cos(camera.latitude + M_PI/2);
+			camera.position.y -= speedFactor * sin(camera.latitude + M_PI/2);
 			break;
 		case ' ' :
-			camera.position.z += speed;
+			camera.position.z += speedFactor;
 			break;
 		case 'F' : case 'f' : 
 			if(wireFrame){
