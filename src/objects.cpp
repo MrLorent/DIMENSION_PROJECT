@@ -3,18 +3,18 @@
 bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
     // CALCUL DU PERIMETRE DE CHAMP DE VISION
     
-    float horizontalFov = this->getFovHInRadian();
-    float limitLength = sqrt(this->zFar * this->zFar + (tan(horizontalFov)/this->zFar) * (tan(horizontalFov)/this->zFar)); 
+    float halfFovH = this->getFovHInRadian()/2;
+    float limitLength = sqrt(this->zFar * this->zFar + (tan(halfFovH) * this->zFar) * (tan(halfFovH) * this->zFar));
 
     Point3D left = createPoint(
-        this->position.x + limitLength * cos(this->latitude + horizontalFov),
-        this->position.y + limitLength * sin(this->latitude + horizontalFov),
+        this->position.x + limitLength * cos(this->latitude + halfFovH),
+        this->position.y + limitLength * sin(this->latitude + halfFovH),
         this->position.z
     );
     
     Point3D right = createPoint(
-        this->position.x + limitLength * cos(this->latitude - horizontalFov),
-        this->position.y + limitLength * sin(this->latitude - horizontalFov),
+        this->position.x + limitLength * cos(this->latitude - halfFovH),
+        this->position.y + limitLength * sin(this->latitude - halfFovH),
         this->position.z
     );
 
@@ -22,17 +22,21 @@ bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
     this->frontLimit = createVectorFromPoints(left, right);
     this->rightLimit = createVectorFromPoints(right, this->position);
 
+    printPoint3D(this->leftLimit);
+    printPoint3D(this->frontLimit);
+    printPoint3D(this->rightLimit);
+
     Point3D pointsToCheck[4] = { a, b, c, d };
 
-    if(allOnLeft(this->position, this->leftLimit, pointsToCheck))
+    if(allOnLeft(position, this->leftLimit, pointsToCheck))
     {
         return false;
     }
-    // else if (allOnLeft(this->position, this->frontLimit, pointsToCheck))
-    // {
-    //     return false;
-    // }
-    else if (allOnLeft(this->position, this->rightLimit, pointsToCheck))
+    else if (allOnLeft(left, this->frontLimit, pointsToCheck))
+    {
+        return false;
+    }
+    else if (allOnLeft(right, this->rightLimit, pointsToCheck))
     {
         return false;
     }

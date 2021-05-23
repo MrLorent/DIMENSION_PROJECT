@@ -86,7 +86,6 @@ static void init() {
 	texturesLinks[11] = (char*)"doc/neige.jpeg";
 
 	for(int i=0; i<12;i++){
-		cout << texturesLinks[i];
 		textures[i]=creaTexture(texturesLinks[i]);
 	}
 
