@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <time.h> 
 #include "../include/preload.h"
 
 // Constuit une structure Params, et instancie ses valeurs à 0
@@ -98,6 +99,18 @@ Point3D createMapPoint(Point3D p, Params params){
     newMapPoint.x = ((float) p.x/params.xPixels)*params.xSize;
     newMapPoint.y = ((float) p.y/params.yPixels)*params.ySize;
     newMapPoint.z = params.zMin + (p.z/params.rgbMaxValue)*(params.zMax - params.zMin);
+    newMapPoint.tree = p.tree;
 
     return newMapPoint;
 }
+
+// Charge arbre aléatoirement
+void LoadTrees(PointChart* heightMap){
+    int randomX=0;
+    int randomY=0;
+    for (int j=0; j < heightMap->width/2 ; j++){
+        randomX= rand() % heightMap->width;
+        randomY= rand() % heightMap->height;
+        heightMap->points[randomY][randomX].tree = true;
+    };
+};

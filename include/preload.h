@@ -43,4 +43,8 @@ void loadHeightMap(Params* params, PointChart* heightMap);
 // Converti valeur en position pour scène
 Point3D createMapPoint(Point3D p, Params params);
 
+// Charge arbre aléatoirement
+void LoadTrees(PointChart* heightMap);
+
+
 #endif

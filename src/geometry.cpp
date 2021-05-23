@@ -7,9 +7,10 @@
 // Construit le point 
 Point3D createPoint(float x, float y, float z){
     Point3D newPoint ;
-    newPoint.x = x;
-    newPoint.y = y;
-    newPoint.z = z;
+    newPoint.x=x;
+    newPoint.y=y;
+    newPoint.z=z;
+    newPoint.tree = false;
     return newPoint;
 }
 

@@ -24,7 +24,7 @@ QuadTree* quadTree;
 
 bool wireFrame;
 
-Tree trees[6];
+Point3D trees[6];
 
 float speed;
 
@@ -44,6 +44,10 @@ static void init() {
 	params = createParams();
   	readParams(&params, &camera);
   	loadHeightMap(&params, &heightMap);
+
+	// CHARGEMENT ARBRES
+	srand (time(NULL));
+	LoadTrees(&heightMap);
 	
 	// INITIALISATION DU QUADTREE
 	quadTree = createQuadTree(
@@ -66,14 +70,12 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 
-	// POSITIONS ARBRES
-	srand (time(NULL));
-	createTrees(trees);
+
 
 	// PARAMETRES DE TEXTURE
 	wireFrame = false;
 	texturesLinks[0] = (char*)"doc/roche.jpg";
-	texturesLinks[1] = (char*)"doc/arbre.jpg";
+	texturesLinks[1] = (char*)"doc/arbre1.png";
 	texturesLinks[2] = (char*)"doc/skybox-droite.png";
 	texturesLinks[3] = (char*)"doc/skybox-devant.png";
 	texturesLinks[4] = (char*)"doc/skybox-gauche.png";
@@ -84,8 +86,11 @@ static void init() {
 	texturesLinks[9] = (char*)"doc/roche.jpg";
 	texturesLinks[10] = (char*)"doc/roche2.jpg";
 	texturesLinks[11] = (char*)"doc/neige.jpeg";
+	texturesLinks[12] = (char*)"doc/arbre2.png";
+	texturesLinks[13] = (char*)"doc/arbre3.png";
+	texturesLinks[14] = (char*)"doc/arbre4.png";
 
-	for(int i=0; i<12;i++){
+	for(int i=0; i<15;i++){
 		textures[i]=creaTexture(texturesLinks[i]);
 	}
 
@@ -119,6 +124,7 @@ static void reshapeFunc(int width, int height) {
 
 	/* Retour a la pile de matrice Modelview
 			et effacement de celle-ci */
+	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -150,6 +156,9 @@ static void drawFunc(void) {
 		);
 
 	glColor3f(1.0,0.0,0.0);
+
+	glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glDrawHeightMap(quadTree, &camera, textures);
 
