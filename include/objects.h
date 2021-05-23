@@ -3,7 +3,6 @@
 #include <math.h>
 
 #include "geometry.h"
-#include "objects.h"
 
 using namespace std;
 
@@ -27,14 +26,5 @@ struct Camera {
 };
 
 bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4]);
-
-struct Tree{
-    float x;
-    float y;
-    float z;
-};
-
-void createTrees(Tree trees[6]);
-
 
 #endif 

@@ -61,7 +61,6 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
   glEnd();
   glBindTexture(GL_TEXTURE_2D,0);
 
-
   //Dessus
   glBindTexture(GL_TEXTURE_2D,textures[7]);
   glBegin(GL_QUADS);
@@ -171,6 +170,12 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
             glTexCoord2f(0,0); glVertex3f(quadTree->d.x,quadTree->d.y,quadTree->d.z);
         glEnd();
         glBindTexture(GL_TEXTURE_2D,0);
+
+        glDrawTree(quadTree->a,camera, textures);
+        glDrawTree(quadTree->b,camera, textures);
+        glDrawTree(quadTree->c,camera, textures);
+        glDrawTree(quadTree->d,camera, textures);
+
     }
     else
     {
@@ -180,25 +185,26 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
         glDrawHeightMap(quadTree->childD, camera, textures);
     }
 }
-/*
-void glDrawTrees(Tree trees[6], Camera camera, GLuint textures[10]) {
-	for (int i=0 ; i<6 ; i++){
+
+void glDrawTree(Point3D treePoint, Camera camera, GLuint textures[10] ) {
+  if(treePoint.tree ==  true) {
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPushMatrix();
-			
-			glTranslatef(trees[i].x - cos(camera.latitude)*sin(camera.longitude), 
-			trees[i].y - sin(camera.latitude)*sin(camera.longitude),	
-			trees[i].z);
-			glRotatef((90+camera.latitude*180/M_PI),0.0,0.0,1);
+      glTranslatef(treePoint.x, treePoint.y,treePoint.z);
+      glRotatef(camera.latitude*180/M_PI,0.,0.,1.);
 			glColor4f(1, 1, 1, 1);
-			glBegin(GL_POLYGON);
-			glTexCoord3f( 0,  0, 0); glVertex3f(-0.5,-0.5,1);
-			glTexCoord3f( 0,  1, 0); glVertex3f(-0.5,-0.5,0);
-			glTexCoord3f( 1,  1, 0); glVertex3f(0.5,-0.5,0);
-			glTexCoord3f( 1,  0, 0); glVertex3f(0.5,-0.5,1);
-			glEnd();
-			
+			glPushMatrix();
+        glBegin(GL_POLYGON);
+        glTexCoord2f( 0,  0); glVertex3f(0,-0.5,1);
+        glTexCoord2f( 1,  0); glVertex3f(0,0.5,1);
+        glTexCoord2f( 1,  1); glVertex3f(0,0.5,0);
+        glTexCoord2f( 0,  1); glVertex3f(0,-0.5,0);
+			  glEnd();
+      glPopMatrix();
+      	
 		glPopMatrix();
 		glBindTexture(GL_TEXTURE_2D,0);
 	}
-}*/
+}

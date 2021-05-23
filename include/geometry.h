@@ -8,11 +8,20 @@ using namespace std;
 
 /*############# POINT #############*/
 
-typedef struct Vec3f{
+struct Point3D{
     float x;
     float y;
     float z;
-} Point3D, Vector3D;
+    bool tree;
+};
+
+/*############# VECTOR #############*/
+
+struct Vector3D{
+    float x;
+    float y;
+    float z;
+};
 
 /*-------- CONSTRUCTEURS ---------*/
 

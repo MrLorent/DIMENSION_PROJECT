@@ -24,7 +24,7 @@ QuadTree* quadTree;
 
 bool wireFrame;
 
-Tree trees[6];
+Point3D trees[6];
 
 float speed;
 
@@ -44,6 +44,10 @@ static void init() {
 	params = createParams();
   	readParams(&params, &camera);
   	loadHeightMap(&params, &heightMap);
+
+	// CHARGEMENT ARBRES
+	srand (time(NULL));
+	LoadTrees(&heightMap);
 	
 	// INITIALISATION DU QUADTREE
 	quadTree = createQuadTree(
@@ -66,14 +70,12 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 
-	// POSITIONS ARBRES
-	srand (time(NULL));
-	createTrees(trees);
+
 
 	// PARAMETRES DE TEXTURE
 	wireFrame = false;
 	texturesLinks[0] = (char*)"doc/roche.jpg";
-	texturesLinks[1] = (char*)"doc/arbre.jpg";
+	texturesLinks[1] = (char*)"doc/arbre1.png";
 	texturesLinks[2] = (char*)"doc/skybox-droite.png";
 	texturesLinks[3] = (char*)"doc/skybox-devant.png";
 	texturesLinks[4] = (char*)"doc/skybox-gauche.png";
