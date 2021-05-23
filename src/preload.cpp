@@ -31,7 +31,7 @@ void readParams(Params* params, Camera* camera){
         // PARAMETRE CAMERA
         file >> camera->zNear;
         file >> camera->zFar;
-        file >> camera->fov;
+        file >> camera->fovV;
 
         remove("params.timac");
     }else{

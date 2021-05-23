@@ -108,8 +108,7 @@ static void init() {
 static void reshapeFunc(int width, int height) {
 	GLfloat  h = (GLfloat) width / (GLfloat) height ;
 	
-	camera.fovForFrustum = camera.fov*M_PI/180;
-	camera.fovForFrustum = 2.0 * atan(tan(camera.fovForFrustum * 0.5) * h);
+	camera.fovH = 2.0 * atan(tan(camera.getFovVInRadian() * 0.5) * h) * 180/M_PI;
 	
 	/* dimension de l'écran GL */
 	glViewport(0, 0, (GLint)width, (GLint)height);
@@ -117,7 +116,7 @@ static void reshapeFunc(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	/* définition de la camera */
-	gluPerspective( camera.fov, h, camera.zNear, camera.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
+	gluPerspective(camera.fovV, h, camera.zNear, camera.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
 
 	/* Retour a la pile de matrice Modelview
 			et effacement de celle-ci */

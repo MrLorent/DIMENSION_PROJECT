@@ -137,10 +137,10 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
         return;
     }
 
-	/*if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
-	{
-		return;
-	}*/
+    if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
+    {
+      return;
+    }
 
     if(quadTree->isLeaf())
     {

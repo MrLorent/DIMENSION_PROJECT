@@ -17,13 +17,16 @@ struct Camera {
     // VISUAL FIELD
     float zNear;
     float zFar;
-    float fov;
-    float fovForFrustum;
+    float fovH;
+    float fovV;
     Vector3D leftLimit;
     Vector3D frontLimit;
     Vector3D rightLimit;
 
     bool sees(Point3D a, Point3D b, Point3D c, Point3D d);
+
+    float getFovHInRadian();
+    float getFovVInRadian();
 };
 
 bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4]);
