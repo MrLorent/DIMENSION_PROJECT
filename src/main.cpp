@@ -153,6 +153,7 @@ static void drawFunc(void) {
 
 		glDrawRepere(2.0);
 
+		quadTree->initTmpPoints();
 		glDrawHeightMap(quadTree, &camera, textures);
 
 		float position[4] = {5.0,5.0,5.0,1.0};
