@@ -159,7 +159,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 }
 
 
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
+void glDrawHeightMap(QuadTree* quadTree, int currentLevel, Camera* camera, GLuint textures[15]){
     if(!quadTree)
     {
         return;
@@ -170,7 +170,7 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
         return;
     }
 
-    if(quadTree->isLeaf())
+    if(quadTree->isLeaf() /*|| LevelOfDetailsReached(quadTree, currentLevel)*/)
     {
         // ON DESSINE LES ELEMENTS DE LA MAP
 
@@ -191,11 +191,16 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     }
     else
     {
-        glDrawHeightMap(quadTree->childA, camera, textures);
-        glDrawHeightMap(quadTree->childB, camera, textures);
-        glDrawHeightMap(quadTree->childC, camera, textures);
-        glDrawHeightMap(quadTree->childD, camera, textures);
+        currentLevel++;
+        glDrawHeightMap(quadTree->childA, currentLevel, camera, textures);
+        glDrawHeightMap(quadTree->childB, currentLevel, camera, textures);
+        glDrawHeightMap(quadTree->childC, currentLevel, camera, textures);
+        glDrawHeightMap(quadTree->childD, currentLevel, camera, textures);
     }
+}
+
+bool LevelOfDetailsReached(QuadTree* quad, int level){
+
 }
 
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]){

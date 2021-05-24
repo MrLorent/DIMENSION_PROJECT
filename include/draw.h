@@ -13,7 +13,8 @@
 GLuint creaTexture(char* path);
 void loadTextures(GLuint textures[15]);
 void glDrawRepere(float length);
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]);
+void glDrawHeightMap(QuadTree* quadTree, int currentLevel, Camera* camera, GLuint textures[15]);
+bool levelOfDetailsReached(QuadTree* quad, int level);
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]);
 void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15]);
 void glDrawSkybox(float x,float y,float z,  GLuint textures[15]);

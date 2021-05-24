@@ -54,6 +54,7 @@ static void init() {
 		&heightMap,
 		params
 	);
+	cout << quadTree->height() << endl;
 	freePointChart(&heightMap);
 
 	// INITIALISATION DES PARAMETRES DE CAMERA
@@ -141,7 +142,9 @@ static void drawFunc(void) {
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glDrawHeightMap(quadTree, &camera, textures);
+
+	int level = 0;
+	glDrawHeightMap(quadTree, level, &camera, textures);
 
 	glPushMatrix();
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
