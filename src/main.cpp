@@ -21,6 +21,7 @@ Camera camera;
 /*------------ GLOBALES POUR LA MAP -----------*/
 QuadTree* quadTree;
 Point3D trees[6];
+Light sunShine = createLight(createPoint(0,0,1), createColor(255,255,255));
 
 
 /*------------- GLOBALES TEXTURE --------------*/
@@ -149,6 +150,7 @@ static void drawFunc(void) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glDrawHeightMap(quadTree, &camera, textures, sunShine);
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
 
 		glDrawRepere(2.0);
@@ -229,6 +231,14 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case 'D' : case 'd' : 
 			camera.position.x -= SPEED_FACTOR * cos(camera.latitude + M_PI/2);
 			camera.position.y -= SPEED_FACTOR * sin(camera.latitude + M_PI/2);
+			break;
+		case 'P' : case 'p' : 
+			sunShine.position.x++;
+			sunShine.position.y++;
+			break;
+		case 'M' : case 'm' : 
+			sunShine.position.x--;
+			sunShine.position.y--;
 			break;
 		case ' ' :
 			camera.position.z += SPEED_FACTOR;

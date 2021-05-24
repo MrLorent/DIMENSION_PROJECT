@@ -9,6 +9,7 @@
 
 #include "QuadTree.h"
 #include "objects.h"
+#include "geometry.h"
 
 void initTextureLevels(float min, float max);
 void loadTextures(GLuint textures[15]);
@@ -16,11 +17,12 @@ GLuint creaTexture(char* path);
 
 void initLODLevels(float max);
 void glDrawRepere(float length);
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]);
 bool LevelOfDetailsReached(QuadTree* quad, Point3D position);
 void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEVEL);
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]);
-void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15]);
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Light sunShine);
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine);
+void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light sunShine); 
 void glDrawSkybox(float x,float y,float z,  GLuint textures[15]);
+Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c);
 
 #endif // DRAW_H

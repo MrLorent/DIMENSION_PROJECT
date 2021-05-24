@@ -50,4 +50,27 @@ Vector3D normalize(Vector3D v);
 
 float det(Vector3D v1, Vector3D v2);
 
+Vector3D prodVect(Vector3D v1, Vector3D v2);
+
+/*################ COULEUR ################*/
+
+struct Color3f {
+    float r;
+    float g;
+    float b;
+};
+
+Color3f createColor(float r, float g, float b);
+Color3f multColor(Color3f c, float a);
+Color3f multColors(Color3f c1, Color3f c2);
+
+/*################ LUMIERE ################*/
+
+struct Light {
+    Point3D position;
+    Color3f color;
+};
+
+Light createLight(Point3D position, Color3f color);
+
 #endif

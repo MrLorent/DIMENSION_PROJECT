@@ -1,5 +1,6 @@
 #include "../include/draw.h"
 #include "../include/objects.h"
+#include "../include/geometry.h"
 
 float TEXTURE_LEVEL_1 = 0;
 float TEXTURE_LEVEL_2 = 0;
@@ -84,6 +85,19 @@ GLuint creaTexture(char* path){
 
     return texture_id;
 
+}
+
+/*############## LUMIERE ##############*/
+
+Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c){
+  Vector3D v1 = createVectorFromPoints(a,b);
+  Vector3D v2 = createVectorFromPoints(a,c);
+  Vector3D normale = prodVect(v1,v2);
+  Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
+  Vector3D vectSunShine = createVectorFromPoints(sunShine.position,centre);
+  normale = normalize(normale);
+  Color3f triangleLight = multColor( sunShine.color , dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
+  return triangleLight;
 }
 
 /*############## FONCTION DRAW ##############*/
@@ -182,8 +196,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 
 }
 
-
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Light sunShine){
     if(!quadTree)
     {
         return;
@@ -215,10 +228,10 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     }
     else
     {
-        glDrawHeightMap(quadTree->childA, camera, textures);
-        glDrawHeightMap(quadTree->childB, camera, textures);
-        glDrawHeightMap(quadTree->childC, camera, textures);
-        glDrawHeightMap(quadTree->childD, camera, textures);
+        glDrawHeightMap(quadTree->childA, camera, textures, sunShine);
+        glDrawHeightMap(quadTree->childB, camera, textures, sunShine);
+        glDrawHeightMap(quadTree->childC, camera, textures, sunShine);
+        glDrawHeightMap(quadTree->childD, camera, textures, sunShine);
     }
 }
 
@@ -356,16 +369,17 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
     }
 }
 
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15])
-{
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine){
     float averageHeight = (a.z + b.z + c.z)/3;
     if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[8]);
     if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[9]);
     if(averageHeight > TEXTURE_LEVEL_2 && averageHeight <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[10]);
     if(averageHeight > TEXTURE_LEVEL_3)    glBindTexture(GL_TEXTURE_2D,textures[11]);
 
+    Color3f triangleLight = GetLight(sunShine, a, b, c);
+
     glBegin(GL_TRIANGLES);
-        glColor4f(1, 1, 1, 1);
+        glColor4f(triangleLight.r,triangleLight.g,triangleLight.b, 1);
         glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
         glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
         glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
@@ -373,12 +387,17 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15])
     glBindTexture(GL_TEXTURE_2D,0);
 }
 
-void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15] ) {
+void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light sunShine) {
     if(!treePoint.tree)
     {
       return;
     }
+    
+    Point3D a = createPoint(0.,-0.5,1.);
+    Point3D b = createPoint(0.,0.5,1.);
+    Point3D c = createPoint(0.,0.5,0.);
 
+    Color3f triangleLight = GetLight( sunShine, a , b , c );
     if(treePoint.z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[1]);
     if(treePoint.z > TEXTURE_LEVEL_1 && treePoint.z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[12]);
     if(treePoint.z > TEXTURE_LEVEL_2 && treePoint.z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[13]);
@@ -387,7 +406,7 @@ void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15] ) {
     glPushMatrix();
         glTranslatef(treePoint.x, treePoint.y,treePoint.z);
         glRotatef(latitude*180/M_PI,0.,0.,1.);
-        glColor4f(1, 1, 1, 1);
+        glColor4f(triangleLight.r,triangleLight.g,triangleLight.b, 1);
         glScalef(0.25,0.25,0.25);
         glPushMatrix();
             glBegin(GL_POLYGON);
