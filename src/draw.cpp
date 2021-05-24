@@ -8,6 +8,7 @@ float TEXTURE_LEVEL_3 = 0;
 float LOD_LEVEL_1 = 0;
 float LOD_LEVEL_2 = 0;
 float LOD_LEVEL_3 = 0;
+float LOD_LEVEL_4 = 0;
 
 /*################# TEXTURE #################*/
 
@@ -91,6 +92,7 @@ void initLODLevels(float zFar){
   LOD_LEVEL_1 = zFar * 1/16;
   LOD_LEVEL_2 = zFar * 3/16;
   LOD_LEVEL_3 = zFar * 5/16;
+  LOD_LEVEL_4 = zFar * 7/16;
 }
 
 // Fonction permettant de générer un repère
@@ -241,7 +243,11 @@ bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
     {
         return true;
     }
-    else if (distance >= LOD_LEVEL_3 && quad->height == 4)
+    else if (distance >= LOD_LEVEL_3 && distance < LOD_LEVEL_4 && quad->height == 4)
+    {
+        return true;
+    }
+    else if (distance >= LOD_LEVEL_4 && quad->height == 5)
     {
         return true;
     }
