@@ -1,22 +1,22 @@
 #include "../include/draw.h"
 #include "../include/objects.h"
 
-float MIN_LEVEL = 0;
-float FIRST_LEVEL = 0;
-float SECOND_LEVEL = 0;
-float THIRD_LEVEL = 0;
-float MAX_LEVEL = 0;
+float TEXTURE_LEVEL_1 = 0;
+float TEXTURE_LEVEL_2 = 0;
+float TEXTURE_LEVEL_3 = 0;
+
+float LOD_LEVEL_1 = 0;
+float LOD_LEVEL_2 = 0;
+float LOD_LEVEL_3 = 0;
 
 /*################# TEXTURE #################*/
 
 void initTextureLevels(float min, float max){
     float zSpacing = max - min;
 
-    MIN_LEVEL = min;
-    FIRST_LEVEL = zSpacing * 1/4;
-    SECOND_LEVEL = zSpacing * 1/2;
-    THIRD_LEVEL = zSpacing * 3/4;
-    MAX_LEVEL = max;
+    TEXTURE_LEVEL_1 = zSpacing * 1/4;
+    TEXTURE_LEVEL_2 = zSpacing * 1/2;
+    TEXTURE_LEVEL_3 = zSpacing * 3/4;
 }
 
 void loadTextures(GLuint textures[15])
@@ -86,6 +86,12 @@ GLuint creaTexture(char* path){
 }
 
 /*############## FONCTION DRAW ##############*/
+
+void initLODLevels(float zFar){
+  LOD_LEVEL_1 = zFar * 1/16;
+  LOD_LEVEL_2 = zFar * 3/16;
+  LOD_LEVEL_3 = zFar * 5/16;
+}
 
 // Fonction permettant de générer un repère
 void glDrawRepere(float length) {
@@ -176,7 +182,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 }
 
 
-void glDrawHeightMap(QuadTree* quadTree, int currentLevel, Camera* camera, GLuint textures[15]){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
     if(!quadTree)
     {
         return;
@@ -187,7 +193,7 @@ void glDrawHeightMap(QuadTree* quadTree, int currentLevel, Camera* camera, GLuin
         return;
     }
 
-    if(quadTree->isLeaf() /*|| LevelOfDetailsReached(quadTree, currentLevel)*/)
+    if(LevelOfDetailsReached(quadTree, camera->position))
     {
         // ON DESSINE LES ELEMENTS DE LA MAP
 
@@ -208,24 +214,49 @@ void glDrawHeightMap(QuadTree* quadTree, int currentLevel, Camera* camera, GLuin
     }
     else
     {
-        currentLevel++;
-        glDrawHeightMap(quadTree->childA, currentLevel, camera, textures);
-        glDrawHeightMap(quadTree->childB, currentLevel, camera, textures);
-        glDrawHeightMap(quadTree->childC, currentLevel, camera, textures);
-        glDrawHeightMap(quadTree->childD, currentLevel, camera, textures);
+        glDrawHeightMap(quadTree->childA, camera, textures);
+        glDrawHeightMap(quadTree->childB, camera, textures);
+        glDrawHeightMap(quadTree->childC, camera, textures);
+        glDrawHeightMap(quadTree->childD, camera, textures);
     }
 }
 
-bool LevelOfDetailsReached(QuadTree* quad, int level){
+bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
+    if(quad->isLeaf())
+    {
+      return true;
+    }
 
+    float distance = quad->getDistanceFrom(position);
+
+    if(distance < LOD_LEVEL_1)
+    {
+        return false;
+    }
+    else if (distance >= LOD_LEVEL_1 && distance < LOD_LEVEL_2 && quad->height == 2)
+    {
+        return true;
+    }
+    else if (distance >= LOD_LEVEL_2 && distance < LOD_LEVEL_3 && quad->height == 3)
+    {
+        return true;
+    }
+    else if (distance >= LOD_LEVEL_3 && quad->height == 4)
+    {
+        return true;
+    }
+    else
+    {
+      return false;
+    }
 }
 
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]){
     float averageHeight = (a.z + b.z + c.z)/3;
-    if(averageHeight >= MIN_LEVEL && averageHeight <= FIRST_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[8]);
-    if(averageHeight > FIRST_LEVEL && averageHeight <= SECOND_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[9]);
-    if(averageHeight > SECOND_LEVEL && averageHeight <= THIRD_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[10]);
-    if(averageHeight > THIRD_LEVEL && averageHeight <= MAX_LEVEL)    glBindTexture(GL_TEXTURE_2D,textures[11]);
+    if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[8]);
+    if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[9]);
+    if(averageHeight > TEXTURE_LEVEL_2 && averageHeight <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[10]);
+    if(averageHeight > TEXTURE_LEVEL_3)    glBindTexture(GL_TEXTURE_2D,textures[11]);
 
     glBegin(GL_TRIANGLES);
         glColor4f(1, 1, 1, 1);
@@ -242,10 +273,10 @@ void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15] ) {
       return;
     }
 
-    if(treePoint.z >= MIN_LEVEL && treePoint.z <= FIRST_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[1]);
-    if(treePoint.z > FIRST_LEVEL && treePoint.z <= SECOND_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[12]);
-    if(treePoint.z > SECOND_LEVEL && treePoint.z <= THIRD_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[13]);
-    if(treePoint.z > THIRD_LEVEL && treePoint.z <= MAX_LEVEL)  glBindTexture(GL_TEXTURE_2D,textures[14]);
+    if(treePoint.z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[1]);
+    if(treePoint.z > TEXTURE_LEVEL_1 && treePoint.z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[12]);
+    if(treePoint.z > TEXTURE_LEVEL_2 && treePoint.z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[13]);
+    if(treePoint.z > TEXTURE_LEVEL_3)  glBindTexture(GL_TEXTURE_2D,textures[14]);
     
     glPushMatrix();
         glTranslatef(treePoint.x, treePoint.y,treePoint.z);

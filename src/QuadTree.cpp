@@ -11,6 +11,10 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
     // CREATION DU QUADTREE
     Node* newNode = new Node;
 
+    /* On instancie la height du node à 0 pour l'instant */
+    newNode->height = 0;
+
+    /* On instancie les coin du quad avec des points de la map */
     newNode->a = createMapPoint(a, params);
     newNode->b = createMapPoint(b, params);
     newNode->c = createMapPoint(c, params);
@@ -125,27 +129,55 @@ bool Node::isLeaf(){
     return this->childA == NULL && this->childB == NULL && this->childC == NULL && this->childD == NULL;
 }
 
-int Node::height(){
+int Node::getHeight(){
     if(this->isLeaf()){
+        this->height = 1;
         return 1;
     }else{
         int heightA = 0, heightB = 0, heightC = 0, heightD = 0;
 
         // RECUPERATION DES HAUTEURS DES ENFANTS
-        if(this->childA) heightA = this->childA->height();
-        if(this->childB) heightB = this->childB->height();
-        if(this->childC) heightC = this->childC->height();
-        if(this->childD) heightD = this->childD->height();
+        if(this->childA) heightA = this->childA->getHeight();
+        if(this->childB) heightB = this->childB->getHeight();
+        if(this->childC) heightC = this->childC->getHeight();
+        if(this->childD) heightD = this->childD->getHeight();
 
         // PREMIERE COMPARAISON
         if(heightA < heightB) heightA = heightB;
         if(heightC < heightD) heightC = heightD;
 
         // SECONDE ET DERNIERE COMPARAISON
-        if(heightA > heightC){
+        if(heightA > heightC)
+        {
+            this->height = heightA +1;
             return heightA + 1;
-        }else{
+        }
+        else
+        {
+            this->height = heightC +1;
             return heightC + 1;
         }
+    }
+}
+
+float Node::getDistanceFrom(Point3D position){
+
+    // RECUPERATION DE LA DISTANCE A CHACUN DES ANGLES DU QUAD
+    float distanceA = norm(createVectorFromPoints(position, this->a));
+    float distanceB = norm(createVectorFromPoints(position, this->b));
+    float distanceC = norm(createVectorFromPoints(position, this->c));
+    float distanceD = norm(createVectorFromPoints(position, this->d));
+
+    // PREMIERE COMPARAISON
+    if(distanceA < distanceB) distanceA = distanceB;
+    if(distanceC < distanceD) distanceC = distanceD;
+
+    // SECONDE ET DERNIERE COMPARAISON
+    if(distanceA > distanceB){
+        return distanceA;
+    }
+    else
+    {
+        return distanceB;
     }
 }

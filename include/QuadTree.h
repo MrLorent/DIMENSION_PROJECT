@@ -10,6 +10,9 @@ const int BOTTOM_RIGHT = 2;
 const int BOTTOM_LEFT = 3;
 
 typedef struct Node {
+    // POSITION IN TREE
+    int height;
+
     // CORNERS
     Point3D a; // Top left
     Point3D b; // Top right
@@ -33,11 +36,13 @@ typedef struct Node {
     Node* getChildC();
     Node* getChildD();
     
+    float getDistanceFrom(Point3D position);
+    
     // EN ECRITURE
 
     /*############### METHODES ###############*/
     bool isLeaf();
-    int height();
+    int getHeight();
 
 }QuadTree, Node;
 
