@@ -14,11 +14,17 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
     /* On instancie la height du node à 0 pour l'instant */
     newNode->height = 0;
 
-    /* On instancie les coin du quad avec des points de la map */
+    /* On instancie les coins du quad qui serviront de références */
     newNode->a = createMapPoint(a, params);
     newNode->b = createMapPoint(b, params);
     newNode->c = createMapPoint(c, params);
     newNode->d = createMapPoint(d, params);
+
+    /* On instancie les coins du quad qui serviront au dessin de la map */
+    newNode->tmpA = newNode->a;
+    newNode->tmpB = newNode->b;
+    newNode->tmpC = newNode->c;
+    newNode->tmpD = newNode->d;
 
     /* On indique si un des quatres points du quad contient un tree */
     newNode->hasTree = a.tree || b.tree || c.tree || d.tree;
@@ -169,15 +175,15 @@ float Node::getDistanceFrom(Point3D position){
     float distanceD = norm(createVectorFromPoints(position, this->d));
 
     // PREMIERE COMPARAISON
-    if(distanceA < distanceB) distanceA = distanceB;
-    if(distanceC < distanceD) distanceC = distanceD;
+    if(distanceA > distanceB) distanceA = distanceB;
+    if(distanceC > distanceD) distanceC = distanceD;
 
     // SECONDE ET DERNIERE COMPARAISON
-    if(distanceA > distanceB){
+    if(distanceA < distanceC){
         return distanceA;
     }
     else
     {
-        return distanceB;
+        return distanceC;
     }
 }

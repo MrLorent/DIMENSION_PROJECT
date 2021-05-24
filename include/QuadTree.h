@@ -19,6 +19,12 @@ typedef struct Node {
     Point3D c; // Bottom right
     Point3D d; // Bottom left
 
+    // CORNERS TO DRAW
+    Point3D tmpA;
+    Point3D tmpB;
+    Point3D tmpC;
+    Point3D tmpD;
+
     // TREES
     bool hasTree;
     

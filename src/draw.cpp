@@ -89,10 +89,10 @@ GLuint creaTexture(char* path){
 /*############## FONCTION DRAW ##############*/
 
 void initLODLevels(float zFar){
-  LOD_LEVEL_1 = zFar * 1/16;
-  LOD_LEVEL_2 = zFar * 3/16;
-  LOD_LEVEL_3 = zFar * 5/16;
-  LOD_LEVEL_4 = zFar * 7/16;
+  LOD_LEVEL_1 = zFar * 2/16;
+  LOD_LEVEL_2 = zFar * 4/16;
+  LOD_LEVEL_3 = zFar * 6/16;
+  LOD_LEVEL_4 = zFar * 8/16;
 }
 
 // Fonction permettant de générer un repère
@@ -117,70 +117,69 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
   float D=50;
 
   glDepthMask(GL_FALSE);
-  glColor4f(1, 1, 1, 1);
-  
-  //Dessous
-  glBindTexture(GL_TEXTURE_2D,textures[6]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
-    glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
-    glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    glColor4f(1, 1, 1, 1);
+    //Dessous
+    glBindTexture(GL_TEXTURE_2D,textures[6]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
+      glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
+      glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //Dessus
-  glBindTexture(GL_TEXTURE_2D,textures[7]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
-    glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
-    glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //Dessus
+    glBindTexture(GL_TEXTURE_2D,textures[7]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+      glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
+      glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //Devant
-  glBindTexture(GL_TEXTURE_2D,textures[4]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,+D+z);
-    glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //Devant
+    glBindTexture(GL_TEXTURE_2D,textures[4]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,+D+z);
+      glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
 
-  //derriere
-  glBindTexture(GL_TEXTURE_2D,textures[2]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
-    glTexCoord2f(1,1); glVertex3f(-D+x,-D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //derriere
+    glBindTexture(GL_TEXTURE_2D,textures[2]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+      glTexCoord2f(1,1); glVertex3f(-D+x,-D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //gauche
-  glBindTexture(GL_TEXTURE_2D,textures[3]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(+D+x,+D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(-D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //gauche
+    glBindTexture(GL_TEXTURE_2D,textures[3]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(+D+x,+D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(-D+x,+D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //droite
-  glBindTexture(GL_TEXTURE_2D,textures[5]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
-
+    //droite
+    glBindTexture(GL_TEXTURE_2D,textures[5]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
   glDepthMask(GL_TRUE);
+
 }
 
 
@@ -200,18 +199,18 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15]){
         // ON DESSINE LES ELEMENTS DE LA MAP
 
         /* On dessine le triangle en haut à gauche du quad */
-        glDrawTriangle(quadTree->a, quadTree->b, quadTree->d, textures);
+        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures);
 
         /* On dessine le triangle en bas à droite du quad */
-        glDrawTriangle(quadTree->b, quadTree->c, quadTree->d, textures);
+        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures);
 
         if(quadTree->hasTree)
         {
             /* On dessine les arbres s'il y en a */
-            glDrawTree(quadTree->a, camera->latitude, textures);
-            glDrawTree(quadTree->b, camera->latitude, textures);
-            glDrawTree(quadTree->c, camera->latitude, textures);
-            glDrawTree(quadTree->d, camera->latitude, textures);
+            glDrawTree(quadTree->tmpA, camera->latitude, textures);
+            glDrawTree(quadTree->tmpB, camera->latitude, textures);
+            glDrawTree(quadTree->tmpC, camera->latitude, textures);
+            glDrawTree(quadTree->tmpD, camera->latitude, textures);
         }
     }
     else
@@ -231,23 +230,23 @@ bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
 
     float distance = quad->getDistanceFrom(position);
 
-    if(distance < LOD_LEVEL_1)
+    if(distance <= LOD_LEVEL_1)
     {
         return false;
     }
-    else if (distance >= LOD_LEVEL_1 && distance < LOD_LEVEL_2 && quad->height == 2)
+    else if (distance > LOD_LEVEL_1 && distance <= LOD_LEVEL_2 && quad->height == 2)
     {
         return true;
     }
-    else if (distance >= LOD_LEVEL_2 && distance < LOD_LEVEL_3 && quad->height == 3)
+    else if (distance > LOD_LEVEL_2 && distance <= LOD_LEVEL_3 && (quad->height == 3 || quad->height == 2))
     {
         return true;
     }
-    else if (distance >= LOD_LEVEL_3 && distance < LOD_LEVEL_4 && quad->height == 4)
+    else if (distance > LOD_LEVEL_3 && distance <= LOD_LEVEL_4 && (quad->height == 4 || quad->height == 3))
     {
         return true;
     }
-    else if (distance >= LOD_LEVEL_4 && quad->height == 5)
+    else if (distance > LOD_LEVEL_4 && (quad->height == 5 || quad->height == 4))
     {
         return true;
     }

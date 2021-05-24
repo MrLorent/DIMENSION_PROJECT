@@ -149,13 +149,11 @@ static void drawFunc(void) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glDrawHeightMap(quadTree, &camera, textures);
-
-		glPushMatrix();
-			glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
-		glPopMatrix();
+		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
 
 		glDrawRepere(2.0);
+
+		glDrawHeightMap(quadTree, &camera, textures);
 
 		float position[4] = {5.0,5.0,5.0,1.0};
 		float black[3] = {0.0,0.0,0.0};
