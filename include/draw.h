@@ -10,8 +10,9 @@
 #include "QuadTree.h"
 #include "objects.h"
 
-GLuint creaTexture(char* path);
+void initTextureLevels(float min, float max);
 void loadTextures(GLuint textures[15]);
+GLuint creaTexture(char* path);
 void glDrawRepere(float length);
 void glDrawHeightMap(QuadTree* quadTree, int currentLevel, Camera* camera, GLuint textures[15]);
 bool levelOfDetailsReached(QuadTree* quad, int level);

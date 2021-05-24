@@ -74,6 +74,7 @@ static void init() {
 
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
+	initTextureLevels(params.zMin, params.zMax);
 	loadTextures(textures);
 
 	// INITIALISATION DES PARAMETRES GL 
@@ -123,6 +124,7 @@ static void drawFunc(void) {
 
 	/* Debut du dessin de la scène */
 	glPushMatrix();
+		int level = 0;
 
 		/* placement de la caméra */
 		gluLookAt(
@@ -137,33 +139,31 @@ static void drawFunc(void) {
 			camera.up.z
 		);
 
-	glColor3f(1.0,0.0,0.0);
+		glColor3f(1.0,0.0,0.0);
 
-	glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+		glDrawHeightMap(quadTree, level, &camera, textures);
 
-	int level = 0;
-	glDrawHeightMap(quadTree, level, &camera, textures);
+		glPushMatrix();
+			glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
+		glPopMatrix();
 
-	glPushMatrix();
-		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
-	glPopMatrix();
+		glDrawRepere(2.0);
 
-	glDrawRepere(2.0);
-
-	float position[4] = {5.0,5.0,5.0,1.0};
-	float black[3] = {0.0,0.0,0.0};
-	float intensite[3] = {1000.0,1000.0,1000.0};
-	glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	//glLightfv(GL_LIGHT0,GL_POSITION,position);
-	//glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
-	//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
-	//glLightf(GL_LIGHT0,GL_,black);
-	//glLightf(GL_LIGHT0,GL_SPECULAR,black);
-	//glDisable(GL_LIGHTING);
+		float position[4] = {5.0,5.0,5.0,1.0};
+		float black[3] = {0.0,0.0,0.0};
+		float intensite[3] = {1000.0,1000.0,1000.0};
+		glEnable(GL_TEXTURE_2D);
+		//glEnable(GL_LIGHTING);
+		//glEnable(GL_LIGHT0);
+		//glLightfv(GL_LIGHT0,GL_POSITION,position);
+		//glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
+		//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
+		//glLightf(GL_LIGHT0,GL_,black);
+		//glLightf(GL_LIGHT0,GL_SPECULAR,black);
+		//glDisable(GL_LIGHTING);
 
 	/* Fin du dessin */
 	glPopMatrix();

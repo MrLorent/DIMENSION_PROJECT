@@ -1,7 +1,23 @@
 #include "../include/draw.h"
 #include "../include/objects.h"
 
+float MIN_LEVEL = 0;
+float FIRST_LEVEL = 0;
+float SECOND_LEVEL = 0;
+float THIRD_LEVEL = 0;
+float MAX_LEVEL = 0;
+
 /*################# TEXTURE #################*/
+
+void initTextureLevels(float min, float max){
+    float zSpacing = max - min;
+
+    MIN_LEVEL = min;
+    FIRST_LEVEL = zSpacing * 1/4;
+    SECOND_LEVEL = zSpacing * 1/2;
+    THIRD_LEVEL = zSpacing * 3/4;
+    MAX_LEVEL = max;
+}
 
 void loadTextures(GLuint textures[15])
 {
@@ -92,6 +108,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 {
   float D=50;
 
+  glDepthMask(GL_FALSE);
   glColor4f(1, 1, 1, 1);
   
   //Dessous
@@ -155,7 +172,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
   glEnd();
   glBindTexture(GL_TEXTURE_2D,0);
 
- 
+  glDepthMask(GL_TRUE);
 }
 
 
@@ -205,10 +222,10 @@ bool LevelOfDetailsReached(QuadTree* quad, int level){
 
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15]){
     float averageHeight = (a.z + b.z + c.z)/3;
-    if(averageHeight>=0 && averageHeight<=0.25)   glBindTexture(GL_TEXTURE_2D,textures[8]);
-    if(averageHeight>0.25 && averageHeight<=0.50)   glBindTexture(GL_TEXTURE_2D,textures[9]);
-    if(averageHeight>0.50 && averageHeight<=0.75)   glBindTexture(GL_TEXTURE_2D,textures[10]);
-    if(averageHeight>0.75 && averageHeight<=1)    glBindTexture(GL_TEXTURE_2D,textures[11]);
+    if(averageHeight >= MIN_LEVEL && averageHeight <= FIRST_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[8]);
+    if(averageHeight > FIRST_LEVEL && averageHeight <= SECOND_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[9]);
+    if(averageHeight > SECOND_LEVEL && averageHeight <= THIRD_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[10]);
+    if(averageHeight > THIRD_LEVEL && averageHeight <= MAX_LEVEL)    glBindTexture(GL_TEXTURE_2D,textures[11]);
 
     glBegin(GL_TRIANGLES);
         glColor4f(1, 1, 1, 1);
@@ -225,10 +242,10 @@ void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15] ) {
       return;
     }
 
-    if(treePoint.z>=0 && treePoint.z<=0.25)   glBindTexture(GL_TEXTURE_2D,textures[1]);
-    if(treePoint.z>0.25 && treePoint.z<=0.50)   glBindTexture(GL_TEXTURE_2D,textures[12]);
-    if(treePoint.z>0.50 && treePoint.z<=0.75)   glBindTexture(GL_TEXTURE_2D,textures[13]);
-    if(treePoint.z>0.75 && treePoint.z<=1)  glBindTexture(GL_TEXTURE_2D,textures[14]);
+    if(treePoint.z >= MIN_LEVEL && treePoint.z <= FIRST_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[1]);
+    if(treePoint.z > FIRST_LEVEL && treePoint.z <= SECOND_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[12]);
+    if(treePoint.z > SECOND_LEVEL && treePoint.z <= THIRD_LEVEL)   glBindTexture(GL_TEXTURE_2D,textures[13]);
+    if(treePoint.z > THIRD_LEVEL && treePoint.z <= MAX_LEVEL)  glBindTexture(GL_TEXTURE_2D,textures[14]);
     
     glPushMatrix();
         glTranslatef(treePoint.x, treePoint.y,treePoint.z);
