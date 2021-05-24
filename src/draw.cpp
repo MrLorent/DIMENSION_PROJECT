@@ -2,7 +2,24 @@
 #include "../include/objects.h"
 #include "../include/geometry.h"
 
+float TEXTURE_LEVEL_1 = 0;
+float TEXTURE_LEVEL_2 = 0;
+float TEXTURE_LEVEL_3 = 0;
+
+float LOD_LEVEL_1 = 0;
+float LOD_LEVEL_2 = 0;
+float LOD_LEVEL_3 = 0;
+float LOD_LEVEL_4 = 0;
+
 /*################# TEXTURE #################*/
+
+void initTextureLevels(float min, float max){
+    float zSpacing = max - min;
+
+    TEXTURE_LEVEL_1 = zSpacing * 1/4;
+    TEXTURE_LEVEL_2 = zSpacing * 1/2;
+    TEXTURE_LEVEL_3 = zSpacing * 3/4;
+}
 
 void loadTextures(GLuint textures[15])
 {
@@ -85,6 +102,13 @@ Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c){
 
 /*############## FONCTION DRAW ##############*/
 
+void initLODLevels(float zFar){
+  LOD_LEVEL_1 = zFar * 2/16;
+  LOD_LEVEL_2 = zFar * 4/16;
+  LOD_LEVEL_3 = zFar * 6/16;
+  LOD_LEVEL_4 = zFar * 8/16;
+}
+
 // Fonction permettant de générer un repère
 void glDrawRepere(float length) {
 	// dessin du repère
@@ -106,70 +130,70 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 {
   float D=50;
 
-  glColor4f(1, 1, 1, 1);
-  
-  //Dessous
-  glBindTexture(GL_TEXTURE_2D,textures[6]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
-    glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
-    glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+  glDepthMask(GL_FALSE);
+    glColor4f(1, 1, 1, 1);
+    //Dessous
+    glBindTexture(GL_TEXTURE_2D,textures[6]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
+      glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
+      glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //Dessus
-  glBindTexture(GL_TEXTURE_2D,textures[7]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
-    glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
-    glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //Dessus
+    glBindTexture(GL_TEXTURE_2D,textures[7]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+      glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,+D+z);
+      glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //Devant
-  glBindTexture(GL_TEXTURE_2D,textures[4]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,+D+z);
-    glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //Devant
+    glBindTexture(GL_TEXTURE_2D,textures[4]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(+D+x,+D+y,+D+z);
+      glTexCoord2f(1,1); glVertex3f(+D+x,+D+y,-D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
 
-  //derriere
-  glBindTexture(GL_TEXTURE_2D,textures[2]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
-    glTexCoord2f(1,1); glVertex3f(-D+x,-D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //derriere
+    glBindTexture(GL_TEXTURE_2D,textures[2]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
+      glTexCoord2f(1,1); glVertex3f(-D+x,-D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(-D+x,+D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(-D+x,+D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //gauche
-  glBindTexture(GL_TEXTURE_2D,textures[3]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(+D+x,+D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(-D+x,+D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //gauche
+    glBindTexture(GL_TEXTURE_2D,textures[3]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(+D+x,+D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(-D+x,+D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
 
-  //droite
-  glBindTexture(GL_TEXTURE_2D,textures[5]);
-  glBegin(GL_QUADS);
-    glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
-    glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
-    glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
-    glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
-  glEnd();
-  glBindTexture(GL_TEXTURE_2D,0);
+    //droite
+    glBindTexture(GL_TEXTURE_2D,textures[5]);
+    glBegin(GL_QUADS);
+      glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
+      glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
+      glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,+D+z);
+      glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,+D+z);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D,0);
+  glDepthMask(GL_TRUE);
 
- 
 }
 
 void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Light sunShine){
@@ -183,23 +207,23 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Li
         return;
     }
 
-    if(quadTree->isLeaf())
+    if(LevelOfDetailsReached(quadTree, camera->position))
     {
         // ON DESSINE LES ELEMENTS DE LA MAP
 
         /* On dessine le triangle en haut à gauche du quad */
-        glDrawTriangle(quadTree->a, quadTree->b, quadTree->d, textures, sunShine);
+        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures);
 
         /* On dessine le triangle en bas à droite du quad */
-        glDrawTriangle(quadTree->b, quadTree->c, quadTree->d, textures, sunShine);
+        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures);
 
         if(quadTree->hasTree)
         {
             /* On dessine les arbres s'il y en a */
-            glDrawTree(quadTree->a, camera->latitude, textures, sunShine);
-            glDrawTree(quadTree->b, camera->latitude, textures, sunShine);
-            glDrawTree(quadTree->c, camera->latitude, textures, sunShine);
-            glDrawTree(quadTree->d, camera->latitude, textures, sunShine);
+            glDrawTree(quadTree->tmpA, camera->latitude, textures);
+            glDrawTree(quadTree->tmpB, camera->latitude, textures);
+            glDrawTree(quadTree->tmpC, camera->latitude, textures);
+            glDrawTree(quadTree->tmpD, camera->latitude, textures);
         }
     }
     else
@@ -211,12 +235,46 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Li
     }
 }
 
+bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
+    if(quad->isLeaf())
+    {
+      return true;
+    }
+
+    float distance = quad->getDistanceFrom(position);
+
+    if(distance <= LOD_LEVEL_1)
+    {
+        return false;
+    }
+    else if (distance > LOD_LEVEL_1 && distance <= LOD_LEVEL_2 && quad->height == 2)
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_2 && distance <= LOD_LEVEL_3 && (quad->height == 3 || quad->height == 2))
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_3 && distance <= LOD_LEVEL_4 && (quad->height == 4 || quad->height == 3))
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_4 && (quad->height == 5 || quad->height == 4))
+    {
+        return true;
+    }
+    else
+    {
+      return false;
+    }
+}
+
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine){
     float averageHeight = (a.z + b.z + c.z)/3;
-    if(averageHeight>=0 && averageHeight<=0.25)   glBindTexture(GL_TEXTURE_2D,textures[8]);
-    if(averageHeight>0.25 && averageHeight<=0.50)   glBindTexture(GL_TEXTURE_2D,textures[9]);
-    if(averageHeight>0.50 && averageHeight<=0.75)   glBindTexture(GL_TEXTURE_2D,textures[10]);
-    if(averageHeight>0.75 && averageHeight<=1)    glBindTexture(GL_TEXTURE_2D,textures[11]);
+    if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[8]);
+    if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[9]);
+    if(averageHeight > TEXTURE_LEVEL_2 && averageHeight <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[10]);
+    if(averageHeight > TEXTURE_LEVEL_3)    glBindTexture(GL_TEXTURE_2D,textures[11]);
 
     Color3f triangleLight = GetLight(sunShine, a, b, c);
 
@@ -240,11 +298,10 @@ void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light su
     Point3D c = createPoint(0.,0.5,0.);
 
     Color3f triangleLight = GetLight( sunShine, a , b , c );
-
-    if(treePoint.z>=0 && treePoint.z<=0.25)   glBindTexture(GL_TEXTURE_2D,textures[1]);
-    if(treePoint.z>0.25 && treePoint.z<=0.50)   glBindTexture(GL_TEXTURE_2D,textures[12]);
-    if(treePoint.z>0.50 && treePoint.z<=0.75)   glBindTexture(GL_TEXTURE_2D,textures[13]);
-    if(treePoint.z>0.75 && treePoint.z<=1)  glBindTexture(GL_TEXTURE_2D,textures[14]);
+    if(treePoint.z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[1]);
+    if(treePoint.z > TEXTURE_LEVEL_1 && treePoint.z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[12]);
+    if(treePoint.z > TEXTURE_LEVEL_2 && treePoint.z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[13]);
+    if(treePoint.z > TEXTURE_LEVEL_3)  glBindTexture(GL_TEXTURE_2D,textures[14]);
     
     glPushMatrix();
         glTranslatef(treePoint.x, treePoint.y,treePoint.z);
