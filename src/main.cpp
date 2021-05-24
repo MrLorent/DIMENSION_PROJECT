@@ -21,6 +21,7 @@ Camera camera;
 /*------------ GLOBALES POUR LA MAP -----------*/
 QuadTree* quadTree;
 Point3D trees[6];
+Light sunShine = createLight(createPoint(0,0,1), createColor(255,255,255));
 
 
 /*------------- GLOBALES TEXTURE --------------*/
@@ -141,7 +142,7 @@ static void drawFunc(void) {
 	glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glDrawHeightMap(quadTree, &camera, textures);
+	glDrawHeightMap(quadTree, &camera, textures, sunShine);
 
 	glPushMatrix();
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
@@ -149,18 +150,16 @@ static void drawFunc(void) {
 
 	glDrawRepere(2.0);
 
-	float position[4] = {5.0,5.0,5.0,1.0};
+	float position[4] = {1.0,1.0,1.0,1.0};
 	float black[3] = {0.0,0.0,0.0};
-	float intensite[3] = {1000.0,1000.0,1000.0};
+	float intensite[3] = {10.0,10.0,10.0};
 	glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
-	//glLightfv(GL_LIGHT0,GL_POSITION,position);
-	//glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
-	//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
-	//glLightf(GL_LIGHT0,GL_,black);
-	//glLightf(GL_LIGHT0,GL_SPECULAR,black);
-	//glDisable(GL_LIGHTING);
+	/*glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0,GL_POSITION,position);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
+	glLightfv(GL_LIGHT0,GL_SPECULAR,black);
+	glDisable(GL_LIGHTING);*/
 
 	/* Fin du dessin */
 	glPopMatrix();
@@ -222,6 +221,14 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case 'D' : case 'd' : 
 			camera.position.x -= SPEED_FACTOR * cos(camera.latitude + M_PI/2);
 			camera.position.y -= SPEED_FACTOR * sin(camera.latitude + M_PI/2);
+			break;
+		case 'P' : case 'p' : 
+			sunShine.position.x++;
+			sunShine.position.y++;
+			break;
+		case 'M' : case 'm' : 
+			sunShine.position.x--;
+			sunShine.position.y--;
 			break;
 		case ' ' :
 			camera.position.z += SPEED_FACTOR;
