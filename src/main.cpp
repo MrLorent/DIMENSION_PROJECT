@@ -189,6 +189,15 @@ static void drawFunc(void) {
 	glutSwapBuffers();
 }
 
+void idle(void) {
+    if(sunShine.moving){
+		sunShine.longitude += STEP_ANGLE;
+		sunShine.position.y += 1. * cos(sunShine.longitude);
+		sunShine.position.z += 1. * sin(sunShine.longitude);
+	}
+    glutPostRedisplay();
+}
+
 /*########### ECOUTEURS D'EVENEMENTS ############*/
 
 static void kbdSpFunc(int c, int x, int y) {
@@ -240,13 +249,22 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			camera.position.x -= SPEED_FACTOR * cos(camera.latitude + M_PI/2);
 			camera.position.y -= SPEED_FACTOR * sin(camera.latitude + M_PI/2);
 			break;
+		case 'L' : case 'l' :
+			if(sunShine.moving){
+				sunShine.moving = false;
+			}else{
+				sunShine.moving = true;
+			}
+			break;
 		case 'P' : case 'p' : 
-			sunShine.position.x++;
-			sunShine.position.y++;
+			sunShine.longitude += 0.05;
+			sunShine.position.y += SPEED_FACTOR * cos(sunShine.longitude);
+			sunShine.position.z += SPEED_FACTOR * sin(sunShine.longitude);
 			break;
 		case 'M' : case 'm' : 
-			sunShine.position.x--;
-			sunShine.position.y--;
+			sunShine.longitude -= 0.05;
+			sunShine.position.y -= SPEED_FACTOR * cos(sunShine.longitude);
+			sunShine.position.z -= SPEED_FACTOR * sin(sunShine.longitude);
 			break;
 		case ' ' :
 			camera.position.z += SPEED_FACTOR;
@@ -297,7 +315,7 @@ int main (int argc, char** argv){
 	/* association de la fonction callback de DRAG de la souris */
 	//glutMotionFunc(motionFunc);
 
-	//glutIdleFunc(idle);
+	glutIdleFunc(idle);
 
 	/* boucle principale de gestion des événements */
 	glutMainLoop();

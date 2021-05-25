@@ -36,5 +36,6 @@ void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam);
 void glDrawTrees(TreeChart* treePoint, float latitude, GLuint textures[15], Sun sunShine); 
 
 Color3f GetLight(Sun sunShine, Point3D a, Point3D b, Point3D c);
+void glDrawSun(Sun* sun, GLuint textures[16]);
 
 #endif // DRAW_H

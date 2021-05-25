@@ -435,3 +435,9 @@ void glDrawTrees(TreeChart* trees, float latitude, GLuint textures[15], Sun sunS
       glBindTexture(GL_TEXTURE_2D,0);
     }
 }
+
+void glDrawSun (Sun* sun, GLuint textures[16]) {
+    glPushMatrix();
+        glTranslatef(0., 10 * cos(sun->longitude), 10 * sin(sun->longitude));
+    glPopMatrix();
+}

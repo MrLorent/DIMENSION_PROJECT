@@ -74,11 +74,12 @@ bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4])
 }
 
 void initSun(Sun* sun, float mapWidth, float mapHeigh) {
+    sun->radius = mapWidth;
+    sun->longitude = M_PI/2;
     sun->position.x = mapWidth/2;
-    sun->position.y = -1;
-    sun->position.z = 0;
+    sun->position.y = sun->radius;
+    sun->position.z = sun->radius*sin(sun->longitude);
     sun->color = createColor(255,255,255);
-    sun->moving = false;
-    sun->radius = mapHeigh/2+1 ;
+    sun->moving = true;
 }
 
