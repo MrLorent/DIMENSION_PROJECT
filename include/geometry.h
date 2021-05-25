@@ -66,11 +66,14 @@ Color3f multColors(Color3f c1, Color3f c2);
 
 /*################ LUMIERE ################*/
 
-struct Light {
+struct Sun {
     Point3D position;
     Color3f color;
+    bool risingSun;
+    float distance;
+    float longitude;
 };
 
-Light createLight(Point3D position, Color3f color);
+void initSun(Sun* sun, float mapWidth, float mapHeigh) ;
 
 #endif

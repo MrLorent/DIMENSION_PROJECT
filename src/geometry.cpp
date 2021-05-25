@@ -84,11 +84,13 @@ Color3f multColors(Color3f c1, Color3f c2) {
     return c1;
 }
 
-Light createLight(Point3D position, Color3f color) {
-    Light light;
-    light.position = position;
-    light.color = color;
-    return light;
+void initSun(Sun* sun, float mapWidth, float mapHeigh) {
+    sun->position.x = mapWidth/2;
+    sun->position.y = -1;
+    sun->position.z = 0;
+    sun->color = createColor(255,255,0);
+    sun->risingSun = false;
+    sun->distance = mapHeigh/2+1 ;
 }
 
 

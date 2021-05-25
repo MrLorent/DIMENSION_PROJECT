@@ -21,7 +21,7 @@ void initTextureLevels(float min, float max){
     TEXTURE_LEVEL_3 = zSpacing * 3/4;
 }
 
-void loadTextures(GLuint textures[15])
+void loadTextures(GLuint textures[16])
 {
     char* texturesLinks[15];
     texturesLinks[0] = (char*)"doc/roche.jpg";
@@ -39,8 +39,9 @@ void loadTextures(GLuint textures[15])
     texturesLinks[12] = (char*)"doc/arbre2.png";
     texturesLinks[13] = (char*)"doc/arbre3.png";
     texturesLinks[14] = (char*)"doc/arbre4.png";
+    texturesLinks[15] = (char*)"doc/soleil.png";
 
-    for(int i=0; i<15;i++){
+    for(int i=0; i<16;i++){
       textures[i]=creaTexture(texturesLinks[i]);
     }
 }
@@ -89,14 +90,14 @@ GLuint creaTexture(char* path){
 
 /*############## LUMIERE ##############*/
 
-Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c){
+Color3f GetLight(Sun sun, Point3D a, Point3D b, Point3D c){
   Vector3D v1 = createVectorFromPoints(a,b);
   Vector3D v2 = createVectorFromPoints(a,c);
   Vector3D normale = prodVect(v1,v2);
   Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
-  Vector3D vectSunShine = createVectorFromPoints(sunShine.position,centre);
+  Vector3D vectSunShine = createVectorFromPoints(sun.position,centre);
   normale = normalize(normale);
-  Color3f triangleLight = multColor( sunShine.color , dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
+  Color3f triangleLight = multColor( sun.color , dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
   return triangleLight;
 }
 
@@ -126,7 +127,7 @@ void glDrawRepere(float length) {
 }
 
 // Fonction qui génère la skybox
-void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
+void glDrawSkybox(float x,float y,float z,  GLuint textures[16])
 {
   float D=50;
 
@@ -196,7 +197,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 
 }
 
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Light sunShine){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[16], Sun sun){
     if(!quadTree)
     {
         return;
@@ -212,27 +213,27 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Li
         // ON DESSINE LES ELEMENTS DE LA MAP
 
         /* On dessine le triangle en haut à gauche du quad */
-        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures, sunShine);
+        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures, sun);
 
         /* On dessine le triangle en bas à droite du quad */
-        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures, sunShine);
+        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures, sun);
 
         if(quadTree->hasTree)
         {
             /* On dessine les arbres s'il y en a */
-            glDrawTree(quadTree->tmpA, camera->latitude, textures, sunShine);
-            glDrawTree(quadTree->tmpB, camera->latitude, textures, sunShine);
-            glDrawTree(quadTree->tmpC, camera->latitude, textures, sunShine);
-            glDrawTree(quadTree->tmpD, camera->latitude, textures, sunShine);
-        }
+            glDrawTree(quadTree->tmpA, camera->latitude, textures, sun);
+            glDrawTree(quadTree->tmpB, camera->latitude, textures, sun);
+            glDrawTree(quadTree->tmpC, camera->latitude, textures, sun);
+            glDrawTree(quadTree->tmpD, camera->latitude, textures, sun);
     }
     else
     {
-        glDrawHeightMap(quadTree->childA, camera, textures, sunShine);
-        glDrawHeightMap(quadTree->childB, camera, textures, sunShine);
-        glDrawHeightMap(quadTree->childC, camera, textures, sunShine);
-        glDrawHeightMap(quadTree->childD, camera, textures, sunShine);
+        glDrawHeightMap(quadTree->childA, camera, textures, sun);
+        glDrawHeightMap(quadTree->childB, camera, textures, sun);
+        glDrawHeightMap(quadTree->childC, camera, textures, sun);
+        glDrawHeightMap(quadTree->childD, camera, textures, sun);
     }
+}
 }
 
 bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
@@ -368,14 +369,14 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
     }
 }
 
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine){
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[16], Sun sun){
     float averageHeight = (a.z + b.z + c.z)/3;
     if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[8]);
     if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[9]);
     if(averageHeight > TEXTURE_LEVEL_2 && averageHeight <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[10]);
     if(averageHeight > TEXTURE_LEVEL_3)    glBindTexture(GL_TEXTURE_2D,textures[11]);
 
-    Color3f triangleLight = GetLight(sunShine, a, b, c);
+    Color3f triangleLight = GetLight(sun, a, b, c);
 
     glBegin(GL_TRIANGLES);
         glColor4f(triangleLight.r,triangleLight.g,triangleLight.b, 1);
@@ -386,7 +387,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light 
     glBindTexture(GL_TEXTURE_2D,0);
 }
 
-void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light sunShine) {
+void glDrawTree(Point3D treePoint, float latitude, GLuint textures[16], Sun sun) {
     if(!treePoint.tree)
     {
       return;
@@ -396,7 +397,7 @@ void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light su
     Point3D b = createPoint(0.,0.5,1.);
     Point3D c = createPoint(0.,0.5,0.);
 
-    Color3f triangleLight = GetLight( sunShine, a , b , c );
+    Color3f triangleLight = GetLight( sun, a , b , c );
     if(treePoint.z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[1]);
     if(treePoint.z > TEXTURE_LEVEL_1 && treePoint.z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[12]);
     if(treePoint.z > TEXTURE_LEVEL_2 && treePoint.z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[13]);
@@ -417,4 +418,27 @@ void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light su
         glPopMatrix();
     glPopMatrix();
     glBindTexture(GL_TEXTURE_2D,0);
+}
+
+void glDrawSun (Sun* sun, GLuint textures[16]) {
+  if(sun->risingSun == true) sun->longitude += 0.01;
+
+    glBindTexture(GL_TEXTURE_2D,textures[15]);
+    glPushMatrix();
+      glTranslatef(sun->position.x , sun->distance-1 ,0);
+      glPushMatrix();
+        glTranslatef( 0 , sun->distance*cos(sun->longitude)  , sun->distance*sin(sun->longitude) );
+        glRotatef(180/M_PI,0.,0.,1.);
+        glColor4f(1,1,1,1);
+        glScalef(0.25,0.25,0.25);
+          glBegin(GL_POLYGON);
+            glTexCoord2f( 0,  0); glVertex3f(0,-0.5,1);
+            glTexCoord2f( 1,  0); glVertex3f(0,0.5,1);
+            glTexCoord2f( 1,  1); glVertex3f(0,0.5,0);
+            glTexCoord2f( 0,  1); glVertex3f(0,-0.5,0);
+          glEnd();
+      glPopMatrix();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D,0);
+
 }
