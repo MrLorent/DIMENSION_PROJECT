@@ -74,6 +74,6 @@ struct Sun {
     float longitude;
 };
 
-void initSun(Sun* sun, float mapWidth, float mapHeigh) ;
+void initSun(Sun* sun, float mapWidth, float mapHeigh);
 
 #endif
