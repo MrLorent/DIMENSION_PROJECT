@@ -29,12 +29,12 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 void glDrawRepere(float length);
 void glDrawSkybox(float x,float y,float z,  GLuint textures[15]);
 
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Light sunShine);
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine);
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Sun sunShine);
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Sun sunShine);
 
 void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam);
-void glDrawTrees(TreeChart* treePoint, float latitude, GLuint textures[15], Light sunShine); 
+void glDrawTrees(TreeChart* treePoint, float latitude, GLuint textures[15], Sun sunShine); 
 
-Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c);
+Color3f GetLight(Sun sunShine, Point3D a, Point3D b, Point3D c);
 
 #endif // DRAW_H

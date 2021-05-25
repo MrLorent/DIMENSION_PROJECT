@@ -73,3 +73,12 @@ bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4])
     return true;
 }
 
+void initSun(Sun* sun, float mapWidth, float mapHeigh) {
+    sun->position.x = mapWidth/2;
+    sun->position.y = -1;
+    sun->position.z = 0;
+    sun->color = createColor(255,255,255);
+    sun->moving = false;
+    sun->radius = mapHeigh/2+1 ;
+}
+

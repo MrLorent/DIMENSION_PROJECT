@@ -95,15 +95,16 @@ GLuint creaTexture(char* path){
 
 /*############## LUMIERE ##############*/
 
-Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c){
-  Vector3D v1 = createVectorFromPoints(a,b);
-  Vector3D v2 = createVectorFromPoints(a,c);
-  Vector3D normale = prodVect(v1,v2);
-  Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
-  Vector3D vectSunShine = createVectorFromPoints(sunShine.position,centre);
-  normale = normalize(normale);
-  Color3f triangleLight = multColor(sunShine.color , dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
-  return triangleLight;
+Color3f GetLight(Sun sunShine, Point3D a, Point3D b, Point3D c){
+    Vector3D v1 = createVectorFromPoints(a,b);
+    Vector3D v2 = createVectorFromPoints(a,c);
+    Vector3D normale = prodVect(v1,v2);
+    Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
+    Vector3D vectSunShine = createVectorFromPoints(sunShine.position, centre);
+    normale = normalize(normale);
+    Color3f triangleLight = multColor(sunShine.color , dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
+    
+    return triangleLight;
 }
 
 /*############## FONCTION DRAW ##############*/
@@ -202,7 +203,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 
 }
 
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Light sunShine){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Sun sunShine){
     if(!quadTree)
     {
         return;
@@ -386,7 +387,7 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
     }
 }
 
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine){
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Sun sunShine){
     float averageHeight = (a.z + b.z + c.z)/3;
     if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[8]);
     if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[9]);
@@ -396,7 +397,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light 
     Color3f triangleLight = GetLight(sunShine, a, b, c);
 
     glBegin(GL_TRIANGLES);
-        glColor4f(triangleLight.r,triangleLight.g,triangleLight.b, 1);
+        glColor4f(triangleLight.r, triangleLight.g, triangleLight.b, 1);
         glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
         glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
         glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
@@ -404,7 +405,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light 
     glBindTexture(GL_TEXTURE_2D,0);
 }
 
-void glDrawTrees(TreeChart* trees, float latitude, GLuint textures[15], Light sunShine) {
+void glDrawTrees(TreeChart* trees, float latitude, GLuint textures[15], Sun sunShine) {
     for(int i = 0; i < trees->nbTrees; i++)
     {
       Point3D a = createPoint(0.,-0.5,1.);

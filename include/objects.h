@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "geometry.h"
+#include "color.h"
 
 using namespace std;
 

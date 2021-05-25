@@ -23,7 +23,7 @@ Camera camera;
 int NB_TREES;
 QuadTree* quadTree;
 TreeChart treesToDraw;
-Light sunShine = createLight(createPoint(0,0,1), createColor(255,255,255));
+Sun sunShine;
 
 
 /*------------- GLOBALES TEXTURE --------------*/
@@ -43,6 +43,9 @@ static void init() {
 	params = createParams();
   	readParams(&params, &camera);
   	loadHeightMap(&params, &heightMap);
+
+	// INITIALISATION DU SOLEIL
+	initSun(&sunShine, params.xSize, params.ySize);
 
 	// INITIALISATION DES ARBRES
 	NB_TREES = heightMap.width/2;
