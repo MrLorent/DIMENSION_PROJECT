@@ -20,8 +20,9 @@ Camera camera;
 
 
 /*------------ GLOBALES POUR LA MAP -----------*/
+int NB_TREES;
 QuadTree* quadTree;
-Point3D trees[6];
+TreeChart treesToDraw;
 Light sunShine = createLight(createPoint(0,0,1), createColor(255,255,255));
 
 
@@ -44,8 +45,10 @@ static void init() {
   	loadHeightMap(&params, &heightMap);
 
 	// INITIALISATION DES ARBRES
+	NB_TREES = heightMap.width/2;
+	initTreeChart(&treesToDraw, NB_TREES);
 	srand (time(NULL));
-	LoadTrees(&heightMap);
+	LoadTrees(&heightMap, NB_TREES);
 
 	// INITIALISATION DES PALIERS DU LOD
 	initLODLevels(camera.zFar);
@@ -151,13 +154,14 @@ static void drawFunc(void) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glDrawHeightMap(quadTree, &camera, textures, sunShine);
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
 
 		glDrawRepere(2.0);
 
+		treesToDraw.nbTrees = 0;
 		quadTree->initTmpPoints();
-		glDrawHeightMap(quadTree, &camera, textures, sunShine);
+		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sunShine);
+		glDrawTrees(&treesToDraw, camera.latitude, textures, sunShine);
 
 		float position[4] = {5.0,5.0,5.0,1.0};
 		float black[3] = {0.0,0.0,0.0};

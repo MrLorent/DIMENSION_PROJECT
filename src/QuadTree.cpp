@@ -166,6 +166,41 @@ int Node::getHeight(){
     }
 }
 
+int Node::getClosestCorner(Point3D cam)
+{
+    int closest1 = TOP_LEFT;
+    int closest2 = BOTTOM_RIGHT;
+
+    // RECUPERATION DE LA DISTANCE A CHACUN DES ANGLES DU QUAD
+    float distanceA = norm(createVectorFromPoints(cam, this->a));
+    float distanceB = norm(createVectorFromPoints(cam, this->b));
+    float distanceC = norm(createVectorFromPoints(cam, this->c));
+    float distanceD = norm(createVectorFromPoints(cam, this->d));
+
+    // PREMIERE COMPARAISON
+    if(distanceA > distanceB)
+    {
+        closest1 = TOP_RIGHT;
+        distanceA = distanceB;
+    }
+
+    if(distanceC > distanceD)
+    {
+        closest2 = BOTTOM_LEFT;
+        distanceC = distanceD;
+    }
+
+    // SECONDE ET DERNIERE COMPARAISON
+    if(distanceA < distanceC)
+    {
+        return closest1;
+    }
+    else
+    {
+        return closest2;
+    }
+}
+
 float Node::getDistanceFrom(Point3D position, int* closest){
     int closestA = TOP_LEFT;
     int closestC = BOTTOM_RIGHT;
@@ -198,6 +233,78 @@ float Node::getDistanceFrom(Point3D position, int* closest){
     {
         *closest = closestC;
         return distanceC;
+    }
+}
+
+void Node::orderByDistance(Point3D chart[4], Point3D cam)
+{
+    float distanceA, distanceB, distanceC, distanceD;
+    int closest = this->getClosestCorner(cam);
+
+    switch (closest)
+    {
+    case TOP_LEFT:
+        distanceB = norm(createVectorFromPoints(cam, this->tmpB));
+        distanceD = norm(createVectorFromPoints(cam, this->tmpD));
+
+        chart[0] = this->tmpA;
+        if(distanceB < distanceD){
+            chart[1] = this->tmpB;
+            chart[2] = this->tmpD;
+        }else{
+            chart[1] = this->tmpD;
+            chart[2] = this->tmpB;
+        }
+        chart[3] = this->tmpC;
+        break;
+
+    case TOP_RIGHT:
+        distanceA = norm(createVectorFromPoints(cam, this->tmpA));
+        distanceC = norm(createVectorFromPoints(cam, this->tmpC));
+
+        chart[0] = this->tmpB;
+        if(distanceA < distanceC){
+            chart[1] = this->tmpA;
+            chart[2] = this->tmpC;
+        }else{
+            chart[1] = this->tmpC;
+            chart[2] = this->tmpA;
+        }
+        chart[3] = this->tmpD;
+        break;
+
+    case BOTTOM_RIGHT:
+        distanceB = norm(createVectorFromPoints(cam, this->tmpB));
+        distanceD = norm(createVectorFromPoints(cam, this->tmpD));
+
+        chart[0] = this->tmpC;
+        if(distanceB < distanceD){
+            chart[1] = this->tmpB;
+            chart[2] = this->tmpD;
+        }else{
+            chart[1] = this->tmpD;
+            chart[2] = this->tmpB;
+        }
+        chart[3] = this->tmpA;
+        break;
+
+    case BOTTOM_LEFT:
+        distanceA = norm(createVectorFromPoints(cam, this->tmpA));
+        distanceC = norm(createVectorFromPoints(cam, this->tmpC));
+
+        chart[0] = this->tmpD;
+        if(distanceA < distanceC){
+            chart[1] = this->tmpA;
+            chart[2] = this->tmpC;
+        }else{
+            chart[1] = this->tmpC;
+            chart[2] = this->tmpA;
+        }
+        chart[3] = this->tmpB;
+        break;
+    
+    default:
+        break;
     }
 }
 

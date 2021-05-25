@@ -42,14 +42,16 @@ typedef struct Node {
     Node* getChildC();
     Node* getChildD();
     
-    float getDistanceFrom(Point3D position, int* closest);
-    
     // EN ECRITURE
 
     /*############### METHODES ###############*/
     bool isLeaf();
     int getHeight();
     void initTmpPoints();
+
+    int getClosestCorner(Point3D cam);
+    float getDistanceFrom(Point3D position, int* closest);
+    void orderByDistance(Point3D chart[4], Point3D cam);
 
 }QuadTree, Node;
 

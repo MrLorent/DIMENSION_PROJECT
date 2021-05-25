@@ -11,18 +11,30 @@
 #include "objects.h"
 #include "geometry.h"
 
+struct TreeChart {
+    int nbTrees;
+    Point3D* trees;
+};
+
+void initTreeChart(TreeChart* chart, int NB_TREES);
+
 void initTextureLevels(float min, float max);
 void loadTextures(GLuint textures[15]);
 GLuint creaTexture(char* path);
 
 void initLODLevels(float max);
-void glDrawRepere(float length);
 bool LevelOfDetailsReached(QuadTree* quad, Point3D position);
 void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEVEL);
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Light sunShine);
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine);
-void glDrawTree(Point3D treePoint, float latitude, GLuint textures[15], Light sunShine); 
+
+void glDrawRepere(float length);
 void glDrawSkybox(float x,float y,float z,  GLuint textures[15]);
+
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Light sunShine);
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Light sunShine);
+
+void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam);
+void glDrawTrees(TreeChart* treePoint, float latitude, GLuint textures[15], Light sunShine); 
+
 Color3f GetLight(Light sunShine, Point3D a, Point3D b, Point3D c);
 
 #endif // DRAW_H

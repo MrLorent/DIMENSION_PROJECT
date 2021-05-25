@@ -44,7 +44,6 @@ void loadHeightMap(Params* params, PointChart* heightMap);
 Point3D createMapPoint(Point3D p, Params params);
 
 // Charge arbre aléatoirement
-void LoadTrees(PointChart* heightMap);
-
+void LoadTrees(PointChart* heightMap, int NB_TREES);
 
 #endif

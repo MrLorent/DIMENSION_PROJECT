@@ -6,7 +6,7 @@
 // Constuit une structure Params, et instancie ses valeurs à 0
 Params createParams(){
     Params params;
-    params.linkHeightMap="";
+    params.linkHeightMap = "";
     params.xPixels = 0;
     params.yPixels = 0;
     params.xSize = 0;
@@ -105,12 +105,13 @@ Point3D createMapPoint(Point3D p, Params params){
 }
 
 // Charge arbre aléatoirement
-void LoadTrees(PointChart* heightMap){
-    int randomX=0;
-    int randomY=0;
-    for (int j=0; j < heightMap->width/2 ; j++){
-        randomX= rand() % heightMap->width;
-        randomY= rand() % heightMap->height;
+void LoadTrees(PointChart* heightMap, int NB_TREES){
+    int randomX = 0;
+    int randomY = 0;
+    for (int j = 0; j < NB_TREES; j++)
+    {
+        randomX = rand() % heightMap->width;
+        randomY = rand() % heightMap->height;
         heightMap->points[randomY][randomX].tree = true;
     };
 };
