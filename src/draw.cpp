@@ -212,18 +212,18 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Li
         // ON DESSINE LES ELEMENTS DE LA MAP
 
         /* On dessine le triangle en haut à gauche du quad */
-        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures);
+        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures, sunShine);
 
         /* On dessine le triangle en bas à droite du quad */
-        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures);
+        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures, sunShine);
 
         if(quadTree->hasTree)
         {
             /* On dessine les arbres s'il y en a */
-            glDrawTree(quadTree->tmpA, camera->latitude, textures);
-            glDrawTree(quadTree->tmpB, camera->latitude, textures);
-            glDrawTree(quadTree->tmpC, camera->latitude, textures);
-            glDrawTree(quadTree->tmpD, camera->latitude, textures);
+            glDrawTree(quadTree->tmpA, camera->latitude, textures, sunShine);
+            glDrawTree(quadTree->tmpB, camera->latitude, textures, sunShine);
+            glDrawTree(quadTree->tmpC, camera->latitude, textures, sunShine);
+            glDrawTree(quadTree->tmpD, camera->latitude, textures, sunShine);
         }
     }
     else
@@ -243,7 +243,6 @@ bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
 
     int closestPoint;
     float distance = quad->getDistanceFrom(position, &closestPoint);
-    cout << closestPoint << endl;
 
     // ON DETERMINE SI ON DOIT CORRIGER LES CRACKS OU PAS
     if(distance <= LOD_LEVEL_1 && quad->height == 2)
@@ -297,72 +296,72 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
     switch (closest)
     {
         case TOP_LEFT:
-          distanceB = norm(createVectorFromPoints(position, quad->b));
-          distanceD = norm(createVectorFromPoints(position, quad->d));
+            distanceB = norm(createVectorFromPoints(position, quad->b));
+            distanceD = norm(createVectorFromPoints(position, quad->d));
 
-          if(distanceB >= LOD_LEVEL)
-          {
-            quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
-            quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2; 
-          }
+            if(distanceB >= LOD_LEVEL)
+            {
+              quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
+              quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2; 
+            }
 
-          if(distanceD >= LOD_LEVEL)
-          {
-            quad->getChildC()->tmpD.z = (quad->d.z + quad->c.z)/2;
-            quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
-          }
-          break;
+            if(distanceD >= LOD_LEVEL)
+            {
+              quad->getChildC()->tmpD.z = (quad->d.z + quad->c.z)/2;
+              quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
+            }
+            break;
 
         case TOP_RIGHT:
-          distanceA = norm(createVectorFromPoints(position, quad->a));
-          distanceC = norm(createVectorFromPoints(position, quad->c));
+            distanceA = norm(createVectorFromPoints(position, quad->a));
+            distanceC = norm(createVectorFromPoints(position, quad->c));
 
-          if(distanceA >= LOD_LEVEL)
-          {
-            quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
-            quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2; 
-          }
+            if(distanceA >= LOD_LEVEL)
+            {
+              quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
+              quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2; 
+            }
 
-          if(distanceC >= LOD_LEVEL)
-          {
-            quad->getChildC()->tmpD.z = (quad->c.z + quad->d.z)/2;
-            quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
-          }
-          break;
+            if(distanceC >= LOD_LEVEL)
+            {
+              quad->getChildC()->tmpD.z = (quad->c.z + quad->d.z)/2;
+              quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
+            }
+            break;
 
         case BOTTOM_RIGHT:
-          distanceB = norm(createVectorFromPoints(position, quad->b));
-          distanceD = norm(createVectorFromPoints(position, quad->d));
+            distanceB = norm(createVectorFromPoints(position, quad->b));
+            distanceD = norm(createVectorFromPoints(position, quad->d));
 
-          if(distanceB >= LOD_LEVEL)
-          {
-            quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
-            quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
-          }
+            if(distanceB >= LOD_LEVEL)
+            {
+              quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
+              quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
+            }
 
-          if(distanceD >= LOD_LEVEL)
-          {
-            quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
-            quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
-          }
-          break;
+            if(distanceD >= LOD_LEVEL)
+            {
+              quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
+              quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
+            }
+            break;
 
         case BOTTOM_LEFT:
-          distanceA = norm(createVectorFromPoints(position, quad->a));
-          distanceC = norm(createVectorFromPoints(position, quad->c));
+            distanceA = norm(createVectorFromPoints(position, quad->a));
+            distanceC = norm(createVectorFromPoints(position, quad->c));
 
-          if(distanceA >= LOD_LEVEL)
-          {
-            quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
-            quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
-          }
+            if(distanceA >= LOD_LEVEL)
+            {
+              quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
+              quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
+            }
 
-          if(distanceC >= LOD_LEVEL)
-          {
-            quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
-            quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
-          }
-          break;
+            if(distanceC >= LOD_LEVEL)
+            {
+              quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
+              quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
+            }
+            break;
 
         default:
           break;

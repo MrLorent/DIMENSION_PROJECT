@@ -15,6 +15,7 @@
 /*---------- GLOBALES POUR LA CAMERA ----------*/
 const float STEP_ANGLE = M_PI/90.;
 float SPEED_FACTOR;
+float HEIGHT_FACTOR;
 Camera camera;
 
 
@@ -156,7 +157,7 @@ static void drawFunc(void) {
 		glDrawRepere(2.0);
 
 		quadTree->initTmpPoints();
-		glDrawHeightMap(quadTree, &camera, textures);
+		glDrawHeightMap(quadTree, &camera, textures, sunShine);
 
 		float position[4] = {5.0,5.0,5.0,1.0};
 		float black[3] = {0.0,0.0,0.0};
