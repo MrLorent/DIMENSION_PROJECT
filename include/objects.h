@@ -6,6 +6,20 @@
 
 using namespace std;
 
+/*################ LUMIERE ################*/
+
+struct Sun {
+    Point3D position;
+    Color3f color;
+    float longitude;
+    float radius;
+    bool moving;
+};
+
+void initSun(Sun* sun, float mapWidth, float mapHeigh);
+
+/*################ CAMERA ################*/
+
 struct Camera {
     // GLUT_LOOK_AT PARAMETERS
     Point3D position;
