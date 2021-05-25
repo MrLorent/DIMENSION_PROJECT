@@ -174,7 +174,7 @@ static void drawFunc(void) {
 		//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
 		//glLightf(GL_LIGHT0,GL_,black);
 		//glLightf(GL_LIGHT0,GL_SPECULAR,black);
-		//glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);*/
 
 	/* Fin du dessin */
 	glPopMatrix();
