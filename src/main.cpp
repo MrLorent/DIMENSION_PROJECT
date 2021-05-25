@@ -151,7 +151,7 @@ static void drawFunc(void) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glDrawHeightMap(quadTree, &camera, textures, sunShine);
+		glDrawHeightMap(quadTree, &camera, textures, sunShine);
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
 
 		glDrawRepere(2.0);
@@ -170,7 +170,7 @@ static void drawFunc(void) {
 		//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
 		//glLightf(GL_LIGHT0,GL_,black);
 		//glLightf(GL_LIGHT0,GL_SPECULAR,black);
-		//glDisable(GL_LIGHTING);
+		//glDisable(GL_LIGHTING);*/
 
 	/* Fin du dessin */
 	glPopMatrix();
