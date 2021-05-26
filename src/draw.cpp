@@ -1,6 +1,5 @@
 #include "../include/draw.h"
-#include "../include/objects.h"
-#include "../include/geometry.h"
+
 
 float TEXTURE_LEVEL_1 = 0;
 float TEXTURE_LEVEL_2 = 0;
@@ -133,9 +132,9 @@ void glDrawRepere(float length) {
 }
 
 // Fonction qui génère la skybox
-void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
+void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
 {
-  float D=50;
+  float D=sqrt(zFar);
 
   glDepthMask(GL_FALSE);
     glColor4f(1, 1, 1, 1);
@@ -203,7 +202,7 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15])
 
 }
 
-void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Sun sunShine){
+void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], TreeChart* treesToDraw, Sun sunShine, bool wireframe){
     if(!quadTree)
     {
         return;
@@ -219,10 +218,10 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Tr
         // ON DESSINE LES ELEMENTS DE LA MAP
 
         /* On dessine le triangle en haut à gauche du quad */
-        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, textures, sunShine);
+        glDrawTriangle(quadTree->tmpA, quadTree->tmpB, quadTree->tmpD, quadTree->height, textures, sunShine, wireframe);
 
         /* On dessine le triangle en bas à droite du quad */
-        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, textures, sunShine);
+        glDrawTriangle(quadTree->tmpB, quadTree->tmpC, quadTree->tmpD, quadTree->height, textures, sunShine, wireframe);
 
         if(quadTree->hasTree)
         {
@@ -232,10 +231,10 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Tr
     }
     else
     {
-        glDrawHeightMap(quadTree->childA, camera, textures, treesToDraw, sunShine);
-        glDrawHeightMap(quadTree->childB, camera, textures, treesToDraw, sunShine);
-        glDrawHeightMap(quadTree->childC, camera, textures, treesToDraw, sunShine);
-        glDrawHeightMap(quadTree->childD, camera, textures, treesToDraw, sunShine);
+        glDrawHeightMap(quadTree->childA, camera, textures, treesToDraw, sunShine, wireframe);
+        glDrawHeightMap(quadTree->childB, camera, textures, treesToDraw, sunShine, wireframe);
+        glDrawHeightMap(quadTree->childC, camera, textures, treesToDraw, sunShine, wireframe);
+        glDrawHeightMap(quadTree->childD, camera, textures, treesToDraw, sunShine, wireframe);
     }
 }
 
@@ -434,22 +433,44 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
     }
 }
 
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, GLuint textures[15], Sun sunShine){
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint textures[15], Sun sunShine, bool wireframe){
     float averageHeight = (a.z + b.z + c.z)/3;
+    if(!wireframe)
+    {
     if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[8]);
     if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[9]);
     if(averageHeight > TEXTURE_LEVEL_2 && averageHeight <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[10]);
     if(averageHeight > TEXTURE_LEVEL_3)    glBindTexture(GL_TEXTURE_2D,textures[11]);
 
+
     Color3f triangleLight = GetLight(sunShine, a, b, c);
 
     glBegin(GL_TRIANGLES);
+        glColor3f(255,255,0);
         glColor4f(triangleLight.r, triangleLight.g, triangleLight.b, 1);
         glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
         glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
         glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
     glEnd();
     glBindTexture(GL_TEXTURE_2D,0);
+    }
+
+    else
+    {
+        
+    glBegin(GL_TRIANGLES);
+        glColor3f(
+            WIREFRAME_COLORS[quadLevel-1].r,
+            WIREFRAME_COLORS[quadLevel-1].v,
+            WIREFRAME_COLORS[quadLevel-1].b
+        );
+        glVertex3f(a.x, a.y, a.z); 
+        glVertex3f(b.x, b.y, b.z);
+        glVertex3f(c.x,c.y,c.z);
+    glEnd();
+    }
+
+
 }
 
 void glDrawTrees(TreeChart* trees, float latitude, GLuint textures[15], Sun sunShine) {

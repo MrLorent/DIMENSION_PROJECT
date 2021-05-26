@@ -157,13 +157,13 @@ static void drawFunc(void) {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures);
+		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures,camera.zFar);
 
 		glDrawRepere(2.0);
 
 		treesToDraw.nbTrees = 0;
 		quadTree->initTmpPoints();
-		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sunShine);
+		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sunShine, wireFrame);
 		glDrawTrees(&treesToDraw, camera.latitude, textures, sunShine);
 
 		float position[4] = {5.0,5.0,5.0,1.0};
@@ -191,9 +191,9 @@ static void drawFunc(void) {
 
 void idle(void) {
     if(sunShine.moving){
-		sunShine.longitude  += 1*STEP_ANGLE;
-		sunShine.position.y += 1. * cos(sunShine.longitude);
-		sunShine.position.z += 1. * sin(sunShine.longitude);
+		sunShine.longitude  += 0.2*STEP_ANGLE;
+		sunShine.position.y += 0.2 * cos(sunShine.longitude);
+		sunShine.position.z += 0.2 * sin(sunShine.longitude);
 	}
     glutPostRedisplay();
 }
