@@ -191,7 +191,7 @@ static void drawFunc(void) {
 
 void idle(void) {
     if(sunShine.moving){
-		sunShine.longitude += STEP_ANGLE;
+		sunShine.longitude  += 1*STEP_ANGLE;
 		sunShine.position.y += 1. * cos(sunShine.longitude);
 		sunShine.position.z += 1. * sin(sunShine.longitude);
 	}
