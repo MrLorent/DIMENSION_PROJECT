@@ -10,6 +10,15 @@ float LOD_LEVEL_2 = 0;
 float LOD_LEVEL_3 = 0;
 float LOD_LEVEL_4 = 0;
 
+
+const Color3f WIREFRAME_COLORS[5] = {
+    createColor(0,255,0),
+    createColor(255,0,0),
+    createColor(0,0,255),
+    createColor(150,105,0),
+    createColor(200,55,0)
+};
+
 void initTreeChart(TreeChart* chart, int NB_TREES)
 {
     chart->nbTrees = 0;
@@ -94,14 +103,14 @@ GLuint creaTexture(char* path){
 
 /*############## LUMIERE ##############*/
 
-Color3f GetLight(Sun sunShine, Point3D a, Point3D b, Point3D c){
+Color3f GetLight(Sun sun, Point3D a, Point3D b, Point3D c){
     Vector3D v1 = createVectorFromPoints(a,b);
     Vector3D v2 = createVectorFromPoints(a,c);
     Vector3D normale = prodVect(v1,v2);
     Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
-    Vector3D vectSunShine = createVectorFromPoints(sunShine.position, centre);
+    Vector3D vectSunShine = createVectorFromPoints(sun.position, centre);
     normale = normalize(normale);
-    Color3f triangleLight = multColor(sunShine.color , dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
+    Color3f triangleLight = multColor(sun.color , sun.shininess * dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
     
     return triangleLight;
 }
@@ -457,11 +466,10 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint textu
 
     else
     {
-        
     glBegin(GL_TRIANGLES);
         glColor3f(
             WIREFRAME_COLORS[quadLevel-1].r,
-            WIREFRAME_COLORS[quadLevel-1].v,
+            WIREFRAME_COLORS[quadLevel-1].g,
             WIREFRAME_COLORS[quadLevel-1].b
         );
         glVertex3f(a.x, a.y, a.z); 

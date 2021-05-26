@@ -10,10 +10,12 @@ using namespace std;
 /*################ LUMIERE ################*/
 
 struct Sun {
+    Point3D origin;
     Point3D position;
     Color3f color;
     float longitude;
     float radius;
+    float shininess;
     bool moving;
 };
 

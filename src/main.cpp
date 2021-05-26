@@ -190,10 +190,11 @@ static void drawFunc(void) {
 }
 
 void idle(void) {
-    if(sunShine.moving){
-		sunShine.longitude  += 0.2*STEP_ANGLE;
-		sunShine.position.y += 0.2 * cos(sunShine.longitude);
-		sunShine.position.z += 0.2 * sin(sunShine.longitude);
+    if(sunShine.moving)
+	{
+		sunShine.longitude -= 0.2 * STEP_ANGLE;
+		sunShine.position.y = sunShine.origin.y - sunShine.radius * cos(sunShine.longitude);
+		sunShine.position.z = sunShine.origin.z - sunShine.radius * sin(sunShine.longitude);
 	}
     glutPostRedisplay();
 }
