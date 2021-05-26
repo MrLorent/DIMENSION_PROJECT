@@ -316,14 +316,14 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 
             if(distanceB > LOD_LEVEL)
             {
-              if(quad->childC) quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
-              if(quad->childB) quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2; 
+              quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
+              quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2; 
             }
 
             if(distanceD > LOD_LEVEL)
             {
-              if(quad->childC) quad->getChildC()->tmpD.z = (quad->d.z + quad->c.z)/2;
-              if(quad->childD) quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
+              quad->getChildC()->tmpD.z = (quad->d.z + quad->c.z)/2;
+              quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
             }
             break;
 
@@ -333,14 +333,14 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 
             if(distanceA > LOD_LEVEL)
             {
-              if(quad->childA) quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
-              if(quad->childD) quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2; 
+              quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
+              quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2; 
             }
 
             if(distanceC > LOD_LEVEL)
             {
-              if(quad->childC) quad->getChildC()->tmpD.z = (quad->c.z + quad->d.z)/2;
-              if(quad->childD) quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
+              quad->getChildC()->tmpD.z = (quad->c.z + quad->d.z)/2;
+              quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
             }
             break;
 
@@ -350,14 +350,14 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 
             if(distanceB > LOD_LEVEL)
             {
-              if(quad->childA) quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
-              if(quad->childB) quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
+              quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
+              quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
             }
 
             if(distanceD > LOD_LEVEL)
             {
-              if(quad->childA) quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
-              if(quad->childD) quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
+              quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
+              quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
             }
             break;
 
@@ -367,14 +367,14 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 
             if(distanceA > LOD_LEVEL)
             {
-              if(quad->childA) quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
-              if(quad->childB) quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
+              quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
+              quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
             }
 
             if(distanceC > LOD_LEVEL)
             {
-              if(quad->childB) quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
-              if(quad->childC) quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
+              quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
+              quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
             }
             break;
 
