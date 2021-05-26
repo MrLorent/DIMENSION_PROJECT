@@ -23,7 +23,7 @@ Camera camera;
 int NB_TREES;
 QuadTree* quadTree;
 TreeChart treesToDraw;
-Sun sunShine;
+Sun sun;
 
 
 /*------------- GLOBALES TEXTURE --------------*/
@@ -45,7 +45,7 @@ static void init() {
   	loadHeightMap(&params, &heightMap);
 
 	// INITIALISATION DU SOLEIL
-	initSun(&sunShine, params.xSize, params.ySize);
+	initSun(&sun, params.xSize, params.ySize);
 
 	// INITIALISATION DES ARBRES
 	NB_TREES = heightMap.width/2;
@@ -163,8 +163,8 @@ static void drawFunc(void) {
 
 		treesToDraw.nbTrees = 0;
 		quadTree->initTmpPoints();
-		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sunShine, wireFrame);
-		glDrawTrees(&treesToDraw, camera.latitude, textures, sunShine);
+		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sun, wireFrame);
+		glDrawTrees(&treesToDraw, camera.latitude, textures, sun);
 
 		float position[4] = {5.0,5.0,5.0,1.0};
 		float black[3] = {0.0,0.0,0.0};
@@ -190,11 +190,11 @@ static void drawFunc(void) {
 }
 
 void idle(void) {
-    if(sunShine.moving)
+    if(sun.moving)
 	{
-		sunShine.longitude -= 0.2 * STEP_ANGLE;
-		sunShine.position.y = sunShine.origin.y - sunShine.radius * cos(sunShine.longitude);
-		sunShine.position.z = sunShine.origin.z - sunShine.radius * sin(sunShine.longitude);
+		sun.longitude -= 0.2 * STEP_ANGLE;
+		sun.position.y = sun.origin.y - sun.radius * cos(sun.longitude);
+		sun.position.z = sun.origin.z - sun.radius * sin(sun.longitude);
 	}
     glutPostRedisplay();
 }
@@ -251,21 +251,25 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			camera.position.y -= SPEED_FACTOR * sin(camera.latitude + M_PI/2);
 			break;
 		case 'L' : case 'l' :
-			if(sunShine.moving){
-				sunShine.moving = false;
+			if(sun.moving){
+				sun.moving = false;
 			}else{
-				sunShine.moving = true;
+				sun.moving = true;
 			}
 			break;
-		case 'P' : case 'p' : 
-			sunShine.longitude += 0.05;
-			sunShine.position.y += SPEED_FACTOR * cos(sunShine.longitude);
-			sunShine.position.z += SPEED_FACTOR * sin(sunShine.longitude);
-			break;
 		case 'M' : case 'm' : 
-			sunShine.longitude -= 0.05;
-			sunShine.position.y -= SPEED_FACTOR * cos(sunShine.longitude);
-			sunShine.position.z -= SPEED_FACTOR * sin(sunShine.longitude);
+			if(!sun.moving){
+				sun.longitude += 0.05;
+				sun.position.y = sun.origin.y - sun.radius * cos(sun.longitude);
+				sun.position.z = sun.origin.z - sun.radius * sin(sun.longitude);
+			}
+			break;
+		case 'K' : case 'k' : 
+			if(!sun.moving){
+				sun.longitude -= 0.05;
+				sun.position.y = sun.origin.y - sun.radius * cos(sun.longitude);
+				sun.position.z = sun.origin.z - sun.radius * sin(sun.longitude);
+			}
 			break;
 		case ' ' :
 			camera.position.z += SPEED_FACTOR;
