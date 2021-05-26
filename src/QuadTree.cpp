@@ -201,9 +201,7 @@ int Node::getClosestCorner(Point3D cam)
     }
 }
 
-float Node::getDistanceFrom(Point3D position, int* closest){
-    int closestA = TOP_LEFT;
-    int closestC = BOTTOM_RIGHT;
+float Node::getDistanceFrom(Point3D position){
 
     // RECUPERATION DE LA DISTANCE A CHACUN DES ANGLES DU QUAD
     float distanceA = norm(createVectorFromPoints(position, this->a));
@@ -214,24 +212,20 @@ float Node::getDistanceFrom(Point3D position, int* closest){
     // PREMIERE COMPARAISON
     if(distanceA > distanceB)
     {
-        closestA = TOP_RIGHT;
         distanceA = distanceB;
     }
 
     if(distanceC > distanceD)
     {
-        closestC = BOTTOM_LEFT;
         distanceC = distanceD;
     }
 
     // SECONDE ET DERNIERE COMPARAISON
     if(distanceA < distanceC){
-        *closest = closestA;
         return distanceA;
     }
     else
     {
-        *closest = closestC;
         return distanceC;
     }
 }

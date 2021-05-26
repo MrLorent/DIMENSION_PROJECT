@@ -50,7 +50,7 @@ typedef struct Node {
     void initTmpPoints();
 
     int getClosestCorner(Point3D cam);
-    float getDistanceFrom(Point3D position, int* closest);
+    float getDistanceFrom(Point3D position);
     void orderByDistance(Point3D chart[4], Point3D cam);
 
 }QuadTree, Node;

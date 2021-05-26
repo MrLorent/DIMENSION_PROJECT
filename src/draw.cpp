@@ -111,9 +111,9 @@ Color3f GetLight(Sun sunShine, Point3D a, Point3D b, Point3D c){
 
 void initLODLevels(float zFar){
   LOD_LEVEL_1 = zFar * 2/16;
-  LOD_LEVEL_2 = zFar * 4/16;
-  LOD_LEVEL_3 = zFar * 6/16;
-  LOD_LEVEL_4 = zFar * 8/16;
+  LOD_LEVEL_2 = zFar * 3/16;
+  LOD_LEVEL_3 = zFar * 4/16;
+  LOD_LEVEL_4 = zFar * 5/16;
 }
 
 // Fonction permettant de générer un repère
@@ -255,50 +255,46 @@ void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam)
 }
 
 bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
-    if(quad->isLeaf())
-    {
-      return true;
-    }
 
-    int closestPoint;
-    float distance = quad->getDistanceFrom(position, &closestPoint);
+    int closestPoint = quad->getClosestCorner(position);
+    float distance = quad->getDistanceFrom(position);
 
     // ON DETERMINE SI ON DOIT CORRIGER LES CRACKS OU PAS
     if(distance <= LOD_LEVEL_1 && quad->height == 2)
     {
         dealWithCracks(quad, position, closestPoint, LOD_LEVEL_1);
     }
-    else if (distance > LOD_LEVEL_1 && distance <= LOD_LEVEL_2 && quad->height == 3)
+    else if (distance <= LOD_LEVEL_2 && quad->height == 3)
     {
         dealWithCracks(quad, position, closestPoint, LOD_LEVEL_2);
     }
-    else if (distance > LOD_LEVEL_2 && distance <= LOD_LEVEL_3 && (quad->height == 4 || quad->height == 3))
+    else if (distance <= LOD_LEVEL_3 && quad->height == 4)
     {
         dealWithCracks(quad, position, closestPoint, LOD_LEVEL_3);
     }
-    else if (distance > LOD_LEVEL_3 && distance <= LOD_LEVEL_4 && (quad->height == 5 || quad->height == 4))
+    else if (distance <= LOD_LEVEL_4 && quad->height == 5)
     {
         dealWithCracks(quad, position, closestPoint, LOD_LEVEL_4);
     }
     
     // ON DETERMINE SI ON DOIT DESSINER OU CONTINUER A DESCENDRE
-    if(distance <= LOD_LEVEL_1 && quad->height == 2)
-    {
-        return false;
-    }
-    else if (distance > LOD_LEVEL_1 && distance <= LOD_LEVEL_2 && quad->height == 2)
+    if(quad->isLeaf())
     {
         return true;
     }
-    else if (distance > LOD_LEVEL_2 && distance <= LOD_LEVEL_3 && (quad->height == 3 || quad->height == 2))
+    else if (distance > LOD_LEVEL_1 && quad->height == 2)
     {
         return true;
     }
-    else if (distance > LOD_LEVEL_3 && distance <= LOD_LEVEL_4 && (quad->height == 4 || quad->height == 3))
+    else if (distance > LOD_LEVEL_2 && quad->height == 3)
     {
         return true;
     }
-    else if (distance > LOD_LEVEL_4 && (quad->height == 5 || quad->height == 4))
+    else if (distance > LOD_LEVEL_3 && quad->height == 4)
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_4 && quad->height == 5)
     {
         return true;
     }
@@ -318,13 +314,13 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
             distanceB = norm(createVectorFromPoints(position, quad->b));
             distanceD = norm(createVectorFromPoints(position, quad->d));
 
-            if(distanceB >= LOD_LEVEL)
+            if(distanceB > LOD_LEVEL)
             {
               quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
               quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2; 
             }
 
-            if(distanceD >= LOD_LEVEL)
+            if(distanceD > LOD_LEVEL)
             {
               quad->getChildC()->tmpD.z = (quad->d.z + quad->c.z)/2;
               quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
@@ -335,13 +331,13 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
             distanceA = norm(createVectorFromPoints(position, quad->a));
             distanceC = norm(createVectorFromPoints(position, quad->c));
 
-            if(distanceA >= LOD_LEVEL)
+            if(distanceA > LOD_LEVEL)
             {
               quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
               quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2; 
             }
 
-            if(distanceC >= LOD_LEVEL)
+            if(distanceC > LOD_LEVEL)
             {
               quad->getChildC()->tmpD.z = (quad->c.z + quad->d.z)/2;
               quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
@@ -352,13 +348,13 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
             distanceB = norm(createVectorFromPoints(position, quad->b));
             distanceD = norm(createVectorFromPoints(position, quad->d));
 
-            if(distanceB >= LOD_LEVEL)
+            if(distanceB > LOD_LEVEL)
             {
               quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
               quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
             }
 
-            if(distanceD >= LOD_LEVEL)
+            if(distanceD > LOD_LEVEL)
             {
               quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
               quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
@@ -369,13 +365,13 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
             distanceA = norm(createVectorFromPoints(position, quad->a));
             distanceC = norm(createVectorFromPoints(position, quad->c));
 
-            if(distanceA >= LOD_LEVEL)
+            if(distanceA > LOD_LEVEL)
             {
               quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
               quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2; 
             }
 
-            if(distanceC >= LOD_LEVEL)
+            if(distanceC > LOD_LEVEL)
             {
               quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
               quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
