@@ -26,16 +26,17 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
     newNode->tmpC = newNode->c;
     newNode->tmpD = newNode->d;
 
+    /* On instancie les enfants à NULL de base */
+    newNode->childA = NULL;
+    newNode->childB = NULL;
+    newNode->childC = NULL;
+    newNode->childD = NULL;
+
     /* On indique si un des quatres points du quad contient un tree */
     newNode->hasTree = a.tree || b.tree || c.tree || d.tree;
 
     if(width == 1 && height == 1)
-    {
-        newNode->childA = NULL;
-        newNode->childB = NULL;
-        newNode->childC = NULL;
-        newNode->childD = NULL;
-        
+    {   
         return newNode;
     }
     else
@@ -56,35 +57,44 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
         for(int child=TOP_LEFT; child <= BOTTOM_LEFT; child++){
             switch(child){
                 case TOP_LEFT:
-                    newNode->childA = createQuadTree(
-                        a,
-                        heightMap->points[(int) a.y][(int) a.x + leftWidth],
-                        heightMap->points[(int) a.y - topHeight][(int) a.x + leftWidth],
-                        heightMap->points[(int) a.y - topHeight][(int) a.x],
-                        heightMap,
-                        params
-                    );
+                    if(height != 1){
+                        newNode->childA = createQuadTree(
+                            a,
+                            heightMap->points[(int) a.y][(int) a.x + leftWidth],
+                            heightMap->points[(int) a.y - topHeight][(int) a.x + leftWidth],
+                            heightMap->points[(int) a.y - topHeight][(int) a.x],
+                            heightMap,
+                            params
+                        );
+                    }
                     break;
+
                 case TOP_RIGHT:
-                    newNode->childB = createQuadTree(
-                        heightMap->points[(int) b.y][(int) b.x - rightWidth],
-                        b,
-                        heightMap->points[(int) b.y - topHeight][(int) b.x],
-                        heightMap->points[(int) b.y - topHeight][(int) b.x - rightWidth],
-                        heightMap,
-                        params
-                    );
+                    if(height != 1 && width != 1){
+                        newNode->childB = createQuadTree(
+                            heightMap->points[(int) b.y][(int) b.x - rightWidth],
+                            b,
+                            heightMap->points[(int) b.y - topHeight][(int) b.x],
+                            heightMap->points[(int) b.y - topHeight][(int) b.x - rightWidth],
+                            heightMap,
+                            params
+                        );
+                    }
                     break;
+                    
                 case BOTTOM_RIGHT:
-                    newNode->childC = createQuadTree(
-                        heightMap->points[(int) c.y + bottomHeight][(int) c.x - rightWidth],
-                        heightMap->points[(int) c.y + bottomHeight][(int) c.x],
-                        c,
-                        heightMap->points[(int) c.y][(int) c.x - rightWidth],
-                        heightMap,
-                        params
-                    );
+                    if(width != 1){
+                        newNode->childC = createQuadTree(
+                            heightMap->points[(int) c.y + bottomHeight][(int) c.x - rightWidth],
+                            heightMap->points[(int) c.y + bottomHeight][(int) c.x],
+                            c,
+                            heightMap->points[(int) c.y][(int) c.x - rightWidth],
+                            heightMap,
+                            params
+                        );
+                    }
                     break;
+
                 case BOTTOM_LEFT:
                     newNode->childD = createQuadTree(
                         heightMap->points[(int) d.y + bottomHeight][(int) d.x],
@@ -96,6 +106,14 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
                     );
                     break;
             }
+        }
+
+        if(height == 1){
+            newNode->childA = newNode->childD;
+            newNode->childB = newNode->childC;
+        }else if(width == 1){
+            newNode->childB = newNode->childA;
+            newNode->childC = newNode->childD;
         }
 
         return newNode;
