@@ -11,12 +11,12 @@ float LOD_LEVEL_3 = 0;
 float LOD_LEVEL_4 = 0;
 
 
-const Color3f WIREFRAME_COLORS[5] = {
-    createColor(0,255,0),
-    createColor(255,0,0),
-    createColor(0,0,255),
-    createColor(150,105,0),
-    createColor(200,55,0)
+const Color3ub WIREFRAME_COLORS[5] = {
+    createColor(255,255,20), // rgb(255, 243, 22)
+    createColor(70,220,250), // rgb(70, 220, 250)
+    createColor(250,0,250), // rgb(252, 1, 251)
+    createColor(80,0,80), // rgb(79, 0, 89)
+    createColor(0,20,80) // rgb(2, 20, 90)
 };
 
 void initTreeChart(TreeChart* chart, int NB_TREES)
@@ -118,10 +118,10 @@ Color3f GetLight(Sun sun, Point3D a, Point3D b, Point3D c){
 /*############## FONCTION DRAW ##############*/
 
 void initLODLevels(float zFar){
-  LOD_LEVEL_1 = zFar * 2/16;
-  LOD_LEVEL_2 = zFar * 3/16;
-  LOD_LEVEL_3 = zFar * 4/16;
-  LOD_LEVEL_4 = zFar * 5/16;
+  LOD_LEVEL_1 = zFar * 3/32;
+  LOD_LEVEL_2 = zFar * 6/32;
+  LOD_LEVEL_3 = zFar * 9/32;
+  LOD_LEVEL_4 = zFar * 18/32;
 }
 
 // Fonction permettant de générer un repère
@@ -467,7 +467,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint textu
     else
     {
     glBegin(GL_TRIANGLES);
-        glColor3f(
+        glColor3ub(
             WIREFRAME_COLORS[quadLevel-1].r,
             WIREFRAME_COLORS[quadLevel-1].g,
             WIREFRAME_COLORS[quadLevel-1].b

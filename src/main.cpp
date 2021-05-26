@@ -93,7 +93,7 @@ static void init() {
 
 	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
-	glClearColor(0.3,0.3,0.3,0.0);
+	glClearColor(0.0,0.005,0.05,0.0);
 	/* activation du ZBuffer */
 	glEnable( GL_DEPTH_TEST);
 
