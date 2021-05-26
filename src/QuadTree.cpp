@@ -108,14 +108,6 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
             }
         }
 
-        if(height == 1){
-            newNode->childA = newNode->childD;
-            newNode->childB = newNode->childC;
-        }else if(width == 1){
-            newNode->childB = newNode->childA;
-            newNode->childC = newNode->childD;
-        }
-
         return newNode;
     }
 }
