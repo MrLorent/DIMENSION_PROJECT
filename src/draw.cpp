@@ -1,5 +1,18 @@
 #include "../include/draw.h"
 
+const Color3ub WIREFRAME_COLORS[5] = {
+    createColor(255,0,255), // rgb(9, 241, 247) ROSE
+    createColor(255,80,175), 
+    createColor(255,125,125), 
+    createColor(255,175,80), 
+    createColor(255,255,0) // rgb(255, 255, 0) JAUNE
+};
+
+const Triangle TREE_LIGHT_MODEL = createTriangle(
+    createPoint(0.,-0.5,1.),
+    createPoint(0.,0.5,1.),
+    createPoint(0.,0.5,0.)
+);
 
 float TEXTURE_LEVEL_1 = 0;
 float TEXTURE_LEVEL_2 = 0;
@@ -9,15 +22,6 @@ float LOD_LEVEL_1 = 0;
 float LOD_LEVEL_2 = 0;
 float LOD_LEVEL_3 = 0;
 float LOD_LEVEL_4 = 0;
-
-
-const Color3ub WIREFRAME_COLORS[5] = {
-    createColor(255,0,255), // rgb(9, 241, 247) ROSE
-    createColor(255,80,175), 
-    createColor(255,125,125), 
-    createColor(255,175,80), 
-    createColor(255,255,0) // rgb(255, 255, 0) JAUNE
-};
 
 void initTreeChart(TreeChart* chart, int NB_TREES)
 {
@@ -507,11 +511,8 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint textu
 void glDrawTrees(TreeChart* trees, float latitude, GLuint textures[15], Sun sunShine) {
     for(int i = 0; i < trees->nbTrees; i++)
     {
-      Point3D a = createPoint(0.,-0.5,1.);
-      Point3D b = createPoint(0.,0.5,1.);
-      Point3D c = createPoint(0.,0.5,0.);
-
-      Color3f triangleLight = GetLight(sunShine, a , b , c);
+      Color3f triangleLight = GetLight(sunShine, TREE_LIGHT_MODEL.a, TREE_LIGHT_MODEL.b, TREE_LIGHT_MODEL.c);
+      
       if(trees->trees[i].z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[1]);
       if(trees->trees[i].z > TEXTURE_LEVEL_1 && trees->trees[i].z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[12]);
       if(trees->trees[i].z > TEXTURE_LEVEL_2 && trees->trees[i].z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[13]);

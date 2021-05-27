@@ -25,6 +25,19 @@ Point3D createPoint(float x, float y, float z);
 
 void printPoint3D(Point3D p);
 
+/*################ TRIANGLE ################*/
+
+struct Triangle {
+    Point3D a;
+    Point3D b;
+    Point3D c;
+};
+
+// CONSTRUCTEURS
+
+// Construit un point à partir de trois coordonnées
+Triangle createTriangle(Point3D a, Point3D b, Point3D c);
+
 /*################ VECTOR ################*/
 
 struct Vector3D{

@@ -18,6 +18,17 @@ Vector3D createVectorFromPoints(Point3D p1, Point3D p2)
     return v;
 }
 
+Triangle createTriangle(Point3D a, Point3D b, Point3D c)
+{
+    Triangle newTriangle;
+
+    newTriangle.a = a;
+    newTriangle.b = b;
+    newTriangle.c = c;
+
+    return newTriangle;
+}
+
 float dot(Vector3D v1, Vector3D v2)
 {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
