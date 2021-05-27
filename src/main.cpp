@@ -49,7 +49,7 @@ static void init() {
 	initSun(&sun, params.xSize, params.ySize);
 
 	// INITIALISATION DES ARBRES
-	NB_TREES = heightMap.width/2;
+	NB_TREES = heightMap.width;
 	initTreeChart(&treesToDraw, NB_TREES);
 	srand (time(NULL));
 	LoadTrees(&heightMap, NB_TREES);

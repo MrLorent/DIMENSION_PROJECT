@@ -38,19 +38,19 @@ void initTextureLevels(float min, float max){
 void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12])
 {
     char* texturesLinks[20];
-    texturesLinks[0] = (char*)"doc/herbe1.png";
-    texturesLinks[1] = (char*)"doc/herbe2.png";
-    texturesLinks[2] = (char*)"doc/terre.png";
-    texturesLinks[3] = (char*)"doc/neige.png";
+    texturesLinks[0] = (char*)"doc/text1.png";
+    texturesLinks[1] = (char*)"doc/text2.png";
+    texturesLinks[2] = (char*)"doc/text3.png";
+    texturesLinks[3] = (char*)"doc/text4.png";
 
     texturesLinks[4] = (char*)"doc/arbre1.png";
     texturesLinks[5] = (char*)"doc/arbre2.png";
     texturesLinks[6] = (char*)"doc/arbre3.png";
     texturesLinks[7] = (char*)"doc/arbre4.png";
 
-    texturesLinks[8] = (char*)"doc/skybox-droite.png";
+    texturesLinks[8] = (char*)"doc/skybox-gauche.png";
     texturesLinks[9] = (char*)"doc/skybox-devant.png";
-    texturesLinks[10] = (char*)"doc/skybox-gauche.png";
+    texturesLinks[10] = (char*)"doc/skybox-droite.png";
     texturesLinks[11] = (char*)"doc/skybox-derriere.png";
     texturesLinks[12] = (char*)"doc/skybox-dessous.png";
     texturesLinks[13] = (char*)"doc/skybox-dessus.png";
@@ -59,7 +59,7 @@ void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTe
     texturesLinks[16] = (char*)"doc/starbox-gauche.png";
     texturesLinks[17] = (char*)"doc/starbox-derriere.png";
     texturesLinks[18] = (char*)"doc/starbox-dessous.png";
-    texturesLinks[19] = (char*)"doc/starbox-droite.png";
+    texturesLinks[19] = (char*)"doc/starbox-dessus.png";
 
     for(int i=0; i<4;i++){
       mapTextures[i]=creaTexture(texturesLinks[i]);
@@ -164,9 +164,9 @@ void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float z
     glColor4f(1, 1, 1, 1);
     //Dessous
     if(wireframe){
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[6]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[10]);
     }else{
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[0]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[4]);
     }
     glBegin(GL_QUADS);
       glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
@@ -178,9 +178,9 @@ void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float z
 
     //Dessus
     if(wireframe){
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[7]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[11]);
     }else{
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[1]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[5]);
     }
     glBegin(GL_QUADS);
       glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
@@ -192,9 +192,9 @@ void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float z
 
     //Devant (x positif)
     if(wireframe){
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[8]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[7]);
     }else{
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[2]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[1]);
     }
     glBegin(GL_QUADS);
       glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
@@ -221,9 +221,9 @@ void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float z
 
     //gauche (y positif)
     if(wireframe){
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[10]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[8]);
     }else{
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[4]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[2]);
     }
     glBegin(GL_QUADS);
       glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
@@ -235,9 +235,9 @@ void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float z
 
     //droite
     if(wireframe){
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[11]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[6]);
     }else{
-        glBindTexture(GL_TEXTURE_2D,skyboxTextures[5]);
+        glBindTexture(GL_TEXTURE_2D,skyboxTextures[0]);
     }
     glBegin(GL_QUADS);
       glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
@@ -527,16 +527,16 @@ void glDrawTrees(TreeChart* trees, float latitude, GLuint treeTextures[4], Sun s
       Point3D c = createPoint(0.,0.5,0.);
 
       Color3f triangleLight = GetLight(sunShine, a , b , c);
-      if(trees->trees[i].z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,treeTextures[4]);
-      if(trees->trees[i].z > TEXTURE_LEVEL_1 && trees->trees[i].z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,treeTextures[5]);
-      if(trees->trees[i].z > TEXTURE_LEVEL_2 && trees->trees[i].z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,treeTextures[6]);
-      if(trees->trees[i].z > TEXTURE_LEVEL_3)  glBindTexture(GL_TEXTURE_2D,treeTextures[7]);
+      if(trees->trees[i].z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,treeTextures[0]);
+      if(trees->trees[i].z > TEXTURE_LEVEL_1 && trees->trees[i].z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,treeTextures[1]);
+      if(trees->trees[i].z > TEXTURE_LEVEL_2 && trees->trees[i].z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,treeTextures[2]);
+      if(trees->trees[i].z > TEXTURE_LEVEL_3)  glBindTexture(GL_TEXTURE_2D,treeTextures[3]);
       
       glPushMatrix();
           glTranslatef(trees->trees[i].x, trees->trees[i].y, trees->trees[i].z);
           glRotatef(latitude*180/M_PI,0.,0.,1.);
           glColor4f(triangleLight.r,triangleLight.g,triangleLight.b, 1);
-          glScalef(0.25,0.25,0.25);
+          glScalef(0.75,0.75,0.75);
           glPushMatrix();
               glBegin(GL_POLYGON);
               glTexCoord2f( 0,  0); glVertex3f(0,-0.5,1);
