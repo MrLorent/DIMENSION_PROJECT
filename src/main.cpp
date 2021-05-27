@@ -78,8 +78,8 @@ static void init() {
 	// INITIALISATION DES PARAMETRES DE CAMERA
 	/* Paramètre de position de la camera dans la map*/
 	camera.height = 0.25;
-	camera.position.x = 0;
-	camera.position.y = 0;
+	camera.position.x = params.xSize/2;
+	camera.position.y = params.ySize/2;
 	camera.position.z = quadTree->d.z + camera.height;
 
 	camera.closestMapPoint = quadTree->d;
@@ -284,6 +284,13 @@ static void kbdFunc(unsigned char c, int x, int y) {
 				wireFrame = false;
 			}else{
 				wireFrame = true;
+			}
+			break;
+		case 'C' : case 'c' : 
+			if(camera.locked){
+				camera.locked = false;
+			}else{
+				camera.locked = true;
 			}
 			break;
 		default:

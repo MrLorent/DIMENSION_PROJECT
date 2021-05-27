@@ -556,6 +556,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTe
 
     else
     {
+    glLineWidth(1.25);
     glBegin(GL_LINE_LOOP);
         glColor3ub(
             WIREFRAME_COLORS[quadLevel-1].r,
