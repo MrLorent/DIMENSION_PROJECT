@@ -12,12 +12,10 @@
 
 /*############# VARIABLES GLOBALES #############*/
 
-bool menu = true;
+const float STEP_ANGLE = M_PI/90.;
 
 /*---------- GLOBALES POUR LA CAMERA ----------*/
-const float STEP_ANGLE = M_PI/90.;
 float SPEED_FACTOR;
-float HEIGHT_FACTOR;
 Camera camera;
 
 
@@ -33,7 +31,6 @@ bool wireFrame;
 GLuint mapTextures[4];
 GLuint treeTextures[4];
 GLuint skyboxTextures[12];
-GLuint menuTexture[1];
 
 using namespace std;
 
@@ -48,19 +45,14 @@ static void init() {
   	readParams(&params, &camera);
   	loadHeightMap(&params, &heightMap);
 
-	// INITIALISATION DU SOLEIL
-	initSun(&sun, params.xSize, params.ySize);
-
 	// INITIALISATION DES ARBRES
 	NB_TREES = heightMap.width;
 	initTreeChart(&treesToDraw, NB_TREES);
 	srand (time(NULL));
 	LoadTrees(&heightMap, NB_TREES);
 
-	// INITIALISATION DES PALIERS DU LOD
-	initLODLevels(camera.zFar);
-	
 	// INITIALISATION DU QUADTREE
+	/* Initialisation du quadtree à partir du tableau de pixels */
 	quadTree = createQuadTree(
 		heightMap.points[heightMap.height - 1][0],
 		heightMap.points[heightMap.height - 1][heightMap.width - 1],
@@ -70,35 +62,28 @@ static void init() {
 		params
 	);
 
-	cout << "Hauteur totale du quadTree :" << endl;
-	cout << quadTree->getHeight() << endl;
+	/* Initialisation de la position finale des nodes */
+	quadTree->initNodesHeight();
 	
-	freePointChart(&heightMap);
-
-	// INITIALISATION DES PARAMETRES DE CAMERA
-	/* Paramètre de position de la camera dans la map*/
-	camera.height = 0.25;
-	camera.position.x = params.xSize/2;
-	camera.position.y = params.ySize/2;
-	camera.position.z = quadTree->d.z + camera.height;
-
-	camera.closestMapPoint = quadTree->d;
-	camera.locked = true;
-	
-	/* Vecteur up : vecteur normal au plan du sol (0;0;1) */
-	camera.up.x = 0;
-	camera.up.y = 0;
-	camera.up.z = 1;
-	/* Paramètre de position du regard */
-	camera.latitude = 0.0;
-	camera.longitude = M_PI/2.0;
-	/* Coefficient de vitesse calculer selon la taille de la map */
-	SPEED_FACTOR = 0.00005 * (params.xSize * params.ySize)/2;
+	/* Initialisation des niveaux du LOD en fonction du zFar */
+	initLODLevels(camera.zFar);
 
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
 	initTextureLevels(params.zMin, params.zMax);
-	loadTextures( mapTextures, treeTextures, skyboxTextures, menuTexture);
+	loadTextures(mapTextures, treeTextures, skyboxTextures);
+
+	// INITIALISATION DU SOLEIL
+	initSun(&sun, params.xSize, params.ySize);
+
+	// INITIALISATION DE LA CAMERA
+	/* Paramètre de position de la camera dans la map*/
+	initCamera(&camera, quadTree->childA->c);
+	/* Coefficient de vitesse calculer selon la taille de la map */
+	SPEED_FACTOR = 0.00005 * (params.xSize * params.ySize)/2;
+
+	/* liberation de la memoire liee au tableau de pixels */
+	freePointChart(&heightMap);
 
 	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
@@ -125,7 +110,7 @@ static void reshapeFunc(int width, int height) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	/* définition de la camera */
-	gluPerspective(camera.fovV, h, camera.zNear, camera.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
+	gluPerspective(camera.fovV, h, camera.zNear, camera.zFar);
 
 	/* Retour a la pile de matrice Modelview
 	et effacement de celle-ci */
@@ -166,15 +151,22 @@ static void drawFunc(void) {
 		);
 
 		/* DESSIN DE LA SCENE */
-		if(menu) glDrawMenu(menuTexture);
 
+		/* Dessin de la skybox */
 		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z, skyboxTextures,camera.zFar,wireFrame);
 
 		glDrawRepere(2.0);
 
+		/* Remise a zero du nombre d'arbre a afficher dans la scene */
 		treesToDraw.nbTrees = 0;
+
+		/* Remise a zero des modifications liees a la gestion des cracks */
 		quadTree->initTmpPoints();
+
+		/* Dessin de la map et initialisation des arbres a dessiner */
 		glDrawHeightMap(quadTree, &camera, mapTextures, &treesToDraw, sun, wireFrame);
+
+		/* Dessin des arbres */
 		if(!wireFrame) glDrawTrees(&treesToDraw, camera.latitude, treeTextures, sun);
 		
 	/* Fin du dessin */
@@ -190,6 +182,7 @@ static void drawFunc(void) {
 void idle(void) {
     if(sun.moving)
 	{
+		/* Si le soleil est en mode loop, on incremente sa latitude, et on met a jour sa position */
 		sun.longitude -= 0.2 * STEP_ANGLE;
 		sun.position.y = sun.origin.y - sun.radius * cos(sun.longitude);
 		sun.position.z = sun.origin.z - sun.radius * sin(sun.longitude);
@@ -202,6 +195,8 @@ void idle(void) {
 static void kbdSpFunc(int c, int x, int y) {
 	/* sortie du programme si utilisation des touches ESC, */
 	switch(c) {
+
+		// CONTROLES LIEES AU REGARD DE LA CAMERA
 		case GLUT_KEY_UP :
 			if (camera.longitude > M_PI/6) camera.longitude -= STEP_ANGLE;
 			break;
@@ -214,24 +209,29 @@ static void kbdSpFunc(int c, int x, int y) {
 		case GLUT_KEY_RIGHT :
 			camera.latitude -= STEP_ANGLE;
 			break;
-		default:
-			if(GLUT_ACTIVE_SHIFT && !camera.locked){
+
+		// CONTROLES LIEES AU DEPLACEMENT DE LA CAMERA
+		case 'P' : case 'p' :
+			if(!camera.locked){
 				camera.position.z -= SPEED_FACTOR;
 			}
-			printf("Appui sur une touche spéciale\n");
+			break;
+
+		default:
+			cout << "Touche non gérée par l'application pressée." << endl;
 	}
 
 	glutPostRedisplay();
 }
 
 static void kbdFunc(unsigned char c, int x, int y) {
-	/* sortie du programme si utilisation des touches ESC, */
-	/* 'q' ou 'Q'*/
-
+	/* sortie du programme si utilisation de la touche ESC, */
 	switch(c) {
 		case 27 :
 			exit(0);
 			break;
+
+		// CONTROLES LIEES AU DEPLACEMENT DE LA CAMERA
 		case 'Z' : case 'z' :
 			camera.position.x += SPEED_FACTOR * cos(camera.latitude);
 			camera.position.y += SPEED_FACTOR * sin(camera.latitude);
@@ -248,6 +248,20 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			camera.position.x -= SPEED_FACTOR * cos(camera.latitude + M_PI/2);
 			camera.position.y -= SPEED_FACTOR * sin(camera.latitude + M_PI/2);
 			break;
+		case ' ' :
+			if(!camera.locked){
+				camera.position.z += SPEED_FACTOR;
+			}
+			break;
+		case 'C' : case 'c' : 
+			if(camera.locked){
+				camera.locked = false;
+			}else{
+				camera.locked = true;
+			}
+			break;
+
+		// TOUCHES LIEES A LA GESTION DU SOLEIL
 		case 'L' : case 'l' :
 			if(sun.moving){
 				sun.moving = false;
@@ -269,16 +283,8 @@ static void kbdFunc(unsigned char c, int x, int y) {
 				sun.position.z = sun.origin.z - sun.radius * sin(sun.longitude);
 			}
 			break;
-		case 'I' : case 'i' : 
-			if(!menu) menu = true ;
-			else menu = false ;
-			cout << "yolo" << endl;
-			break;
-		case ' ' :
-			if(!camera.locked){
-				camera.position.z += SPEED_FACTOR;
-			}
-			break;
+
+		// TOUCHE LIEE AU MODE DE VISION FILAIRE
 		case 'F' : case 'f' : 
 			if(wireFrame){
 				wireFrame = false;
@@ -286,15 +292,9 @@ static void kbdFunc(unsigned char c, int x, int y) {
 				wireFrame = true;
 			}
 			break;
-		case 'C' : case 'c' : 
-			if(camera.locked){
-				camera.locked = false;
-			}else{
-				camera.locked = true;
-			}
-			break;
+			
 		default:
-			printf("Appui sur la touche %c\n",c);
+			cout << "Touche non gérée par l'application pressée." << endl;
 	}
 	glutPostRedisplay();
 }

@@ -39,19 +39,20 @@ void initTextureLevels(float min, float max){
     TEXTURE_LEVEL_3 = zSpacing * 3/4;
 }
 
-void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12], GLuint menuTexture[1])
+void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12])
 {
     char* texturesLinks[21];
+    // TEXTURES DU SOL
     texturesLinks[0] = (char*)"doc/text1.png";
     texturesLinks[1] = (char*)"doc/text2.png";
     texturesLinks[2] = (char*)"doc/text3.png";
     texturesLinks[3] = (char*)"doc/text4.png";
-
+    // TEXTURES DES ARBRES
     texturesLinks[4] = (char*)"doc/arbre1.png";
     texturesLinks[5] = (char*)"doc/arbre2.png";
     texturesLinks[6] = (char*)"doc/arbre3.png";
     texturesLinks[7] = (char*)"doc/arbre4.png";
-
+    // TEXTURES DE LA SKYBOX
     texturesLinks[8] = (char*)"doc/skybox-gauche.png";
     texturesLinks[9] = (char*)"doc/skybox-devant.png";
     texturesLinks[10] = (char*)"doc/skybox-droite.png";
@@ -66,19 +67,20 @@ void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTe
     texturesLinks[19] = (char*)"doc/starbox-dessus.png";
     texturesLinks[20] = (char*)"doc/menu.png";
 
+    // TEXTURES DU SOL
     for(int i=0; i<4;i++){
       mapTextures[i]=creaTexture(texturesLinks[i]);
     }
 
+    // TEXTURES DES ARBRES
     for(int i=0; i<4;i++){
       treeTextures[i]=creaTexture(texturesLinks[i+4]);
     }
 
+    // TEXTURES DE LA SKYBOX
     for(int i=0; i<12;i++){
       skyboxTextures[i]=creaTexture(texturesLinks[i+8]);
     }
-
-    menuTexture[0] = creaTexture(texturesLinks[20]);
 }
 
 // Fonction permettant de créer une texture GLuint
@@ -139,6 +141,8 @@ Color3f GetLight(Sun sun, Point3D a, Point3D b, Point3D c){
 
 /*############## FONCTION DRAW ##############*/
 
+// Initialise les differents seuils du LOD
+// en fonction du zFar de la camera
 void initLODLevels(float zFar){
   LOD_LEVEL_1 = zFar * 3/32;
   LOD_LEVEL_2 = zFar * 6/32;
@@ -146,25 +150,7 @@ void initLODLevels(float zFar){
   LOD_LEVEL_4 = zFar * 18/32;
 }
 
-void glDrawMenu(GLuint menuTexture[1]) {
-    glBindTexture(GL_TEXTURE_2D, menuTexture[0]);
-    glPushMatrix();
-        glTranslatef(0,2,0);
-        glRotatef(90,0,0,1);
-        glPushMatrix();
-                glColor4f(1,1,1,1);
-                glBegin(GL_POLYGON);
-                glTexCoord2f( 0,  0); glVertex3f(1,1,0);
-                glTexCoord2f( 1,  0); glVertex3f(1,1,1);
-                glTexCoord2f( 1,  1); glVertex3f(-1,1,1);
-                glTexCoord2f( 0,  1); glVertex3f(-1,1,0);
-                glEnd();
-        glPopMatrix();
-    glPopMatrix();
-    glBindTexture(GL_TEXTURE_2D,0);
-}
-
-// Fonction permettant de générer un repère
+// Dessine les trois axes du repere
 void glDrawRepere(float length) {
 	// dessin du repère
 	glBegin(GL_LINES);
@@ -180,10 +166,10 @@ void glDrawRepere(float length) {
 	glEnd();
 }
 
-// Fonction qui génère la skybox
+// Dessine la skybox
 void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float zFar, bool wireframe)
 {
-  float D=sqrt(zFar);
+  float D = sqrt(zFar);
 
   glDepthMask(GL_FALSE);
     glColor4f(1, 1, 1, 1);
@@ -281,11 +267,13 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint mapTextures[4], 
         return;
     }
 
+    // FRUSTUM CULING
     if(!camera->sees(quadTree->a, quadTree->b, quadTree->c, quadTree->d))
     {
         return;
     }
 
+    // LOD
     if(LevelOfDetailsReached(quadTree, camera->position))
     {
         if(camera->locked){

@@ -1,5 +1,8 @@
 #ifndef PRELOAD_H
 #define PRELOAD_H
+#include <iostream>
+#include <fstream>
+#include <time.h> 
 
 #include "geometry.h"
 #include "objects.h"

@@ -22,7 +22,7 @@ struct TreeChart {
 void initTreeChart(TreeChart* chart, int NB_TREES);
 
 void initTextureLevels(float min, float max);
-void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12], GLuint menuTexture[1]);
+void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12]);
 GLuint creaTexture(char* path);
 
 void initLODLevels(float max);

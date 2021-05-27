@@ -1,5 +1,32 @@
 #include "../include/objects.h"
 
+void initCamera(Camera* cam, Point3D position)
+{
+    cam->height = 0.25;
+	cam->position.x = position.x;
+	cam->position.y = position.y;
+	cam->position.z = position.z + cam->height;
+
+	cam->closestMapPoint = position;
+	cam->locked = true;
+	
+	/* Vecteur up : vecteur normal au plan du sol (0;0;1) */
+	cam->up.x = 0;
+	cam->up.y = 0;
+	cam->up.z = 1;
+	/* Paramètre de position du regard */
+	cam->latitude = 0.0;
+	cam->longitude = M_PI/2.0;
+}
+
+float Camera::getFovHInRadian(){
+    return this->fovH * M_PI/ 180.;
+}
+
+float Camera::getFovVInRadian(){
+    return this->fovV * M_PI/180.;
+}
+
 bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
     // CALCUL DU PERIMETRE DE CHAMP DE VISION
     
@@ -47,14 +74,6 @@ bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
         return true;
     }
        
-}
-
-float Camera::getFovHInRadian(){
-    return this->fovH * M_PI/ 180.;
-}
-
-float Camera::getFovVInRadian(){
-    return this->fovV * M_PI/180.;
 }
 
 bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4])

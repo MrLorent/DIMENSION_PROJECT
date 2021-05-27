@@ -145,8 +145,37 @@ bool Node::isLeaf(){
     return this->childA == NULL && this->childB == NULL && this->childC == NULL && this->childD == NULL;
 }
 
-bool Node::contains(Point3D a, Point3D c, Point3D b, Point3D cam){
-    // A CODER
+void Node::initNodesHeight(){
+    if(this->isLeaf()){
+        this->height = 1;
+    }else{
+        int heightA = 0, heightB = 0, heightC = 0, heightD = 0;
+
+        // RECUPERATION DES HAUTEURS DES ENFANTS
+        if(this->childA) heightA = this->childA->getHeight();
+        if(this->childB) heightB = this->childB->getHeight();
+        if(this->childC) heightC = this->childC->getHeight();
+        if(this->childD) heightD = this->childD->getHeight();
+
+        // PREMIERE COMPARAISON
+        if(heightA < heightB) heightA = heightB;
+        if(heightC < heightD) heightC = heightD;
+
+        // SECONDE ET DERNIERE COMPARAISON
+        if(heightA > heightC)
+        {
+            this->height = heightA +1;
+        }
+        else
+        {
+            this->height = heightC +1;
+        }
+
+        if(this->childA) this->childA->initNodesHeight();
+        if(this->childB) this->childB->initNodesHeight();
+        if(this->childC) this->childC->initNodesHeight();
+        if(this->childD) this->childD->initNodesHeight();
+    }
 }
 
 int Node::getHeight(){
