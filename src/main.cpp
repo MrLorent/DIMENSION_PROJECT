@@ -28,8 +28,9 @@ Sun sun;
 
 /*------------- GLOBALES TEXTURE --------------*/
 bool wireFrame;
-GLuint textures[15];
-
+GLuint mapTextures[4];
+GLuint treeTextures[4];
+GLuint skyboxTextures[12];
 
 using namespace std;
 
@@ -89,7 +90,7 @@ static void init() {
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
 	initTextureLevels(params.zMin, params.zMax);
-	loadTextures(textures);
+	loadTextures( mapTextures, treeTextures, skyboxTextures);
 
 	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
@@ -157,14 +158,14 @@ static void drawFunc(void) {
 		);
 
 		/* DESSIN DE LA SCENE */
-		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures,camera.zFar,wireFrame);
+		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z, skyboxTextures,camera.zFar,wireFrame);
 
 		glDrawRepere(2.0);
 
 		treesToDraw.nbTrees = 0;
 		quadTree->initTmpPoints();
-		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sun, wireFrame);
-		if(!wireFrame) glDrawTrees(&treesToDraw, camera.latitude, textures, sun);
+		glDrawHeightMap(quadTree, &camera, mapTextures, &treesToDraw, sun, wireFrame);
+		if(!wireFrame) glDrawTrees(&treesToDraw, camera.latitude, treeTextures, sun);
 		
 	/* Fin du dessin */
 	glPopMatrix();
