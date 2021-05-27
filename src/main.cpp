@@ -12,6 +12,8 @@
 
 /*############# VARIABLES GLOBALES #############*/
 
+bool menu = true;
+
 /*---------- GLOBALES POUR LA CAMERA ----------*/
 const float STEP_ANGLE = M_PI/90.;
 float SPEED_FACTOR;
@@ -28,8 +30,10 @@ Sun sun;
 
 /*------------- GLOBALES TEXTURE --------------*/
 bool wireFrame;
-GLuint textures[15];
-
+GLuint mapTextures[4];
+GLuint treeTextures[4];
+GLuint skyboxTextures[12];
+GLuint menuTexture[1];
 
 using namespace std;
 
@@ -48,7 +52,7 @@ static void init() {
 	initSun(&sun, params.xSize, params.ySize);
 
 	// INITIALISATION DES ARBRES
-	NB_TREES = heightMap.width/2;
+	NB_TREES = heightMap.width;
 	initTreeChart(&treesToDraw, NB_TREES);
 	srand (time(NULL));
 	LoadTrees(&heightMap, NB_TREES);
@@ -94,7 +98,7 @@ static void init() {
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
 	initTextureLevels(params.zMin, params.zMax);
-	loadTextures(textures);
+	loadTextures( mapTextures, treeTextures, skyboxTextures, menuTexture);
 
 	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
@@ -162,14 +166,16 @@ static void drawFunc(void) {
 		);
 
 		/* DESSIN DE LA SCENE */
-		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures,camera.zFar,wireFrame);
+		if(menu) glDrawMenu(menuTexture);
+
+		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z, skyboxTextures,camera.zFar,wireFrame);
 
 		glDrawRepere(2.0);
 
 		treesToDraw.nbTrees = 0;
 		quadTree->initTmpPoints();
-		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sun, wireFrame);
-		if(!wireFrame) glDrawTrees(&treesToDraw, camera.latitude, textures, sun);
+		glDrawHeightMap(quadTree, &camera, mapTextures, &treesToDraw, sun, wireFrame);
+		if(!wireFrame) glDrawTrees(&treesToDraw, camera.latitude, treeTextures, sun);
 		
 	/* Fin du dessin */
 	glPopMatrix();
@@ -262,6 +268,11 @@ static void kbdFunc(unsigned char c, int x, int y) {
 				sun.position.y = sun.origin.y - sun.radius * cos(sun.longitude);
 				sun.position.z = sun.origin.z - sun.radius * sin(sun.longitude);
 			}
+			break;
+		case 'I' : case 'i' : 
+			if(!menu) menu = true ;
+			else menu = false ;
+			cout << "yolo" << endl;
 			break;
 		case ' ' :
 			if(!camera.locked){
