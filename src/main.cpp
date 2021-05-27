@@ -164,7 +164,7 @@ static void drawFunc(void) {
 		treesToDraw.nbTrees = 0;
 		quadTree->initTmpPoints();
 		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sun, wireFrame);
-		glDrawTrees(&treesToDraw, camera.latitude, textures, sun);
+		if(!wireFrame) glDrawTrees(&treesToDraw, camera.latitude, textures, sun);
 		
 	/* Fin du dessin */
 	glPopMatrix();
