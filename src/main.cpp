@@ -93,15 +93,12 @@ static void init() {
 
 	// INITIALISATION DES PARAMETRES GL 
 	/* couleur du fond (gris sombre) */
-	glClearColor(0.0,0.005,0.05,0.0);
+	glClearColor(0.3,0.3,0.3,0.0);
 	/* activation du ZBuffer */
 	glEnable( GL_DEPTH_TEST);
 
 	/* lissage des couleurs sur les facettes */
 	glShadeModel(GL_SMOOTH);
-
-	/* INITIALISATION DE LA SCENE */
-	//createCoordinates();
 }
 
 /*############ RESIZE DE LA FENETRE #############*/
@@ -109,6 +106,8 @@ static void init() {
 static void reshapeFunc(int width, int height) {
 	GLfloat  h = (GLfloat) width / (GLfloat) height ;
 	
+	/* Calcul de la fov horizontal à partir de la
+	fov verticale et du ratio de l'ecran */
 	camera.fovH = 2.0 * atan(tan(camera.getFovVInRadian() * 0.5) * h) * 180/M_PI;
 	
 	/* dimension de l'écran GL */
@@ -120,7 +119,7 @@ static void reshapeFunc(int width, int height) {
 	gluPerspective(camera.fovV, h, camera.zNear, camera.zFar);		// Angle de vue, rapport largeur/hauteur, near, far
 
 	/* Retour a la pile de matrice Modelview
-			et effacement de celle-ci */
+	et effacement de celle-ci */
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -135,6 +134,11 @@ static void drawFunc(void) {
 	/* modification de la matrice de la scène */
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glEnable(GL_TEXTURE_2D);
+
+	/* Gestion de la transparence des png */
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/* Debut du dessin de la scène */
 	glPushMatrix();
@@ -152,12 +156,8 @@ static void drawFunc(void) {
 			camera.up.z
 		);
 
-		glColor3f(1.0,0.0,0.0);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures,camera.zFar);
+		/* DESSIN DE LA SCENE */
+		glDrawSkybox(camera.position.x,camera.position.y,camera.position.z,textures,camera.zFar,wireFrame);
 
 		glDrawRepere(2.0);
 
@@ -165,20 +165,7 @@ static void drawFunc(void) {
 		quadTree->initTmpPoints();
 		glDrawHeightMap(quadTree, &camera, textures, &treesToDraw, sun, wireFrame);
 		glDrawTrees(&treesToDraw, camera.latitude, textures, sun);
-
-		float position[4] = {5.0,5.0,5.0,1.0};
-		float black[3] = {0.0,0.0,0.0};
-		float intensite[3] = {1000.0,1000.0,1000.0};
-		glEnable(GL_TEXTURE_2D);
-		//glEnable(GL_LIGHTING);
-		//glEnable(GL_LIGHT0);
-		//glLightfv(GL_LIGHT0,GL_POSITION,position);
-		//glLightfv(GL_LIGHT0,GL_DIFFUSE,intensite);
-		//glLightfv(GL_LIGHT0,GL_SPECULAR,black);
-		//glLightf(GL_LIGHT0,GL_,black);
-		//glLightf(GL_LIGHT0,GL_SPECULAR,black);
-		//glDisable(GL_LIGHTING);*/
-
+		
 	/* Fin du dessin */
 	glPopMatrix();
 
@@ -276,10 +263,8 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			break;
 		case 'F' : case 'f' : 
 			if(wireFrame){
-				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 				wireFrame = false;
 			}else{
-				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 				wireFrame = true;
 			}
 			break;
@@ -292,7 +277,7 @@ static void kbdFunc(unsigned char c, int x, int y) {
 
 int main (int argc, char** argv){
 
-	/*/* traitement des paramètres du programme propres à GL */
+	/* Traitement des paramètres du programme propres à GL */
 	glutInit(&argc, argv);
 	/* initialisation du mode d'affichage :                */
 	/* RVB + ZBuffer + Double buffer.                      */
@@ -305,6 +290,7 @@ int main (int argc, char** argv){
 		return 1;
 	}
 
+	/* Initialisation de tous les paramètres de la map */
 	init();
 
 	/* association de la fonction callback de redimensionnement */
@@ -315,17 +301,11 @@ int main (int argc, char** argv){
 	glutKeyboardFunc(kbdFunc);
 	/* association de la fonction callback d'événement du clavier (touches spéciales) */
 	glutSpecialFunc(kbdSpFunc);
-	/* association de la fonction callback d'événement souris */
-	//glutMouseFunc(mouseFunc);
-	/* association de la fonction callback de DRAG de la souris */
-	//glutMotionFunc(motionFunc);
-
+	/* association de la fonction callback d'affichage en continue*/
 	glutIdleFunc(idle);
 
 	/* boucle principale de gestion des événements */
 	glutMainLoop();
-	/* Cette partie du code n'est jamais atteinte */
-
 
 	return 0;
 }

@@ -12,11 +12,11 @@ float LOD_LEVEL_4 = 0;
 
 
 const Color3ub WIREFRAME_COLORS[5] = {
-    createColor(255,255,20), // rgb(255, 243, 22)
-    createColor(70,220,250), // rgb(70, 220, 250)
-    createColor(250,0,250), // rgb(252, 1, 251)
-    createColor(80,0,80), // rgb(79, 0, 89)
-    createColor(0,20,80) // rgb(2, 20, 90)
+    createColor(255,0,255), // rgb(9, 241, 247) ROSE
+    createColor(255,80,175), 
+    createColor(255,125,125), 
+    createColor(255,175,80), 
+    createColor(255,255,0) // rgb(255, 255, 0) JAUNE
 };
 
 void initTreeChart(TreeChart* chart, int NB_TREES)
@@ -141,14 +141,18 @@ void glDrawRepere(float length) {
 }
 
 // Fonction qui génère la skybox
-void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
+void glDrawSkybox(float x, float y, float z,  GLuint textures[15], float zFar, bool wireframe)
 {
   float D=sqrt(zFar);
 
   glDepthMask(GL_FALSE);
     glColor4f(1, 1, 1, 1);
     //Dessous
-    glBindTexture(GL_TEXTURE_2D,textures[6]);
+    if(wireframe){
+        glColor3ub(60,0,60);
+    }else{
+        glBindTexture(GL_TEXTURE_2D,textures[6]);
+    }
     glBegin(GL_QUADS);
       glTexCoord2f(0,0); glVertex3f(-D+x,-D+y,-D+z);
       glTexCoord2f(1,0); glVertex3f(+D+x,-D+y,-D+z);
@@ -158,7 +162,11 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
     glBindTexture(GL_TEXTURE_2D,0);
 
     //Dessus
-    glBindTexture(GL_TEXTURE_2D,textures[7]);
+    if(wireframe){
+        glColor3ub(60,0,60);
+    }else{
+        glBindTexture(GL_TEXTURE_2D,textures[7]);
+    }
     glBegin(GL_QUADS);
       glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
       glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
@@ -167,8 +175,12 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
     glEnd();
     glBindTexture(GL_TEXTURE_2D,0);
 
-    //Devant
-    glBindTexture(GL_TEXTURE_2D,textures[4]);
+    //Devant (x positif)
+    if(wireframe){
+        glColor3ub(60,0,60);
+    }else{
+        glBindTexture(GL_TEXTURE_2D,textures[4]);
+    }
     glBegin(GL_QUADS);
       glTexCoord2f(0,1); glVertex3f(+D+x,-D+y,-D+z);
       glTexCoord2f(0,0); glVertex3f(+D+x,-D+y,+D+z);
@@ -178,8 +190,12 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
     glBindTexture(GL_TEXTURE_2D,0);
 
 
-    //derriere
-    glBindTexture(GL_TEXTURE_2D,textures[2]);
+    //derriere (x négatif)
+    if(wireframe){
+        glColor3ub(60,0,60);
+    }else{
+        glBindTexture(GL_TEXTURE_2D,textures[2]);
+    }
     glBegin(GL_QUADS);
       glTexCoord2f(1,0); glVertex3f(-D+x,-D+y,+D+z);
       glTexCoord2f(1,1); glVertex3f(-D+x,-D+y,-D+z);
@@ -188,8 +204,12 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
     glEnd();
     glBindTexture(GL_TEXTURE_2D,0);
 
-    //gauche
-    glBindTexture(GL_TEXTURE_2D,textures[3]);
+    //gauche (y positif)
+    if(wireframe){
+        glColor3ub(60,0,60);
+    }else{
+        glBindTexture(GL_TEXTURE_2D,textures[3]);
+    }
     glBegin(GL_QUADS);
       glTexCoord2f(1,1); glVertex3f(-D+x,+D+y,-D+z);
       glTexCoord2f(0,1); glVertex3f(+D+x,+D+y,-D+z);
@@ -199,7 +219,11 @@ void glDrawSkybox(float x,float y,float z,  GLuint textures[15],float zFar)
     glBindTexture(GL_TEXTURE_2D,0);
 
     //droite
-    glBindTexture(GL_TEXTURE_2D,textures[5]);
+    if(wireframe){
+        glColor3ub(60,0,60);
+    }else{
+        glBindTexture(GL_TEXTURE_2D,textures[5]);
+    }
     glBegin(GL_QUADS);
       glTexCoord2f(1,1); glVertex3f(+D+x,-D+y,-D+z);
       glTexCoord2f(0,1); glVertex3f(-D+x,-D+y,-D+z);
@@ -455,7 +479,6 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint textu
     Color3f triangleLight = GetLight(sunShine, a, b, c);
 
     glBegin(GL_TRIANGLES);
-        glColor3f(255,255,0);
         glColor4f(triangleLight.r, triangleLight.g, triangleLight.b, 1);
         glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
         glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
@@ -466,7 +489,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint textu
 
     else
     {
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_LINE_LOOP);
         glColor3ub(
             WIREFRAME_COLORS[quadLevel-1].r,
             WIREFRAME_COLORS[quadLevel-1].g,
