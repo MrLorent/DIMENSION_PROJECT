@@ -22,13 +22,14 @@ struct TreeChart {
 void initTreeChart(TreeChart* chart, int NB_TREES);
 
 void initTextureLevels(float min, float max);
-void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12]);
+void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12], GLuint menuTexture[1]);
 GLuint creaTexture(char* path);
 
 void initLODLevels(float max);
 bool LevelOfDetailsReached(QuadTree* quad, Point3D position);
 void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEVEL);
 
+void glDrawMenu(GLuint menuTexture[1]);
 void glDrawRepere(float length);
 void glDrawSkybox(float x, float y, float z,  GLuint skyboxTextures[12], float zFar, bool wireframe);
 

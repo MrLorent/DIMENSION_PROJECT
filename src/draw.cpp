@@ -35,9 +35,9 @@ void initTextureLevels(float min, float max){
     TEXTURE_LEVEL_3 = zSpacing * 3/4;
 }
 
-void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12])
+void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12], GLuint menuTexture[1])
 {
-    char* texturesLinks[20];
+    char* texturesLinks[21];
     texturesLinks[0] = (char*)"doc/text1.png";
     texturesLinks[1] = (char*)"doc/text2.png";
     texturesLinks[2] = (char*)"doc/text3.png";
@@ -60,6 +60,7 @@ void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTe
     texturesLinks[17] = (char*)"doc/starbox-derriere.png";
     texturesLinks[18] = (char*)"doc/starbox-dessous.png";
     texturesLinks[19] = (char*)"doc/starbox-dessus.png";
+    texturesLinks[20] = (char*)"doc/menu.png";
 
     for(int i=0; i<4;i++){
       mapTextures[i]=creaTexture(texturesLinks[i]);
@@ -72,6 +73,8 @@ void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTe
     for(int i=0; i<12;i++){
       skyboxTextures[i]=creaTexture(texturesLinks[i+8]);
     }
+
+    menuTexture[0] = creaTexture(texturesLinks[20]);
 }
 
 // Fonction permettant de créer une texture GLuint
@@ -137,6 +140,24 @@ void initLODLevels(float zFar){
   LOD_LEVEL_2 = zFar * 6/32;
   LOD_LEVEL_3 = zFar * 9/32;
   LOD_LEVEL_4 = zFar * 18/32;
+}
+
+void glDrawMenu(GLuint menuTexture[1]) {
+    glBindTexture(GL_TEXTURE_2D, menuTexture[0]);
+    glPushMatrix();
+        glTranslatef(0,2,0);
+        glRotatef(90,0,0,1);
+        glPushMatrix();
+                glColor4f(1,1,1,1);
+                glBegin(GL_POLYGON);
+                glTexCoord2f( 0,  0); glVertex3f(1,1,0);
+                glTexCoord2f( 1,  0); glVertex3f(1,1,1);
+                glTexCoord2f( 1,  1); glVertex3f(-1,1,1);
+                glTexCoord2f( 0,  1); glVertex3f(-1,1,0);
+                glEnd();
+        glPopMatrix();
+    glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D,0);
 }
 
 // Fonction permettant de générer un repère
