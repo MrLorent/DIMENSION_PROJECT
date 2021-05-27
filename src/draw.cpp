@@ -252,6 +252,33 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint textures[15], Tr
 
     if(LevelOfDetailsReached(quadTree, camera->position))
     {
+        if(camera->locked){
+            float distance = quadTree->getDistanceFrom(camera->position);
+            if(distance < norm(createVectorFromPoints(camera->position, camera->closestMapPoint))){
+                switch (quadTree->getClosestCorner(camera->position))
+                {
+                case TOP_LEFT:
+                    camera->closestMapPoint = quadTree->a;
+                    camera->position.z = camera->closestMapPoint.z + camera->height;
+                    break;
+                case TOP_RIGHT:
+                    camera->closestMapPoint = quadTree->b;
+                    camera->position.z = camera->closestMapPoint.z + camera->height;
+                    break;
+                case BOTTOM_RIGHT:
+                    camera->closestMapPoint = quadTree->c;
+                    camera->position.z = camera->closestMapPoint.z + camera->height;
+                    break;
+                case BOTTOM_LEFT:
+                    camera->closestMapPoint = quadTree->d;
+                    camera->position.z = camera->closestMapPoint.z + camera->height;
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
+         
         // ON DESSINE LES ELEMENTS DE LA MAP
 
         /* On dessine le triangle en haut à gauche du quad */
@@ -512,7 +539,7 @@ void glDrawTrees(TreeChart* trees, float latitude, GLuint textures[15], Sun sunS
     for(int i = 0; i < trees->nbTrees; i++)
     {
       Color3f triangleLight = GetLight(sunShine, TREE_LIGHT_MODEL.a, TREE_LIGHT_MODEL.b, TREE_LIGHT_MODEL.c);
-      
+
       if(trees->trees[i].z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,textures[1]);
       if(trees->trees[i].z > TEXTURE_LEVEL_1 && trees->trees[i].z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,textures[12]);
       if(trees->trees[i].z > TEXTURE_LEVEL_2 && trees->trees[i].z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,textures[13]);

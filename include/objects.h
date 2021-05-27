@@ -25,7 +25,13 @@ void initSun(Sun* sun, float mapWidth, float mapHeigh);
 
 struct Camera {
     // GLUT_LOOK_AT PARAMETERS
+    // POSITION
     Point3D position;
+    Point3D closestMapPoint;
+    float height;
+    bool locked;
+
+    // REGARD
     float latitude; // HORIZONTAL
     float longitude; // VERTICAL
     Vector3D up;

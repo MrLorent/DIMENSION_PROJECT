@@ -73,9 +73,14 @@ static void init() {
 
 	// INITIALISATION DES PARAMETRES DE CAMERA
 	/* Paramètre de position de la camera dans la map*/
+	camera.height = 0.25;
 	camera.position.x = 0;
 	camera.position.y = 0;
-	camera.position.z = 1;
+	camera.position.z = quadTree->d.z + camera.height;
+
+	camera.closestMapPoint = quadTree->d;
+	camera.locked = true;
+	
 	/* Vecteur up : vecteur normal au plan du sol (0;0;1) */
 	camera.up.x = 0;
 	camera.up.y = 0;
@@ -84,7 +89,7 @@ static void init() {
 	camera.latitude = 0.0;
 	camera.longitude = M_PI/2.0;
 	/* Coefficient de vitesse calculer selon la taille de la map */
-	SPEED_FACTOR = 0.001 * (params.xSize * params.ySize)/2;
+	SPEED_FACTOR = 0.00005 * (params.xSize * params.ySize)/2;
 
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
@@ -148,8 +153,8 @@ static void drawFunc(void) {
 			camera.position.x,	// CAMERA POSITION X
 			camera.position.y,	// CAMERA POSITION Y
 			camera.position.z,	// CAMERA POSITION Z
-			camera.position.x + cos(camera.latitude)*sin(camera.longitude), // LOOK DIRECTION X
-			camera.position.y + sin(camera.latitude)*sin(camera.longitude),	// LOOK DIRECTION Y
+			camera.position.x + cos(camera.latitude) * sin(camera.longitude), // LOOK DIRECTION X
+			camera.position.y + sin(camera.latitude) * sin(camera.longitude),	// LOOK DIRECTION Y
 			camera.position.z + cos(camera.longitude),						// LOOK DIRECTION Z
 			camera.up.x,
 			camera.up.y,
@@ -204,7 +209,7 @@ static void kbdSpFunc(int c, int x, int y) {
 			camera.latitude -= STEP_ANGLE;
 			break;
 		default:
-			if(GLUT_ACTIVE_SHIFT){
+			if(GLUT_ACTIVE_SHIFT && !camera.locked){
 				camera.position.z -= SPEED_FACTOR;
 			}
 			printf("Appui sur une touche spéciale\n");
@@ -259,7 +264,9 @@ static void kbdFunc(unsigned char c, int x, int y) {
 			}
 			break;
 		case ' ' :
-			camera.position.z += SPEED_FACTOR;
+			if(!camera.locked){
+				camera.position.z += SPEED_FACTOR;
+			}
 			break;
 		case 'F' : case 'f' : 
 			if(wireFrame){

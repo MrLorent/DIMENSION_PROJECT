@@ -46,6 +46,8 @@ typedef struct Node {
 
     /*############### METHODES ###############*/
     bool isLeaf();
+    bool contains(Point3D a, Point3D c, Point3D b, Point3D cam);
+
     int getHeight();
     void initTmpPoints();
 

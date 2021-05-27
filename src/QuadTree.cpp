@@ -145,6 +145,10 @@ bool Node::isLeaf(){
     return this->childA == NULL && this->childB == NULL && this->childC == NULL && this->childD == NULL;
 }
 
+bool Node::contains(Point3D a, Point3D c, Point3D b, Point3D cam){
+    // A CODER
+}
+
 int Node::getHeight(){
     if(this->isLeaf()){
         this->height = 1;
