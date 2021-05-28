@@ -125,6 +125,26 @@ GLuint creaTexture(char* path){
 
 }
 
+void bindTexture(float height, GLuint textures[4])
+{
+    if(height <= TEXTURE_LEVEL_1)
+    {
+        glBindTexture(GL_TEXTURE_2D,textures[0]);
+    }
+    else if(height > TEXTURE_LEVEL_1 && height <= TEXTURE_LEVEL_2)
+    {
+        glBindTexture(GL_TEXTURE_2D,textures[1]);
+    }
+    else if(height > TEXTURE_LEVEL_2 && height <= TEXTURE_LEVEL_3)
+    {
+        glBindTexture(GL_TEXTURE_2D,textures[2]);
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D,textures[3]);
+    }
+}
+
 /*############## LUMIERE ##############*/
 
 Color3f GetLight(Sun sun, Point3D a, Point3D b, Point3D c){
@@ -498,14 +518,10 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 }
 
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTextures[4], Sun sunShine, bool wireframe){
-    float averageHeight = (a.z + b.z + c.z)/3;
     if(!wireframe)
     {
-    if(averageHeight <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,mapTextures[0]);
-    if(averageHeight > TEXTURE_LEVEL_1 && averageHeight <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,mapTextures[1]);
-    if(averageHeight > TEXTURE_LEVEL_2 && averageHeight <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,mapTextures[2]);
-    if(averageHeight > TEXTURE_LEVEL_3)    glBindTexture(GL_TEXTURE_2D,mapTextures[3]);
-
+    float averageHeight = (a.z + b.z + c.z)/3;
+    bindTexture(averageHeight, mapTextures);
 
     Color3f triangleLight = GetLight(sunShine, a, b, c);
 
@@ -541,10 +557,7 @@ void glDrawTrees(TreeChart* trees, float latitude, GLuint treeTextures[4], Sun s
     {
       Color3f triangleLight = GetLight(sunShine, TREE_LIGHT_MODEL.a, TREE_LIGHT_MODEL.b, TREE_LIGHT_MODEL.c);
 
-      if(trees->trees[i].z <= TEXTURE_LEVEL_1)   glBindTexture(GL_TEXTURE_2D,treeTextures[0]);
-      if(trees->trees[i].z > TEXTURE_LEVEL_1 && trees->trees[i].z <= TEXTURE_LEVEL_2)   glBindTexture(GL_TEXTURE_2D,treeTextures[1]);
-      if(trees->trees[i].z > TEXTURE_LEVEL_2 && trees->trees[i].z <= TEXTURE_LEVEL_3)   glBindTexture(GL_TEXTURE_2D,treeTextures[2]);
-      if(trees->trees[i].z > TEXTURE_LEVEL_3)  glBindTexture(GL_TEXTURE_2D,treeTextures[3]);
+      bindTexture(trees->trees[i].z, treeTextures);
       
       glPushMatrix();
           glTranslatef(trees->trees[i].x, trees->trees[i].y, trees->trees[i].z);
