@@ -82,22 +82,6 @@ bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
        
 }
 
-bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4])
-{
-    int nbChecked = 0;
-
-    while (nbChecked < 4)
-    {
-        if(det(limit,createVectorFromPoints(position,points[nbChecked])) < 0.0)
-        {
-            return false;
-        }
-        nbChecked++;
-    }
-
-    return true;
-}
-
 void Camera::adjustHeight(Node* quad){
     float distance = quad->getDistanceFrom(this->position);
         if(distance < norm(createVectorFromPoints(this->position, this->closestMapPoint))){

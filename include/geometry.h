@@ -65,4 +65,6 @@ float det(Vector3D v1, Vector3D v2);
 
 Vector3D prodVect(Vector3D v1, Vector3D v2);
 
+bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4]);
+
 #endif

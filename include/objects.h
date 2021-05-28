@@ -56,6 +56,4 @@ struct Camera {
 
 void initCamera(Camera* cam, Params params, Point3D position);
 
-bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4]);
-
 #endif

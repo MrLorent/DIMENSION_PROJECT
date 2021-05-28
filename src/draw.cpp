@@ -276,6 +276,7 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint mapTextures[4], 
     // LOD
     if(LevelOfDetailsReached(quadTree, camera->position))
     {
+        /* Ajustement de la hauteur de la camera pour le mode "camera fixe" */
         if(camera->locked) camera->adjustHeight(quadTree);
          
         // ON DESSINE LES ELEMENTS DE LA MAP

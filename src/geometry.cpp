@@ -63,6 +63,22 @@ Vector3D prodVect(Vector3D v1, Vector3D v2){
     return v;
 }
 
+bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4])
+{
+    int nbChecked = 0;
+
+    while (nbChecked < 4)
+    {
+        if(det(limit,createVectorFromPoints(position,points[nbChecked])) < 0.0)
+        {
+            return false;
+        }
+        nbChecked++;
+    }
+
+    return true;
+}
+
 void printPoint3D(Point3D p)
 {
     cout << "(" << p.x << ";" << p.y << ";" << p.z << ")" << endl;
