@@ -123,3 +123,16 @@ void initSun(Sun* sun, float mapWidth, float mapHeigh) {
     sun->moving = false;
 }
 
+/*############## LUMIERE ##############*/
+
+Color3f Sun::getLight(Point3D a, Point3D b, Point3D c){
+    Vector3D v1 = createVectorFromPoints(a,b);
+    Vector3D v2 = createVectorFromPoints(a,c);
+    Vector3D normale = prodVect(v1,v2);
+    Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
+    Vector3D vectSunShine = createVectorFromPoints(this->position, centre);
+    normale = normalize(normale);
+    Color3f triangleLight = multColor(this->color, this->shininess * dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
+    
+    return triangleLight;
+}

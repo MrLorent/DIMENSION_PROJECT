@@ -52,6 +52,8 @@ struct Sun {
     float radius;
     float shininess;
     bool moving;
+
+    Color3f getLight(Point3D a, Point3D b, Point3D c);
 };
 
 void initSun(Sun* sun, float mapWidth, float mapHeigh);

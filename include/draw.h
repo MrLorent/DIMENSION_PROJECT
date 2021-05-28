@@ -37,8 +37,6 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint mapTextures[4], 
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTextures[4], Sun sunShine, bool wireframe);
 
 void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam);
-void glDrawTrees(TreeChart* treePoint, float latitude, GLuint treeTextures[4], Sun sunShine); 
-
-Color3f GetLight(Sun sunShine, Point3D a, Point3D b, Point3D c);
+void glDrawTrees(TreeChart* treePoint, float latitude, GLuint treeTextures[4], Sun sunShine);
 
 #endif // DRAW_H

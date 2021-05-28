@@ -145,20 +145,6 @@ void bindTexture(float height, GLuint textures[4])
     }
 }
 
-/*############## LUMIERE ##############*/
-
-Color3f GetLight(Sun sun, Point3D a, Point3D b, Point3D c){
-    Vector3D v1 = createVectorFromPoints(a,b);
-    Vector3D v2 = createVectorFromPoints(a,c);
-    Vector3D normale = prodVect(v1,v2);
-    Point3D centre = createPoint((a.x+b.x+c.x)/3, (a.y+b.y+c.y)/3, (a.z+b.z+c.z)/3);
-    Vector3D vectSunShine = createVectorFromPoints(sun.position, centre);
-    normale = normalize(normale);
-    Color3f triangleLight = multColor(sun.color , sun.shininess * dot(normale, normalize(vectSunShine))/ (norm(vectSunShine)*norm(vectSunShine)));
-    
-    return triangleLight;
-}
-
 /*############## FONCTION DRAW ##############*/
 
 // Initialise les differents seuils du LOD
@@ -517,16 +503,16 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
     }
 }
 
-void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTextures[4], Sun sunShine, bool wireframe){
+void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTextures[4], Sun sun, bool wireframe){
     if(!wireframe)
     {
     float averageHeight = (a.z + b.z + c.z)/3;
     bindTexture(averageHeight, mapTextures);
 
-    Color3f triangleLight = GetLight(sunShine, a, b, c);
+    Color3f light = sun.getLight(a, b, c);
 
     glBegin(GL_TRIANGLES);
-        glColor4f(triangleLight.r, triangleLight.g, triangleLight.b, 1);
+        glColor4f(light.r, light.g, light.b, 1);
         glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
         glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
         glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
@@ -552,17 +538,17 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTe
 
 }
 
-void glDrawTrees(TreeChart* trees, float latitude, GLuint treeTextures[4], Sun sunShine) {
+void glDrawTrees(TreeChart* trees, float latitude, GLuint treeTextures[4], Sun sun) {
     for(int i = 0; i < trees->nbTrees; i++)
     {
-      Color3f triangleLight = GetLight(sunShine, TREE_LIGHT_MODEL.a, TREE_LIGHT_MODEL.b, TREE_LIGHT_MODEL.c);
+      Color3f light = sun.getLight(TREE_LIGHT_MODEL.a, TREE_LIGHT_MODEL.b, TREE_LIGHT_MODEL.c);
 
       bindTexture(trees->trees[i].z, treeTextures);
       
       glPushMatrix();
           glTranslatef(trees->trees[i].x, trees->trees[i].y, trees->trees[i].z);
           glRotatef(latitude*180/M_PI,0.,0.,1.);
-          glColor4f(triangleLight.r,triangleLight.g,triangleLight.b, 1);
+          glColor4f(light.r,light.g,light.b, 1);
           glScalef(0.75,0.75,0.75);
           glPushMatrix();
               glBegin(GL_POLYGON);
