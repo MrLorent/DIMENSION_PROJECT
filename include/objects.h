@@ -9,20 +9,6 @@
 
 using namespace std;
 
-/*################ LUMIERE ################*/
-
-struct Sun {
-    Point3D origin;
-    Point3D position;
-    Color3f color;
-    float longitude;
-    float radius;
-    float shininess;
-    bool moving;
-};
-
-void initSun(Sun* sun, float mapWidth, float mapHeigh);
-
 /*################ CAMERA ################*/
 
 struct Camera {
@@ -55,5 +41,19 @@ struct Camera {
 };
 
 void initCamera(Camera* cam, Params params, Point3D position);
+
+/*################ LUMIERE ################*/
+
+struct Sun {
+    Point3D origin;
+    Point3D position;
+    Color3f color;
+    float longitude;
+    float radius;
+    float shininess;
+    bool moving;
+};
+
+void initSun(Sun* sun, float mapWidth, float mapHeigh);
 
 #endif
