@@ -7,8 +7,6 @@ float LOD_LEVEL_4 = 0;
 
 /*################ CONSTRUCTEURS ################*/
 
-// Créer un nouveaux node à partir de quatres 
-// points données
 Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * heightMap, Params params){
     int width = b.x - a.x;
     int height = a.y - d.y;
@@ -120,26 +118,18 @@ Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * he
 /*################ ACCESSEURS ################*/
 // EN LECTURE
 
-// Retourne un pointeur vers le fils haut gauche
-// du node courant
 Node* Node::getChildA() {
     return this->childA;
 };
 
-// Retourne un pointeur vers le fils haut droit
-// du node courant
 Node* Node::getChildB() {
     return this->childB;
 };
 
-// Retourne un pointeur vers le fils bas droit
-// du node courant
 Node* Node::getChildC() {
     return this->childC;
 };
 
-// Retourne un pointeur vers le fils bas droit
-// du node courant
 Node* Node::getChildD() {
     return this->childD;
 };
@@ -364,8 +354,6 @@ void Node::orderByDistance(Point3D chart[4], Point3D cam)
 
 /*################ LOD ################*/
 
-// Initialise les differents seuils du LOD
-// en fonction du zFar de la camera
 void initLODLevels(float zFar){
   LOD_LEVEL_1 = zFar * 3/32;
   LOD_LEVEL_2 = zFar * 6/32;
