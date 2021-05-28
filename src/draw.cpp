@@ -510,7 +510,7 @@ void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTe
     Color3f triangleLight = GetLight(sunShine, a, b, c);
 
     glBegin(GL_TRIANGLES);
-        glColor4f(triangleLight.r+0.25, triangleLight.g+0.25, triangleLight.b+0.25, 1);
+        glColor4f(triangleLight.r, triangleLight.g, triangleLight.b, 1);
         glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
         glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
         glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
