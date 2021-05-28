@@ -42,7 +42,10 @@ static void init() {
 
 	// RECUPERATION DES PARAMETRES .TIMAC
 	params = createParams();
-  	readParams(&params, &camera);
+  	readParams(&params);
+	camera.fovV = params.fovV;
+	camera.zNear = params.zNear;
+	camera.zFar = params.zFar;
   	loadHeightMap(&params, &heightMap);
 
 	// INITIALISATION DES ARBRES

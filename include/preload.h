@@ -5,10 +5,10 @@
 #include <time.h> 
 
 #include "geometry.h"
-#include "objects.h"
 
 /*------------- PARAMS -------------*/
 typedef struct Params{
+    // PARAMETRES DE MAP
     string linkHeightMap;
     float rgbMaxValue;
     int xPixels;
@@ -17,6 +17,11 @@ typedef struct Params{
     float ySize;
     float zMin;
     float zMax;
+
+    // PARAMETRES DE CAMERA
+    float zNear;
+    float zFar;
+    float fovV;
 } Params;
 
 // CONSTRUCTEUR
@@ -25,7 +30,7 @@ typedef struct Params{
 Params createParams();
 
 // Charge l'Heightmap
-void readParams(Params* params, Camera* camera);
+void readParams(Params* params);
 
 /*------------- POINTCHART -------------*/
 

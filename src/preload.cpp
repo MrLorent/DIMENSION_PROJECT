@@ -14,7 +14,7 @@ Params createParams(){
     return params;
 }
 
-void readParams(Params* params, Camera* camera){
+void readParams(Params* params){
     ifstream file("./doc/params.timac");
     if(file) {
         //L'ouverture s'est bien passée, on peut donc lire
@@ -27,9 +27,9 @@ void readParams(Params* params, Camera* camera){
         file >> params->zMax;
 
         // PARAMETRE CAMERA
-        file >> camera->zNear;
-        file >> camera->zFar;
-        file >> camera->fovV;
+        file >> params->zNear;
+        file >> params->zFar;
+        file >> params->fovV;
 
         remove("params.timac");
     }else{
