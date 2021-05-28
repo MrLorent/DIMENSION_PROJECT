@@ -1,15 +1,21 @@
 #include "../include/objects.h"
 
-void initCamera(Camera* cam, Point3D position)
+void initCamera(Camera* cam, Params params, Point3D position)
 {
+    // PARAMETRE DE POSITION
     cam->height = 0.25;
 	cam->position.x = position.x;
 	cam->position.y = position.y;
 	cam->position.z = position.z + cam->height;
-
+    
+    /* Parametre de position fixe */
 	cam->closestMapPoint = position;
 	cam->locked = true;
-	
+
+    // PARAMETRES GLUT
+    cam->fovV = params.fovV;
+	cam->zNear = params.zNear;
+	cam->zFar = params.zFar;
 	/* Vecteur up : vecteur normal au plan du sol (0;0;1) */
 	cam->up.x = 0;
 	cam->up.y = 0;

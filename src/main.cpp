@@ -43,9 +43,6 @@ static void init() {
 	// RECUPERATION DES PARAMETRES .TIMAC
 	params = createParams();
   	readParams(&params);
-	camera.fovV = params.fovV;
-	camera.zNear = params.zNear;
-	camera.zFar = params.zFar;
   	loadHeightMap(&params, &heightMap);
 
 	// INITIALISATION DES ARBRES
@@ -69,7 +66,12 @@ static void init() {
 	quadTree->initNodesHeight();
 	
 	/* Initialisation des niveaux du LOD en fonction du zFar */
-	initLODLevels(camera.zFar);
+	initLODLevels(params.zFar);
+
+	// INITIALISATION DE LA CAMERA
+	initCamera(&camera, params, quadTree->childA->c);
+	/* Coefficient de vitesse calculer selon la taille de la map */
+	SPEED_FACTOR = 0.00005 * (params.xSize * params.ySize)/2;
 
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
@@ -78,12 +80,6 @@ static void init() {
 
 	// INITIALISATION DU SOLEIL
 	initSun(&sun, params.xSize, params.ySize);
-
-	// INITIALISATION DE LA CAMERA
-	/* Paramètre de position de la camera dans la map*/
-	initCamera(&camera, quadTree->childA->c);
-	/* Coefficient de vitesse calculer selon la taille de la map */
-	SPEED_FACTOR = 0.00005 * (params.xSize * params.ySize)/2;
 
 	/* liberation de la memoire liee au tableau de pixels */
 	freePointChart(&heightMap);

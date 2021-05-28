@@ -2,8 +2,9 @@
 #define OBJECTS_H
 #include <math.h>
 
-#include "geometry.h"
 #include "color.h"
+#include "geometry.h"
+#include "preload.h"
 
 using namespace std;
 
@@ -51,7 +52,7 @@ struct Camera {
     bool sees(Point3D a, Point3D b, Point3D c, Point3D d);
 };
 
-void initCamera(Camera* cam, Point3D position);
+void initCamera(Camera* cam, Params params, Point3D position);
 
 bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4]);
 

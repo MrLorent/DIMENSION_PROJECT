@@ -8,11 +8,10 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
+#include "color.h"
+#include "geometry.h"
 #include "QuadTree.h"
 #include "objects.h"
-#include "geometry.h"
-#include "color.h"
-
 
 struct TreeChart {
     int nbTrees;
