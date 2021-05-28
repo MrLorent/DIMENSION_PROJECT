@@ -85,7 +85,7 @@ bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
 void Camera::adjustHeight(Node* quad){
     float distance = quad->getDistanceFrom(this->position);
         if(distance < norm(createVectorFromPoints(this->position, this->closestMapPoint))){
-            switch (quad->getClosestCorner(this->position))
+            switch (quad->getClosestCornerFrom(this->position))
             {
             case TOP_LEFT:
                 this->closestMapPoint = quad->a;

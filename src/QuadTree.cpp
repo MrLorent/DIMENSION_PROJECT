@@ -1,5 +1,10 @@
 #include "../include/QuadTree.h"
 
+float LOD_LEVEL_1 = 0;
+float LOD_LEVEL_2 = 0;
+float LOD_LEVEL_3 = 0;
+float LOD_LEVEL_4 = 0;
+
 /*################ CONSTRUCTEURS ################*/
 
 // Créer un nouveaux node à partir de quatres 
@@ -178,6 +183,18 @@ void Node::initNodesHeight(){
     }
 }
 
+void Node::initTmpPoints(){
+    this->tmpA.z = this->a.z;
+    this->tmpB.z = this->b.z;
+    this->tmpC.z = this->c.z;
+    this->tmpD.z = this->d.z;
+
+    if(this->childA) this->childA->initTmpPoints();
+    if(this->childB) this->childB->initTmpPoints();
+    if(this->childC) this->childC->initTmpPoints();
+    if(this->childD) this->childD->initTmpPoints();
+}
+
 int Node::getHeight(){
     if(this->isLeaf()){
         this->height = 1;
@@ -209,7 +226,7 @@ int Node::getHeight(){
     }
 }
 
-int Node::getClosestCorner(Point3D cam)
+int Node::getClosestCornerFrom(Point3D cam)
 {
     int closest1 = TOP_LEFT;
     int closest2 = BOTTOM_RIGHT;
@@ -276,13 +293,13 @@ float Node::getDistanceFrom(Point3D position){
 void Node::orderByDistance(Point3D chart[4], Point3D cam)
 {
     float distanceA, distanceB, distanceC, distanceD;
-    int closest = this->getClosestCorner(cam);
+    int closest = this->getClosestCornerFrom(cam);
 
     switch (closest)
     {
     case TOP_LEFT:
-        distanceB = norm(createVectorFromPoints(cam, this->tmpB));
-        distanceD = norm(createVectorFromPoints(cam, this->tmpD));
+        distanceB = norm(createVectorFromPoints(cam, this->b));
+        distanceD = norm(createVectorFromPoints(cam, this->d));
 
         chart[0] = this->tmpA;
         if(distanceB < distanceD){
@@ -296,8 +313,8 @@ void Node::orderByDistance(Point3D chart[4], Point3D cam)
         break;
 
     case TOP_RIGHT:
-        distanceA = norm(createVectorFromPoints(cam, this->tmpA));
-        distanceC = norm(createVectorFromPoints(cam, this->tmpC));
+        distanceA = norm(createVectorFromPoints(cam, this->a));
+        distanceC = norm(createVectorFromPoints(cam, this->c));
 
         chart[0] = this->tmpB;
         if(distanceA < distanceC){
@@ -311,8 +328,8 @@ void Node::orderByDistance(Point3D chart[4], Point3D cam)
         break;
 
     case BOTTOM_RIGHT:
-        distanceB = norm(createVectorFromPoints(cam, this->tmpB));
-        distanceD = norm(createVectorFromPoints(cam, this->tmpD));
+        distanceB = norm(createVectorFromPoints(cam, this->b));
+        distanceD = norm(createVectorFromPoints(cam, this->d));
 
         chart[0] = this->tmpC;
         if(distanceB < distanceD){
@@ -326,8 +343,8 @@ void Node::orderByDistance(Point3D chart[4], Point3D cam)
         break;
 
     case BOTTOM_LEFT:
-        distanceA = norm(createVectorFromPoints(cam, this->tmpA));
-        distanceC = norm(createVectorFromPoints(cam, this->tmpC));
+        distanceA = norm(createVectorFromPoints(cam, this->a));
+        distanceC = norm(createVectorFromPoints(cam, this->c));
 
         chart[0] = this->tmpD;
         if(distanceA < distanceC){
@@ -345,14 +362,193 @@ void Node::orderByDistance(Point3D chart[4], Point3D cam)
     }
 }
 
-void Node::initTmpPoints(){
-    this->tmpA.z = this->a.z;
-    this->tmpB.z = this->b.z;
-    this->tmpC.z = this->c.z;
-    this->tmpD.z = this->d.z;
+/*################ LOD ################*/
 
-    if(this->childA) this->childA->initTmpPoints();
-    if(this->childB) this->childB->initTmpPoints();
-    if(this->childC) this->childC->initTmpPoints();
-    if(this->childD) this->childD->initTmpPoints();
+// Initialise les differents seuils du LOD
+// en fonction du zFar de la camera
+void initLODLevels(float zFar){
+  LOD_LEVEL_1 = zFar * 3/32;
+  LOD_LEVEL_2 = zFar * 6/32;
+  LOD_LEVEL_3 = zFar * 9/32;
+  LOD_LEVEL_4 = zFar * 18/32;
+}
+
+bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
+
+    int closestPoint = quad->getClosestCornerFrom(position);
+    float distance = quad->getDistanceFrom(position);
+
+    // ON DETERMINE SI ON DOIT CORRIGER LES CRACKS OU PAS
+    if(distance <= LOD_LEVEL_1 && quad->height == 2)
+    {
+        dealWithCracks(quad, position, closestPoint, LOD_LEVEL_1);
+    }
+    else if (distance <= LOD_LEVEL_2 && quad->height == 3)
+    {
+        dealWithCracks(quad, position, closestPoint, LOD_LEVEL_2);
+    }
+    else if (distance <= LOD_LEVEL_3 && quad->height == 4)
+    {
+        dealWithCracks(quad, position, closestPoint, LOD_LEVEL_3);
+    }
+    else if (distance <= LOD_LEVEL_4 && quad->height == 5)
+    {
+        dealWithCracks(quad, position, closestPoint, LOD_LEVEL_4);
+    }
+    
+    // ON DETERMINE SI ON DOIT DESSINER OU CONTINUER A DESCENDRE
+    if(quad->isLeaf())
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_1 && quad->height == 2)
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_2 && quad->height == 3)
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_3 && quad->height == 4)
+    {
+        return true;
+    }
+    else if (distance > LOD_LEVEL_4 && quad->height == 5)
+    {
+        return true;
+    }
+    else
+    {
+      return false;
+    }
+}
+
+void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEVEL)
+{
+    float distanceA, distanceB, distanceC, distanceD;
+
+    switch (closest)
+    {
+        case TOP_LEFT:
+            distanceB = norm(createVectorFromPoints(position, quad->b));
+            distanceD = norm(createVectorFromPoints(position, quad->d));
+
+            if(distanceB > LOD_LEVEL)
+            {
+                if(quad->childC){
+                    quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
+                }else{
+                    quad->getChildD()->tmpB.z = (quad->b.z + quad->c.z)/2;
+                }
+                
+                if(quad->childB){
+                    quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
+                }else{
+                    quad->getChildA()->tmpC.z = (quad->b.z + quad->c.z)/2;
+                } 
+            }
+
+            if(distanceD > LOD_LEVEL)
+            {
+                if(quad->childC){
+                    quad->getChildC()->tmpD.z = (quad->d.z + quad->c.z)/2;
+                    quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
+                }else{
+                    quad->getChildD()->tmpC.z = (quad->d.z + quad->c.z)/2;
+                }
+              
+            }
+            break;
+
+        case TOP_RIGHT:
+            distanceA = norm(createVectorFromPoints(position, quad->a));
+            distanceC = norm(createVectorFromPoints(position, quad->c));
+
+            if(distanceA > LOD_LEVEL)
+            {
+              if(quad->childA){
+                  quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
+                  quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
+              }else{
+                  quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
+              }
+            }
+
+            if(distanceC > LOD_LEVEL)
+            {
+                if(quad->childC){
+                    quad->getChildC()->tmpD.z = (quad->c.z + quad->d.z)/2;
+                    quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
+                }else{
+                    quad->getChildD()->tmpC.z = (quad->c.z + quad->d.z)/2;
+                }
+            }
+            break;
+
+        case BOTTOM_RIGHT:
+            distanceB = norm(createVectorFromPoints(position, quad->b));
+            distanceD = norm(createVectorFromPoints(position, quad->d));
+
+            if(distanceB > LOD_LEVEL)
+            {
+                if(quad->childA){
+                    quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
+                }else{
+                    quad->getChildD()->tmpB.z = (quad->a.z + quad->b.z)/2;
+                }
+
+                if(quad->childB){
+                    quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2;
+                }else if(quad->childC){
+                    quad->getChildC()->tmpA.z = (quad->a.z + quad->b.z)/2;
+                }
+            }
+
+            if(distanceD > LOD_LEVEL)
+            {
+              if(quad->childA){
+                  quad->getChildA()->tmpD.z = (quad->a.z + quad->d.z)/2;
+              }
+              quad->getChildD()->tmpA.z = (quad->a.z + quad->d.z)/2;
+            }
+            break;
+
+        case BOTTOM_LEFT:
+            distanceA = norm(createVectorFromPoints(position, quad->a));
+            distanceC = norm(createVectorFromPoints(position, quad->c));
+
+            if(distanceA > LOD_LEVEL)
+            {
+                if(quad->childA){
+                    quad->getChildA()->tmpB.z = (quad->a.z + quad->b.z)/2;
+                }else{
+                    quad->getChildD()->tmpB.z = (quad->a.z + quad->b.z)/2;
+                }
+
+                if(quad->childB){
+                    quad->getChildB()->tmpA.z = (quad->a.z + quad->b.z)/2;
+                }else if(quad->childC){
+                    quad->getChildC()->tmpA.z = (quad->a.z + quad->b.z)/2;
+                }
+            }
+
+            if(distanceC > LOD_LEVEL)
+            {
+                if(quad->childC){
+                    quad->getChildC()->tmpB.z = (quad->b.z + quad->c.z)/2;
+                }else{
+                    quad->getChildD()->tmpB.z = (quad->b.z + quad->c.z)/2;
+                }
+
+                if(quad->childB){
+                    quad->getChildB()->tmpC.z = (quad->b.z + quad->c.z)/2;
+                }else if(quad->childA){
+                    quad->getChildA()->tmpC.z = (quad->b.z + quad->c.z)/2;
+                }
+            }
+            break;
+
+        default:
+          break;
+    }
 }

@@ -51,7 +51,7 @@ typedef struct Node {
     void initNodesHeight();
     void initTmpPoints();
 
-    int getClosestCorner(Point3D cam);
+    int getClosestCornerFrom(Point3D cam);
     float getDistanceFrom(Point3D position);
     void orderByDistance(Point3D chart[4], Point3D cam);
 
@@ -60,5 +60,9 @@ typedef struct Node {
 /*################ CONSTRUCTEURS ################*/
 
 Node* createQuadTree(Point3D a, Point3D b, Point3D c, Point3D d, PointChart * heightMap, Params params);
+
+void initLODLevels(float max);
+bool LevelOfDetailsReached(QuadTree* quad, Point3D position);
+void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEVEL);
 
 #endif // QUADTREE_H

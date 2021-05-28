@@ -51,6 +51,8 @@ struct TreeChart {
 
 void initTreeChart(TreeChart* chart, int NB_TREES);
 
+void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam);
+
 /*################ LUMIERE ################*/
 
 struct Sun {
