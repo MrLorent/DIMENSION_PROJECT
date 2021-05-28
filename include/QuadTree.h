@@ -88,6 +88,14 @@ typedef struct Node {
     // plus loin de la position passee en parametre
     void orderByDistance(Point3D chart[4], Point3D cam);
 
+    void fixTopCrack();
+
+    void fixRightCrack();
+
+    void fixBottomCrack();
+
+    void fixLeftCrack();
+
 }QuadTree, Node;
 
 /*################ CONSTRUCTEURS ################*/
