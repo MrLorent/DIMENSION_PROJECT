@@ -42,6 +42,15 @@ struct Camera {
 
 void initCamera(Camera* cam, Params params, Point3D position);
 
+/*############## ARBRES ##############*/
+
+struct TreeChart {
+    int nbTrees;
+    Point3D* trees;
+};
+
+void initTreeChart(TreeChart* chart, int NB_TREES);
+
 /*################ LUMIERE ################*/
 
 struct Sun {

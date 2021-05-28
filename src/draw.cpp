@@ -23,12 +23,6 @@ float LOD_LEVEL_2 = 0;
 float LOD_LEVEL_3 = 0;
 float LOD_LEVEL_4 = 0;
 
-void initTreeChart(TreeChart* chart, int NB_TREES)
-{
-    chart->nbTrees = 0;
-    chart->trees = new Point3D[NB_TREES];
-}
-
 /*################# TEXTURE #################*/
 
 void initTextureLevels(float min, float max){
@@ -308,21 +302,6 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint mapTextures[4], 
     }
 }
 
-void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam)
-{
-    Point3D inOrderPoints[4];
-    quadTree->orderByDistance(inOrderPoints, cam);
-
-    for(int i = 0; i < 4; i++)
-    {
-        if(inOrderPoints[i].tree)
-        {
-            treesToDraw->trees[treesToDraw->nbTrees] = inOrderPoints[i];
-            treesToDraw->nbTrees++;
-        }
-    }
-}
-
 bool LevelOfDetailsReached(QuadTree* quad, Point3D position){
 
     int closestPoint = quad->getClosestCorner(position);
@@ -506,36 +485,33 @@ void dealWithCracks(QuadTree* quad, Point3D position, int closest, float LOD_LEV
 void glDrawTriangle(Point3D a, Point3D b, Point3D c, int quadLevel, GLuint mapTextures[4], Sun sun, bool wireframe){
     if(!wireframe)
     {
-    float averageHeight = (a.z + b.z + c.z)/3;
-    bindTexture(averageHeight, mapTextures);
+        float averageHeight = (a.z + b.z + c.z)/3;
+        bindTexture(averageHeight, mapTextures);
 
-    Color3f light = sun.getLight(a, b, c);
+        Color3f light = sun.getLight(a, b, c);
 
-    glBegin(GL_TRIANGLES);
-        glColor4f(light.r, light.g, light.b, 1);
-        glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
-        glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
-        glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
-    glEnd();
-    glBindTexture(GL_TEXTURE_2D,0);
+        glBegin(GL_TRIANGLES);
+            glColor4f(light.r, light.g, light.b, 1);
+            glTexCoord2f(1,1); glVertex3f(a.x, a.y, a.z); 
+            glTexCoord2f(0,1); glVertex3f(b.x, b.y, b.z);
+            glTexCoord2f(0,0); glVertex3f(c.x,c.y,c.z);
+        glEnd();
+        glBindTexture(GL_TEXTURE_2D,0);
     }
-
     else
     {
-    glLineWidth(1.25);
-    glBegin(GL_LINE_LOOP);
-        glColor3ub(
-            WIREFRAME_COLORS[quadLevel-1].r,
-            WIREFRAME_COLORS[quadLevel-1].g,
-            WIREFRAME_COLORS[quadLevel-1].b
-        );
-        glVertex3f(a.x, a.y, a.z); 
-        glVertex3f(b.x, b.y, b.z);
-        glVertex3f(c.x,c.y,c.z);
-    glEnd();
+        glLineWidth(1.25);
+        glBegin(GL_LINE_LOOP);
+            glColor3ub(
+                WIREFRAME_COLORS[quadLevel-1].r,
+                WIREFRAME_COLORS[quadLevel-1].g,
+                WIREFRAME_COLORS[quadLevel-1].b
+            );
+            glVertex3f(a.x, a.y, a.z); 
+            glVertex3f(b.x, b.y, b.z);
+            glVertex3f(c.x,c.y,c.z);
+        glEnd();
     }
-
-
 }
 
 void glDrawTrees(TreeChart* trees, float latitude, GLuint treeTextures[4], Sun sun) {

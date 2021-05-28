@@ -136,3 +136,26 @@ Color3f Sun::getLight(Point3D a, Point3D b, Point3D c){
     
     return triangleLight;
 }
+
+/*############## ARBRES ##############*/
+
+void initTreeChart(TreeChart* chart, int NB_TREES)
+{
+    chart->nbTrees = 0;
+    chart->trees = new Point3D[NB_TREES];
+}
+
+void registerTrees(QuadTree* quadTree, TreeChart* treesToDraw, Point3D cam)
+{
+    Point3D inOrderPoints[4];
+    quadTree->orderByDistance(inOrderPoints, cam);
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(inOrderPoints[i].tree)
+        {
+            treesToDraw->trees[treesToDraw->nbTrees] = inOrderPoints[i];
+            treesToDraw->nbTrees++;
+        }
+    }
+}

@@ -13,13 +13,6 @@
 #include "QuadTree.h"
 #include "objects.h"
 
-struct TreeChart {
-    int nbTrees;
-    Point3D* trees;
-};
-
-void initTreeChart(TreeChart* chart, int NB_TREES);
-
 void initTextureLevels(float min, float max);
 void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12]);
 GLuint creaTexture(char* path);
