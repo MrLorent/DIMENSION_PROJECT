@@ -30,31 +30,30 @@ void initTextureLevels(float min, float max){
 
 void loadTextures(GLuint mapTextures[4], GLuint treeTextures[4], GLuint skyboxTextures[12])
 {
-    char* texturesLinks[21];
+    char* texturesLinks[20];
     // TEXTURES DU SOL
-    texturesLinks[0] = (char*)"doc/text1.png";
-    texturesLinks[1] = (char*)"doc/text2.png";
-    texturesLinks[2] = (char*)"doc/text3.png";
-    texturesLinks[3] = (char*)"doc/text4.png";
+    texturesLinks[0] = (char*)"doc/img/text1.png";
+    texturesLinks[1] = (char*)"doc/img/text2.png";
+    texturesLinks[2] = (char*)"doc/img/text3.png";
+    texturesLinks[3] = (char*)"doc/img/text4.png";
     // TEXTURES DES ARBRES
-    texturesLinks[4] = (char*)"doc/arbre1.png";
-    texturesLinks[5] = (char*)"doc/arbre2.png";
-    texturesLinks[6] = (char*)"doc/arbre3.png";
-    texturesLinks[7] = (char*)"doc/arbre4.png";
+    texturesLinks[4] = (char*)"doc/img/arbre1.png";
+    texturesLinks[5] = (char*)"doc/img/arbre2.png";
+    texturesLinks[6] = (char*)"doc/img/arbre3.png";
+    texturesLinks[7] = (char*)"doc/img/arbre4.png";
     // TEXTURES DE LA SKYBOX
-    texturesLinks[8] = (char*)"doc/skybox-gauche.png";
-    texturesLinks[9] = (char*)"doc/skybox-devant.png";
-    texturesLinks[10] = (char*)"doc/skybox-droite.png";
-    texturesLinks[11] = (char*)"doc/skybox-derriere.png";
-    texturesLinks[12] = (char*)"doc/skybox-dessous.png";
-    texturesLinks[13] = (char*)"doc/skybox-dessus.png";
-    texturesLinks[14] = (char*)"doc/starbox-droite.png";
-    texturesLinks[15] = (char*)"doc/starbox-devant.png";
-    texturesLinks[16] = (char*)"doc/starbox-gauche.png";
-    texturesLinks[17] = (char*)"doc/starbox-derriere.png";
-    texturesLinks[18] = (char*)"doc/starbox-dessous.png";
-    texturesLinks[19] = (char*)"doc/starbox-dessus.png";
-    texturesLinks[20] = (char*)"doc/menu.png";
+    texturesLinks[8] = (char*)"doc/img/skybox-gauche.png";
+    texturesLinks[9] = (char*)"doc/img/skybox-devant.png";
+    texturesLinks[10] = (char*)"doc/img/skybox-droite.png";
+    texturesLinks[11] = (char*)"doc/img/skybox-derriere.png";
+    texturesLinks[12] = (char*)"doc/img/skybox-dessous.png";
+    texturesLinks[13] = (char*)"doc/img/skybox-dessus.png";
+    texturesLinks[14] = (char*)"doc/img/starbox-droite.png";
+    texturesLinks[15] = (char*)"doc/img/starbox-devant.png";
+    texturesLinks[16] = (char*)"doc/img/starbox-gauche.png";
+    texturesLinks[17] = (char*)"doc/img/starbox-derriere.png";
+    texturesLinks[18] = (char*)"doc/img/starbox-dessous.png";
+    texturesLinks[19] = (char*)"doc/img/starbox-dessus.png";
 
     // TEXTURES DU SOL
     for(int i=0; i<4;i++){

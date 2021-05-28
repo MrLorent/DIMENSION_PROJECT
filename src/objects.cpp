@@ -114,7 +114,7 @@ void initSun(Sun* sun, float mapWidth, float mapHeigh) {
     sun->origin.y = mapHeigh/2;
     sun->origin.z = 0;
     sun->color = createColor(255,255,225);
-    sun->shininess = 5.0;
+    sun->shininess = (mapWidth+mapHeigh)/15;
     sun->longitude = -M_PI/6;
     sun->radius = mapHeigh;
     sun->position.x = sun->origin.x;

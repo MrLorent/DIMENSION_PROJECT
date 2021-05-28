@@ -16,6 +16,8 @@ const float STEP_ANGLE = M_PI/90.;
 
 /*---------- GLOBALES POUR LA CAMERA ----------*/
 float SPEED_FACTOR;
+float FLYING_SPEED;
+float WALKING_SPEED;
 Camera camera;
 
 
@@ -71,7 +73,9 @@ static void init() {
 	// INITIALISATION DE LA CAMERA
 	initCamera(&camera, params, quadTree->childA->c);
 	/* Coefficient de vitesse calculer selon la taille de la map */
-	SPEED_FACTOR = 0.00005 * (params.xSize * params.ySize)/2;
+	WALKING_SPEED = 0.05;
+	FLYING_SPEED = 0.00025 * (params.xSize * params.ySize)/2;
+	SPEED_FACTOR = WALKING_SPEED;
 
 	// INITIALISATION DES TEXTURES
 	wireFrame = false;
@@ -255,8 +259,10 @@ static void kbdFunc(unsigned char c, int x, int y) {
 		case 'C' : case 'c' : 
 			if(camera.locked){
 				camera.locked = false;
+				SPEED_FACTOR = FLYING_SPEED;
 			}else{
 				camera.locked = true;
+				SPEED_FACTOR = WALKING_SPEED;
 			}
 			break;
 
