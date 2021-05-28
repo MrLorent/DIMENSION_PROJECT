@@ -40,20 +40,20 @@ bool Camera::sees(Point3D a,Point3D b,Point3D c,Point3D d){
     float limitLength = sqrt(this->zFar * this->zFar + (tan(halfFovH) * this->zFar) * (tan(halfFovH) * this->zFar));
 
     Point3D cam = createPoint(
-        this->position.x + 1.25 * cos(this->latitude + M_PI),
-        this->position.y + 1.25 * sin(this->latitude + M_PI),
+        this->position.x + 1.25 * cos(this->latitude + M_PI) + this->position.z * cos(this->latitude) * cos(this->longitude),
+        this->position.y + 1.25 * sin(this->latitude + M_PI) + this->position.z * sin(this->latitude) * cos(this->longitude),
         this->position.x
     );
 
     Point3D left = createPoint(
-        this->position.x + limitLength * cos(this->latitude + halfFovH),
-        this->position.y + limitLength * sin(this->latitude + halfFovH),
+        this->position.x + limitLength * cos(this->latitude + halfFovH) + this->position.z * cos(this->latitude) * cos(this->longitude),
+        this->position.y + limitLength * sin(this->latitude + halfFovH) + this->position.z * sin(this->latitude) * cos(this->longitude),
         this->position.z
     );
     
     Point3D right = createPoint(
-        this->position.x + limitLength * cos(this->latitude - halfFovH),
-        this->position.y + limitLength * sin(this->latitude - halfFovH),
+        this->position.x + limitLength * cos(this->latitude - halfFovH) + this->position.z * cos(this->latitude) * cos(this->longitude),
+        this->position.y + limitLength * sin(this->latitude - halfFovH) + this->position.z * sin(this->latitude) * cos(this->longitude),
         this->position.z
     );
 
