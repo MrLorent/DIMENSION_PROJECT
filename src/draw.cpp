@@ -276,32 +276,7 @@ void glDrawHeightMap(QuadTree* quadTree, Camera* camera, GLuint mapTextures[4], 
     // LOD
     if(LevelOfDetailsReached(quadTree, camera->position))
     {
-        if(camera->locked){
-            float distance = quadTree->getDistanceFrom(camera->position);
-            if(distance < norm(createVectorFromPoints(camera->position, camera->closestMapPoint))){
-                switch (quadTree->getClosestCorner(camera->position))
-                {
-                case TOP_LEFT:
-                    camera->closestMapPoint = quadTree->a;
-                    camera->position.z = camera->closestMapPoint.z + camera->height;
-                    break;
-                case TOP_RIGHT:
-                    camera->closestMapPoint = quadTree->b;
-                    camera->position.z = camera->closestMapPoint.z + camera->height;
-                    break;
-                case BOTTOM_RIGHT:
-                    camera->closestMapPoint = quadTree->c;
-                    camera->position.z = camera->closestMapPoint.z + camera->height;
-                    break;
-                case BOTTOM_LEFT:
-                    camera->closestMapPoint = quadTree->d;
-                    camera->position.z = camera->closestMapPoint.z + camera->height;
-                    break;
-                default:
-                    break;
-                }
-            }
-        }
+        if(camera->locked) camera->adjustHeight(quadTree);
          
         // ON DESSINE LES ELEMENTS DE LA MAP
 

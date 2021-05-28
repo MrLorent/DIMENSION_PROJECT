@@ -98,6 +98,33 @@ bool allOnLeft(Point3D position, Vector3D limit, Point3D points[4])
     return true;
 }
 
+void Camera::adjustHeight(Node* quad){
+    float distance = quad->getDistanceFrom(this->position);
+        if(distance < norm(createVectorFromPoints(this->position, this->closestMapPoint))){
+            switch (quad->getClosestCorner(this->position))
+            {
+            case TOP_LEFT:
+                this->closestMapPoint = quad->a;
+                this->position.z = this->closestMapPoint.z + this->height;
+                break;
+            case TOP_RIGHT:
+                this->closestMapPoint = quad->b;
+                this->position.z = this->closestMapPoint.z + this->height;
+                break;
+            case BOTTOM_RIGHT:
+                this->closestMapPoint = quad->c;
+                this->position.z = this->closestMapPoint.z + this->height;
+                break;
+            case BOTTOM_LEFT:
+                this->closestMapPoint = quad->d;
+                this->position.z = this->closestMapPoint.z + this->height;
+                break;
+            default:
+                break;
+            }
+        }
+}
+
 void initSun(Sun* sun, float mapWidth, float mapHeigh) {
     sun->origin.x = mapWidth/2;
     sun->origin.y = mapHeigh/2;

@@ -5,6 +5,7 @@
 #include "color.h"
 #include "geometry.h"
 #include "preload.h"
+#include "QuadTree.h"
 
 using namespace std;
 
@@ -50,6 +51,7 @@ struct Camera {
     float getFovVInRadian();
 
     bool sees(Point3D a, Point3D b, Point3D c, Point3D d);
+    void adjustHeight(Node* quad);
 };
 
 void initCamera(Camera* cam, Params params, Point3D position);
